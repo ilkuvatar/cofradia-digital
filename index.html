@@ -536,7 +536,7 @@
             margin-left: 0.5rem;
         }
 
-        /* === ESTILOS PARA INVOCACIÓN === */
+        /* ESTILOS PARA INVOCACIÓN */
         .summon-animation {
             position: fixed;
             top: 0;
@@ -645,7 +645,6 @@
         .collection-card .rarity {
             font-size: 0.7rem;
             color: #d4af37;
-            margin-bottom: 0.2rem;
         }
 
         .collection-card .count {
@@ -766,7 +765,6 @@
             border-radius: 13px;
         }
 
-        /* Sistema de usuario */
         .user-display {
             position: fixed;
             top: 120px;
@@ -777,24 +775,11 @@
             border: 2px solid #FFD700;
             z-index: 99;
             display: none;
+            min-width: 200px;
         }
 
         .user-display.show {
             display: block;
-        }
-
-        .user-display div:first-child {
-            color: #FFD700;
-            font-weight: bold;
-        }
-
-        .user-display div:nth-child(2) {
-            color: #d4af37;
-            font-size: 0.9rem;
-        }
-
-        .user-display div:nth-child(3) {
-            color: #FFD700;
         }
     </style>
 </head>
@@ -820,7 +805,7 @@
         <source src="https://www.bensound.com/bensound-music/bensound-relax.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- === CONTENIDO PRINCIPAL === -->
+    <!-- CABECERA -->
     <header>
         <div style="position: absolute; top: 20px; right: 20px;">
             <button onclick="logout()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; cursor: pointer; margin-right: 0.5rem;">
@@ -834,8 +819,10 @@
         <p class="subtitle">Juego Gacha + Minijuegos - Semana Santa Española</p>
     </header>
 
+    <!-- PANEL DE USUARIO -->
     <div class="user-display" id="userDisplay"></div>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <div class="container">
         <div class="game-stats">
             <div class="stat-box">
@@ -979,15 +966,28 @@
     </div>
 
     <script>
-        // === CONFIGURACIÓN DE LA API DE GOOGLE ===
-        const GOOGLE_API_KEY = 'TU_CLAVE_DE_API_AQUI';
-        const GOOGLE_CX = 'TU_MOTOR_DE_BUSQUEDA_ID_AQUI';
-        
-        // 📚 BASE DE DATOS COMPLETA: 150 FIGURAS
+        // 📚 BASE DE DATOS: 150 FIGURAS
         const characters = [
             { id: 1, name: "Jesús del Gran Poder", city: "Sevilla", icon: "⛪", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Jes%C3%BAs_del_Gran_Poder" },
             { id: 2, name: "Virgen de la Macarena", city: "Sevilla", icon: "🌹", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Nuestra_Se%C3%B1ora_de_la_Esperanza_Macarena" },
-            // ... (resto de personajes) ...
+            { id: 3, name: "Esperanza de Triana", city: "Sevilla", icon: "🚢", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_de_la_Esperanza_de_Triana" },
+            { id: 4, name: "Cristo de los Gitanos", city: "Sevilla", icon: "💃", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_los_Gitanos" },
+            { id: 5, name: "Cristo del Cachorro", city: "Sevilla", icon: "🐺", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_del_Cachorro" },
+            { id: 6, name: "Jesús Nazareno del Silencio", city: "Sevilla", icon: "🤫", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/El_Silencio_(Sevilla)" },
+            { id: 7, name: "Virgen del Rocío", city: "Almonte", icon: "🌾", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_del_Roc%C3%ADo" },
+            { id: 8, name: "Cristo de la Sangre", city: "Málaga", icon: "🩸", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_la_Sangre_(M%C3%A1laga)" },
+            { id: 9, name: "Cristo del Silencio", city: "Sevilla", icon: "🤫", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/El_Silencio_(Sevilla)" },
+            { id: 10, name: "Virgen de la Amargura", city: "Sevilla", icon: "😢", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_de_la_Amargura" },
+            { id: 11, name: "Cristo del Calvario", city: "Sevilla", icon: "⛰️", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_del_Calvario" },
+            { id: 12, name: "Cristo de la Buena Muerte", city: "Sevilla", icon: "⚔️", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_la_Buena_Muerte" },
+            { id: 13, name: "Virgen de la Estrella", city: "Sevilla", icon: "⭐", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_de_la_Estrella" },
+            { id: 14, name: "Cristo del Museo", city: "Sevilla", icon: "🏛️", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_del_Museo" },
+            { id: 15, name: "Cristo de la Sed", city: "Sevilla", icon: "💧", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_la_Sed" },
+            { id: 16, name: "Virgen de la O", city: "Sevilla", icon: "🅾️", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_de_la_O" },
+            { id: 17, name: "Cristo de Mena", city: "Málaga", icon: "🎖️", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_Mena" },
+            { id: 18, name: "Cristo de la Salud", city: "Sevilla", icon: "🏥", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_la_Salud" },
+            { id: 19, name: "Virgen de la Soledad", city: "Sevilla", icon: "🌑", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Virgen_de_la_Soledad" },
+            { id: 20, name: "Cristo del Dulce Nombre", city: "Sevilla", icon: "🍯", rarity: "epic", rate: 0.003, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_del_Dulce_Nombre" },
             { id: 150, name: "Cofrade de Los Estudiantes", city: "Sevilla", icon: "📚", rarity: "common", rate: 0.00786, wikiUrl: "https://es.wikipedia.org/wiki/Cofrade_de_Los_Estudiantes" }
         ];
 
@@ -1012,24 +1012,9 @@
         // 🕹️ ESTADO MINIJUEGOS
         let minigameState = {
             currentGame: null,
-            wordsearch: {
-                grid: [],
-                words: [],
-                found: [],
-                selected: []
-            },
-            trivia: {
-                questions: [],
-                current: 0,
-                score: 0,
-                correct: 0
-            },
-            memory: {
-                cards: [],
-                flipped: [],
-                matched: [],
-                moves: 0
-            }
+            wordsearch: { grid: [], words: [], found: [], selected: [] },
+            trivia: { questions: [], current: 0, score: 0, correct: 0 },
+            memory: { cards: [], flipped: [], matched: [], moves: 0 }
         };
 
         // 📝 SOPA DE LETRAS
@@ -1040,7 +1025,7 @@
             "SAETA", "COSTAL", "ANDA", "CERRO", "CARRERA", "PROCESION"
         ];
 
-        // ❓ TRIVIAL - 20 preguntas
+        // ❓ TRIVIAL
         const TRIVIA_QUESTIONS = [
             {
                 question: "¿Qué ciudad es famosa por su Semana Santa con 'Jesús del Gran Poder'?",
@@ -1048,7 +1033,18 @@
                 correct: 0,
                 explanation: "Sevilla es la ciudad del Jesús del Gran Poder, una de las imágenes más veneradas."
             },
-            // ... (resto de preguntas) ...
+            {
+                question: "¿Cuál es el color típico de la Semana Santa de Sevilla?",
+                options: ["Morado", "Rojo", "Verde", "Azul"],
+                correct: 0,
+                explanation: "El morado es el color tradicional de la Semana Santa sevillana."
+            },
+            {
+                question: "¿Qué llevan los costaleros sobre la cabeza?",
+                options: ["Una corona", "Un costal", "Un sombrero", "Una cinta"],
+                correct: 1,
+                explanation: "Los costaleros llevan un costal con algodón para protegerse la cabeza."
+            }
         ];
 
         // === SISTEMAS DE GUARDADO ===
@@ -1058,7 +1054,7 @@
                 gameState = JSON.parse(saved);
             }
             
-            // Cargar usuario desde el login
+            // Cargar usuario desde login
             const savedUser = localStorage.getItem('cofradiaUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
@@ -1071,6 +1067,7 @@
 
         function saveGame() {
             localStorage.setItem('cofradiaDigital150', JSON.stringify(gameState));
+            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
         }
 
         // === ACTUALIZAR UI ===
@@ -1154,11 +1151,10 @@
             return characters[0];
         }
 
-        // === ANIMACIONES CON EFECTOS ESPECIALES ===
+        // === ANIMACIONES ===
         function showOpeningAnimation(callback) {
             const starAnim = document.getElementById('starAnimation');
             starAnim.style.display = 'block';
-            
             setTimeout(() => {
                 starAnim.style.display = 'none';
                 if (callback) callback();
@@ -1168,7 +1164,6 @@
         function showHolySpiritAnimation(callback) {
             const spiritAnim = document.getElementById('holySpiritAnimation');
             spiritAnim.style.display = 'block';
-            
             setTimeout(() => {
                 spiritAnim.style.display = 'none';
                 if (callback) callback();
@@ -1203,21 +1198,17 @@
             `;
             
             animation.style.display = 'flex';
-            
             setTimeout(() => {
                 animation.style.display = 'none';
             }, 3500);
         }
 
         function showMultipleSummonWithAnimation(results) {
-            let current = 0;
             let delay = 0;
-            
-            results.forEach((character, index) => {
+            results.forEach((character) => {
                 setTimeout(() => {
                     showSummonWithAnimation(character);
                 }, delay);
-                
                 delay += character.rarity === 'legendary' ? 3500 : 2500;
             });
         }
@@ -1233,8 +1224,6 @@
             
             filteredCharacters.forEach(character => {
                 const owned = gameState.collection[character.id];
-                const isNew = owned && owned.count === 1;
-                
                 const card = document.createElement('div');
                 card.className = `collection-card ${owned ? 'owned' : ''}`;
                 card.innerHTML = `
@@ -1243,7 +1232,6 @@
                     <div class="rarity">${owned ? RARITY_NAMES[character.rarity] : '???'}</div>
                     <div class="city" style="font-size: 0.7rem; color: #aaa;">${owned ? character.city : '???'}</div>
                     ${owned && owned.count > 1 ? `<div class="count">${owned.count}</div>` : ''}
-                    ${isNew ? `<div style="position: absolute; top: 5px; left: 5px; background: #00ff00; color: #000; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">N</div>` : ''}
                 `;
                 
                 if (owned) {
@@ -1265,13 +1253,9 @@
         function switchTab(tab) {
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(`${tab}-tab`).classList.add('active');
-            
-            if (tab === 'collection') {
-                renderCollection();
-            }
+            if (tab === 'collection') renderCollection();
         }
 
         // === MENSAJES ===
@@ -1290,17 +1274,13 @@
             `;
             message.textContent = text;
             document.body.appendChild(message);
-            
-            setTimeout(() => {
-                message.remove();
-            }, 3000);
+            setTimeout(() => message.remove(), 3000);
         }
 
         // === MÚSICA ===
         let musicPlaying = false;
         const audio = document.getElementById('backgroundMusic');
         let musicPlayedOnce = false;
-        
         audio.volume = 0.3;
         
         function toggleMusic() {
@@ -1310,7 +1290,7 @@
                 btn.textContent = '▶️';
                 musicPlaying = false;
             } else {
-                audio.play().catch(e => {
+                audio.play().catch(() => {
                     showMessage('Haz clic en la página para reproducir música.', 'error');
                 });
                 btn.textContent = '⏸️';
@@ -1328,17 +1308,12 @@
             const gameArea = document.getElementById('gameArea');
             gameArea.innerHTML = '';
             gameArea.classList.remove('hidden');
+            minigameState.currentGame = gameType;
             
             switch(gameType) {
-                case 'wordsearch':
-                    initWordsearch();
-                    break;
-                case 'trivia':
-                    initTrivia();
-                    break;
-                case 'memory':
-                    initMemory();
-                    break;
+                case 'wordsearch': initWordsearch(); break;
+                case 'trivia': initTrivia(); break;
+                case 'memory': initMemory(); break;
             }
         }
 
@@ -1348,14 +1323,12 @@
             const gridSize = 12;
             const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
             
-            // Colocar palabras
             words.forEach(word => {
                 let placed = false;
                 while (!placed) {
                     const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
                     const row = Math.floor(Math.random() * gridSize);
                     const col = Math.floor(Math.random() * gridSize);
-                    
                     if (canPlaceWord(grid, word, row, col, direction, gridSize)) {
                         placeWord(grid, word, row, col, direction);
                         placed = true;
@@ -1363,7 +1336,6 @@
                 }
             });
             
-            // Rellenar
             for (let i = 0; i < gridSize; i++) {
                 for (let j = 0; j < gridSize; j++) {
                     if (grid[i][j] === '') {
@@ -1377,7 +1349,7 @@
             gameArea.innerHTML = `
                 <div class="wordsearch-container">
                     <h3 style="color: #FFD700; margin-bottom: 1rem;">🔤 Sopa de Letras Cofrade</h3>
-                    <p style="color: #d4af37;">Encuentra las palabras ocultas (haz clic en la primera letra)</p>
+                    <p style="color: #d4af37;">Encuentra las palabras ocultas</p>
                     <div class="wordsearch-grid" id="wordsearchGrid" style="grid-template-columns: repeat(${gridSize}, 1fr);"></div>
                     <div class="wordsearch-list" id="wordList"></div>
                     <div class="game-controls">
@@ -1437,7 +1409,6 @@
 
         function checkWordFrom(row, col) {
             const { grid, words } = minigameState.wordsearch;
-            
             words.forEach(word => {
                 if (checkWord(grid, word, row, col)) {
                     markWordAsFound(word);
@@ -1447,7 +1418,6 @@
 
         function checkWord(grid, word, row, col) {
             const directions = [[[0, 1], word.length], [[1, 0], word.length]];
-            
             for (const [dir, len] of directions) {
                 let found = true;
                 for (let i = 0; i < len; i++) {
@@ -1481,7 +1451,6 @@
             gameState.coins += reward;
             saveGame();
             updateUI();
-            showMessage(`¡Ganaste ${reward} monedas! 💰`, 'success');
             closeGame();
         }
 
@@ -1643,10 +1612,7 @@
                         document.querySelector(`[data-index="${second}"]`).classList.add('matched');
                         matched.push(first, second);
                         minigameState.memory.flipped = [];
-                        
-                        if (matched.length === cards.length) {
-                            endMemoryGame();
-                        }
+                        if (matched.length === cards.length) endMemoryGame();
                     }, 500);
                 } else {
                     setTimeout(() => {
@@ -1689,7 +1655,7 @@
                 userDisplay.innerHTML = `
                     <div style="color: #FFD700; font-weight: bold;">${currentUser.name}</div>
                     <div style="color: #d4af37; font-size: 0.9rem;">${currentUser.hermandad || 'Sin hermandad'}</div>
-                    <div style="color: #FFD700;">⭐ ${currentUser.coins || gameState.coins} monedas</div>
+                    <div style="color: #FFD700;">⭐ ${gameState.coins} monedas</div>
                 `;
                 userDisplay.classList.add('show');
             } else {
@@ -1707,7 +1673,7 @@
         // === INICIAR ===
         loadGame();
 
-        // ⏰ BONUS
+        // ⏰ BONUS CADA MINUTO
         setInterval(() => {
             gameState.coins += 50;
             saveGame();
