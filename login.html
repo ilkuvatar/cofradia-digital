@@ -140,18 +140,13 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <script>
-        // ⬇️ CONFIGURA TU CLIENT ID AQUÍ ⬇️
-        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
+        // ⚠️ CONFIGURADO - TU CLIENT ID DE GOOGLE
+        const GOOGLE_CLIENT_ID = '992689185747-9b58bplv4aoqio8bcnju4ppun8occutn.apps.googleusercontent.com';
         const PLACEHOLDER_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
         
         let currentUser = null;
         
-        // Inicializar Google OAuth
         window.addEventListener('load', function() {
-            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
-                console.warn('Google Client ID no configurado. Usa modo invitado.');
-            }
-            
             try {
                 const savedUser = localStorage.getItem('cofradiaUser');
                 if (savedUser) {
@@ -164,11 +159,6 @@
         });
         
         function loginWithGoogle() {
-            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
-                alert('⚠️ Debes configurar tu Google Client ID primero en el código');
-                return;
-            }
-            
             try {
                 google.accounts.id.initialize({
                     client_id: GOOGLE_CLIENT_ID,
@@ -182,10 +172,7 @@
         }
         
         function handleGoogleResponse(response) {
-            if (!response?.credential) {
-                alert('❌ Error en la autenticación con Google');
-                return;
-            }
+            if (!response?.credential) return;
             
             try {
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
@@ -227,7 +214,6 @@
         function showUserInfo(user) {
             document.getElementById('userInfo').style.display = 'block';
             document.getElementById('userAvatar').src = user.picture;
-            document.getElementById('userAvatar').alt = `Avatar de ${user.name}`;
             document.getElementById('userName').textContent = user.name;
             document.getElementById('userEmail').textContent = user.email;
             
