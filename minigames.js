@@ -1,20 +1,15 @@
 // 🎮 MINIJUEGOS - COFRADÍA DIGITAL
-// Sopa de letras mejorada con selección interactiva
+// Sopa de letras, Trivial y Memoria
 
-// 🎯 VARIABLES DE JUEGO
-let currentMinigame = null;
-let wordsearchGame = null;
-let triviaGame = null;
-let memoryGame = null;
-
-// 🔤 DATOS PARA SOPA DE LETRAS
+// ============================
+// 🔤 SOPA DE LETRAS
+// ============================
 const WORDSEARCH_WORDS = [
     { word: 'SEMANA', reward: 10 },
     { word: 'SANTA', reward: 10 },
     { word: 'PASIÓN', reward: 15 },
     { word: 'CRISTO', reward: 15 },
     { word: 'VIRGEN', reward: 15 },
-    { word: 'CRUZ', reward: 8 },
     { word: 'CRUZ', reward: 8 },
     { word: 'PROCESIÓN', reward: 20 },
     { word: 'HERMANDAD', reward: 18 },
@@ -23,125 +18,27 @@ const WORDSEARCH_WORDS = [
     { word: 'CAPERUZA', reward: 12 },
     { word: 'COSTALERO', reward: 16 },
     { word: 'NAZARENO', reward: 14 },
-    { word: 'TRONO', reward: 10 }
+    { word: 'TRONO', reward: 10 },
+    { word: 'PASO', reward: 8 }
 ];
 
-const TRIVIA_QUESTIONS = [
-    {
-        question: "¿En qué ciudad se celebran las más famosas procesiones de Semana Santa?",
-        answers: ["Sevilla", "Málaga", "Granada", "Córdoba"],
-        correct: 0,
-        reward: 50
-    },
-    {
-        question: "¿Qué hermandad es conocida como 'La Blanca Palidez'?",
-        answers: ["El Gran Poder", "La Macarena", "El Silencio", "La Hiniesta"],
-        correct: 2,
-        reward: 50
-    },
-    {
-        question: "¿Qué día no hay procesiones en Semana Santa?",
-        answers: ["Viernes Santo", "Sábado Santo", "Domingo de Resurrección", "Jueves Santo"],
-        correct: 1,
-        reward: 50
-    },
-    {
-        question: "¿Cuál es la hermandad más antigua de Sevilla?",
-        answers: ["El Gran Poder", "La Macarena", "Los Javieres", "El Cachorro"],
-        correct: 0,
-        reward: 50
-    },
-    {
-        question: "¿Qué llevan los nazarenos en la cabeza?",
-        answers: ["Corona", "Caperuza", "Sombrero", "Velo"],
-        correct: 1,
-        reward: 50
-    },
-    {
-        question: "¿Qué hermandad procesiona en silencio?",
-        answers: ["El Gran Poder", "El Silencio", "La Macarena", "La Hiniesta"],
-        correct: 1,
-        reward: 50
-    },
-    {
-        question: "¿Dónde se celebró la primera procesión del Rocío?",
-        answers: ["Sevilla", "Almonte", "Huelva", "Cádiz"],
-        correct: 1,
-        reward: 50
-    },
-    {
-        question: "¿Qué color representa a la Hiniesta?",
-        answers: ["Blanco", "Negro", "Verde", "Morado"],
-        correct: 2,
-        reward: 50
-    }
-];
-
-const MEMORY_CARDS = [
-    { id: 1, icon: "✝️", name: "Cruz" },
-    { id: 2, icon: "🌹", name: "Rosa" },
-    { id: 3, icon: "🕊️", name: "Paloma" },
-    { id: 4, icon: "⛪", name: "Iglesia" },
-    { id: 5, icon: "🎺", name: "Trompeta" },
-    { id: 6, icon: "🌿", name: "Ramo" },
-    { id: 7, icon: "🏛️", name: "Templo" },
-    { id: 8, icon: "🔔", name: "Campana" }
-];
-
-// 🎮 SISTEMA PRINCIPAL DE MINIJUEGOS
-function playMinigame(gameType) {
-    const gameArea = document.getElementById('gameArea');
-    if (!gameArea) return;
-    
-    currentMinigame = gameType;
-    gameArea.classList.remove('hidden');
-    gameArea.innerHTML = '';
-    
-    switch(gameType) {
-        case 'wordsearch':
-            initWordsearch();
-            break;
-        case 'trivia':
-            initTrivia();
-            break;
-        case 'memory':
-            initMemory();
-            break;
-    }
-}
-
-function closeMinigame() {
-    const gameArea = document.getElementById('gameArea');
-    if (gameArea) {
-        gameArea.classList.add('hidden');
-        gameArea.innerHTML = '';
-    }
-    currentMinigame = null;
-}
-
-// 🔤 SOPA DE LETRAS MEJORADA
 class WordSearchGame {
     constructor() {
         this.grid = [];
         this.foundWords = [];
-        this.selectedCells = [];
         this.currentSelection = [];
         this.words = [...WORDSEARCH_WORDS];
         this.gridSize = 15;
-        this.selectedWord = '';
         this.isSelecting = false;
     }
-    
+
     generateGrid() {
-        // Crear grid vacío
         this.grid = Array(this.gridSize).fill(null).map(() => Array(this.gridSize).fill(''));
-        
-        // Colocar palabras
+
         this.words.forEach(wordObj => {
             this.placeWord(wordObj.word);
         });
-        
-        // Llenar espacios vacíos con letras aleatorias
+
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 if (this.grid[i][j] === '') {
@@ -150,58 +47,51 @@ class WordSearchGame {
             }
         }
     }
-    
+
     placeWord(word) {
         const directions = [
-            [0, 1],   // horizontal
-            [1, 0],   // vertical
-            [1, 1],   // diagonal abajo
-            [-1, 1],  // diagonal arriba
-            [0, -1],  // horizontal inversa
-            [-1, 0],  // vertical inversa
-            [-1, -1], // diagonal arriba inversa
-            [1, -1]   // diagonal abajo inversa
+            [0, 1], [1, 0], [1, 1], [-1, 1],
+            [0, -1], [-1, 0], [-1, -1], [1, -1]
         ];
-        
+
         let placed = false;
         let attempts = 0;
-        
+
         while (!placed && attempts < 100) {
             const direction = directions[Math.floor(Math.random() * directions.length)];
             const startRow = Math.floor(Math.random() * this.gridSize);
             const startCol = Math.floor(Math.random() * this.gridSize);
-            
+
             if (this.canPlaceWord(word, startRow, startCol, direction)) {
                 this.placeWordInGrid(word, startRow, startCol, direction);
                 placed = true;
             }
             attempts++;
         }
-        
+
         if (!placed) {
-            // Si no se puede colocar en ninguna dirección, colocar horizontalmente
             const row = Math.floor(Math.random() * this.gridSize);
             const col = Math.floor(Math.random() * (this.gridSize - word.length));
             this.placeWordInGrid(word, row, col, [0, 1]);
         }
     }
-    
+
     canPlaceWord(word, row, col, direction) {
         for (let i = 0; i < word.length; i++) {
             const newRow = row + i * direction[0];
             const newCol = col + i * direction[1];
-            
+
             if (newRow < 0 || newRow >= this.gridSize || newCol < 0 || newCol >= this.gridSize) {
                 return false;
             }
-            
+
             if (this.grid[newRow][newCol] !== '' && this.grid[newRow][newCol] !== word[i]) {
                 return false;
             }
         }
         return true;
     }
-    
+
     placeWordInGrid(word, row, col, direction) {
         for (let i = 0; i < word.length; i++) {
             const newRow = row + i * direction[0];
@@ -209,231 +99,35 @@ class WordSearchGame {
             this.grid[newRow][newCol] = word[i];
         }
     }
-    
+
     checkWord(selection) {
         const selectedWord = selection.map(cell => cell.letter).join('');
         const reversedWord = selectedWord.split('').reverse().join('');
-        
-        const foundWord = this.words.find(w => 
-            w.word === selectedWord || w.word === reversedWord
-        );
-        
+
+        const foundWord = this.words.find(w => w.word === selectedWord || w.word === reversedWord);
+
         if (foundWord && !this.foundWords.includes(foundWord.word)) {
             this.foundWords.push(foundWord.word);
             return foundWord;
         }
-        
+
         return null;
     }
 }
 
-function initWordsearch() {
-    wordsearchGame = new WordSearchGame();
-    wordsearchGame.generateGrid();
-    
-    const gameArea = document.getElementById('gameArea');
-    gameArea.innerHTML = `
-        <div class="wordsearch-container">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2 style="color: #FFD700; margin: 0;">🔤 Sopa de Letras</h2>
-                <button onclick="closeMinigame()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; cursor: pointer;">❌ Cerrar</button>
-            </div>
-            <div id="wordsearch-selected-word" style="text-align: center; margin-bottom: 1rem; font-size: 1.2rem; color: #FFD700; min-height: 30px;"></div>
-            <div id="wordsearch-grid" class="wordsearch-grid" style="display: grid; gap: 2px; justify-content: center; margin: 1rem 0;"></div>
-            <div id="wordsearch-words" class="wordsearch-list"></div>
-            <div id="wordsearch-score" style="text-align: center; margin-top: 1rem; color: #d4af37;">
-                Palabras encontradas: <span id="found-count">0</span>/${wordsearchGame.words.length}
-            </div>
-        </div>
-    `;
-    
-    renderWordsearchGrid();
-    renderWordsearchWords();
-}
+// ============================
+// 🧩 TRIVIA
+// ============================
+let triviaGame = null;
 
-function renderWordsearchGrid() {
-    const gridContainer = document.getElementById('wordsearch-grid');
-    if (!gridContainer) return;
-    
-    gridContainer.style.gridTemplateColumns = `repeat(${wordsearchGame.gridSize}, 40px)`;
-    gridContainer.innerHTML = '';
-    
-    for (let row = 0; row < wordsearchGame.gridSize; row++) {
-        for (let col = 0; col < wordsearchGame.gridSize; col++) {
-            const cell = document.createElement('div');
-            cell.className = 'wordsearch-cell';
-            cell.textContent = wordsearchGame.grid[row][col];
-            cell.dataset.row = row;
-            cell.dataset.col = col;
-            cell.dataset.letter = wordsearchGame.grid[row][col];
-            
-            // Eventos de selección
-            cell.addEventListener('mousedown', startWordSelection);
-            cell.addEventListener('mouseenter', continueWordSelection);
-            cell.addEventListener('mouseup', endWordSelection);
-            cell.addEventListener('touchstart', handleTouchStart, { passive: false });
-            cell.addEventListener('touchmove', handleTouchMove, { passive: false });
-            cell.addEventListener('touchend', handleTouchEnd, { passive: false });
-            
-            gridContainer.appendChild(cell);
-        }
-    }
-}
-
-function renderWordsearchWords() {
-    const wordsContainer = document.getElementById('wordsearch-words');
-    if (!wordsContainer) return;
-    
-    wordsContainer.innerHTML = '';
-    
-    wordsearchGame.words.forEach(wordObj => {
-        const wordElement = document.createElement('div');
-        wordElement.className = 'word-item';
-        wordElement.textContent = wordObj.word;
-        wordElement.dataset.word = wordObj.word;
-        
-        if (wordsearchGame.foundWords.includes(wordObj.word)) {
-            wordElement.classList.add('found');
-        }
-        
-        wordsContainer.appendChild(wordElement);
-    });
-}
-
-// 🔤 SISTEMA DE SELECCIÓN DE PALABRAS
-function startWordSelection(e) {
-    e.preventDefault();
-    wordsearchGame.isSelecting = true;
-    wordsearchGame.currentSelection = [];
-    
-    const cell = e.target;
-    const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.col);
-    
-    wordsearchGame.currentSelection.push({
-        row, col, letter: cell.dataset.letter, element: cell
-    });
-    
-    cell.classList.add('selected');
-    updateSelectedWord();
-}
-
-function continueWordSelection(e) {
-    if (!wordsearchGame.isSelecting) return;
-    e.preventDefault();
-    
-    const cell = e.target;
-    const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.col);
-    
-    // Verificar si es celda adyacente
-    const lastCell = wordsearchGame.currentSelection[wordsearchGame.currentSelection.length - 1];
-    const rowDiff = Math.abs(row - lastCell.row);
-    const colDiff = Math.abs(col - lastCell.col);
-    
-    if (rowDiff <= 1 && colDiff <= 1 && !(rowDiff === 0 && colDiff === 0)) {
-        // Verificar si ya está en la selección
-        const alreadySelected = wordsearchGame.currentSelection.some(c => 
-            c.row === row && c.col === col
-        );
-        
-        if (!alreadySelected) {
-            wordsearchGame.currentSelection.push({
-                row, col, letter: cell.dataset.letter, element: cell
-            });
-            cell.classList.add('selected');
-            updateSelectedWord();
-        }
-    }
-}
-
-function endWordSelection(e) {
-    if (!wordsearchGame.isSelecting) return;
-    e.preventDefault();
-    
-    wordsearchGame.isSelecting = false;
-    
-    if (wordsearchGame.currentSelection.length > 1) {
-        const foundWord = wordsearchGame.checkWord(wordsearchGame.currentSelection);
-        
-        if (foundWord) {
-            // Palabra encontrada
-            wordsearchGame.currentSelection.forEach(cell => {
-                cell.element.classList.remove('selected');
-                cell.element.classList.add('found');
-            });
-            
-            // Actualizar UI
-            renderWordsearchWords();
-            document.getElementById('found-count').textContent = wordsearchGame.foundWords.length;
-            
-            // Recompensa
-            addCoins(foundWord.reward);
-            showMessage(`¡Encontraste "${foundWord.word}"! +${foundWord.reward} monedas 💰`, 'success');
-            
-            // Verificar si se completó el juego
-            if (wordsearchGame.foundWords.length === wordsearchGame.words.length) {
-                setTimeout(() => {
-                    showMessage('¡Felicidades! ¡Completaste la sopa de letras! 🎉', 'success');
-                    addCoins(100); // Bonus por completar
-                }, 500);
-            }
-        } else {
-            // Palabra no encontrada
-            wordsearchGame.currentSelection.forEach(cell => {
-                cell.element.classList.remove('selected');
-            });
-        }
-    } else if (wordsearchGame.currentSelection.length === 1) {
-        // Solo una celda seleccionada
-        wordsearchGame.currentSelection[0].element.classList.remove('selected');
-    }
-    
-    wordsearchGame.currentSelection = [];
-    updateSelectedWord();
-}
-
-function updateSelectedWord() {
-    const selectedWordElement = document.getElementById('wordsearch-selected-word');
-    if (!selectedWordElement) return;
-    
-    if (wordsearchGame.currentSelection.length > 0) {
-        const word = wordsearchGame.currentSelection.map(cell => cell.letter).join('');
-        selectedWordElement.textContent = word;
-    } else {
-        selectedWordElement.textContent = '';
-    }
-}
-
-// 📱 SOPORTE PARA DISPOSITIVOS TÁCTILES
-function handleTouchStart(e) {
-    e.preventDefault();
-    startWordSelection(e);
-}
-
-function handleTouchMove(e) {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    if (element && element.classList.contains('wordsearch-cell')) {
-        continueWordSelection({ target: element });
-    }
-}
-
-function handleTouchEnd(e) {
-    e.preventDefault();
-    endWordSelection(e);
-}
-
-// ❓ SISTEMA DE TRIVIA
 function initTrivia() {
     triviaGame = {
-        questions: [...TRIVIA_QUESTIONS].sort(() => Math.random() - 0.5),
+        questions: [...window.TRIVIA_QUESTIONS].sort(() => Math.random() - 0.5),
         currentQuestion: 0,
         score: 0,
         answered: false
     };
-    
+
     showNextTriviaQuestion();
 }
 
@@ -442,10 +136,10 @@ function showNextTriviaQuestion() {
         endTriviaGame();
         return;
     }
-    
+
     const question = triviaGame.questions[triviaGame.currentQuestion];
     triviaGame.answered = false;
-    
+
     const gameArea = document.getElementById('gameArea');
     gameArea.innerHTML = `
         <div class="trivia-container">
@@ -469,12 +163,12 @@ function showNextTriviaQuestion() {
 
 function selectTriviaAnswer(selectedIndex) {
     if (triviaGame.answered) return;
-    
+
     triviaGame.answered = true;
     const question = triviaGame.questions[triviaGame.currentQuestion];
     const buttons = document.querySelectorAll('.answer-btn');
     const feedback = document.getElementById('trivia-feedback');
-    
+
     buttons.forEach((btn, index) => {
         btn.disabled = true;
         if (index === question.correct) {
@@ -483,15 +177,15 @@ function selectTriviaAnswer(selectedIndex) {
             btn.classList.add('incorrect');
         }
     });
-    
+
     if (selectedIndex === question.correct) {
-        triviaGame.score += question.reward;
-        feedback.innerHTML = `<div style="color: #00ff00; font-weight: bold;">¡Correcto! +${question.reward} monedas 💰</div>`;
-        addCoins(question.reward);
+        triviaGame.score += 50;
+        feedback.innerHTML = `<div style="color: #00ff00; font-weight: bold;">¡Correcto! +50 monedas 💰</div>`;
+        window.addCoins(50);
     } else {
-        feedback.innerHTML = `<div style="color: #ff4444;">Incorrecto. La respuesta correcta era: ${question.answers[question.correct]}</div>`;
+        feedback.innerHTML = `<div style="color: #ff4444;">Incorrecto. ${question.explanation}</div>`;
     }
-    
+
     setTimeout(() => {
         triviaGame.currentQuestion++;
         showNextTriviaQuestion();
@@ -513,7 +207,22 @@ function endTriviaGame() {
     `;
 }
 
-// 🧠 SISTEMA DE MEMORIA
+// ============================
+// 🧠 MEMORIA
+// ============================
+const MEMORY_CARDS = [
+    { id: 1, icon: "✝️", name: "Cruz" },
+    { id: 2, icon: "🌹", name: "Rosa" },
+    { id: 3, icon: "🕊️", name: "Paloma" },
+    { id: 4, icon: "⛪", name: "Iglesia" },
+    { id: 5, icon: "🎺", name: "Trompeta" },
+    { id: 6, icon: "🌿", name: "Ramo" },
+    { id: 7, icon: "🏛️", name: "Templo" },
+    { id: 8, icon: "🔔", name: "Campana" }
+];
+
+let memoryGame = null;
+
 function initMemory() {
     memoryGame = {
         cards: [...MEMORY_CARDS, ...MEMORY_CARDS].sort(() => Math.random() - 0.5),
@@ -523,7 +232,7 @@ function initMemory() {
         maxMoves: 20,
         reward: 200
     };
-    
+
     const gameArea = document.getElementById('gameArea');
     gameArea.innerHTML = `
         <div class="memory-container">
@@ -538,27 +247,27 @@ function initMemory() {
             <div id="memory-feedback" style="margin-top: 1rem; text-align: center; min-height: 30px;"></div>
         </div>
     `;
-    
+
     renderMemoryGrid();
 }
 
 function renderMemoryGrid() {
     const grid = document.getElementById('memory-grid');
     if (!grid) return;
-    
+
     grid.innerHTML = '';
-    
+
     memoryGame.cards.forEach((card, index) => {
         const cardElement = document.createElement('div');
         cardElement.className = 'memory-card';
         cardElement.dataset.cardId = card.id;
         cardElement.dataset.index = index;
-        
+
         cardElement.innerHTML = `
             <span style="display: none;">${card.icon}</span>
             <div style="font-size: 1rem; color: #d4af37;">?</div>
         `;
-        
+
         cardElement.addEventListener('click', () => flipMemoryCard(index));
         grid.appendChild(cardElement);
     });
@@ -569,18 +278,18 @@ function flipMemoryCard(index) {
     if (!cardElement || memoryGame.flippedCards.length >= 2 || memoryGame.flippedCards.includes(index) || memoryGame.matchedCards.includes(index)) {
         return;
     }
-    
+
     const card = memoryGame.cards[index];
     cardElement.classList.add('flipped');
     cardElement.querySelector('span').style.display = 'block';
     cardElement.querySelector('div').style.display = 'none';
-    
+
     memoryGame.flippedCards.push(index);
-    
+
     if (memoryGame.flippedCards.length === 2) {
         memoryGame.moves++;
         document.getElementById('memory-moves').textContent = memoryGame.moves;
-        
+
         setTimeout(() => {
             checkMemoryMatch();
         }, 1000);
@@ -591,26 +300,23 @@ function checkMemoryMatch() {
     const [index1, index2] = memoryGame.flippedCards;
     const card1 = memoryGame.cards[index1];
     const card2 = memoryGame.cards[index2];
-    
+
     const cardElement1 = document.querySelector(`[data-index="${index1}"]`);
     const cardElement2 = document.querySelector(`[data-index="${index2}"]`);
-    
+
     if (card1.id === card2.id) {
-        // Coincidencia
         cardElement1.classList.add('matched');
         cardElement2.classList.add('matched');
         memoryGame.matchedCards.push(index1, index2);
-        
+
         document.getElementById('memory-pairs').textContent = memoryGame.matchedCards.length / 2;
-        
+
         if (memoryGame.matchedCards.length === memoryGame.cards.length) {
-            // Juego completado
             setTimeout(() => {
                 endMemoryGame(true);
             }, 500);
         }
     } else {
-        // No coinciden
         cardElement1.classList.remove('flipped');
         cardElement2.classList.remove('flipped');
         cardElement1.querySelector('span').style.display = 'none';
@@ -618,10 +324,9 @@ function checkMemoryMatch() {
         cardElement1.querySelector('div').style.display = 'block';
         cardElement2.querySelector('div').style.display = 'block';
     }
-    
+
     memoryGame.flippedCards = [];
-    
-    // Verificar si se agotaron los movimientos
+
     if (memoryGame.moves >= memoryGame.maxMoves && memoryGame.matchedCards.length < memoryGame.cards.length) {
         setTimeout(() => {
             endMemoryGame(false);
@@ -633,15 +338,15 @@ function endMemoryGame(completed) {
     const gameArea = document.getElementById('gameArea');
     let message = '';
     let reward = 0;
-    
+
     if (completed) {
         message = `¡Felicidades! ¡Completaste el juego en ${memoryGame.moves} movimientos! 🎉`;
         reward = memoryGame.reward;
-        addCoins(reward);
+        window.addCoins(reward);
     } else {
         message = `Se agotaron los movimientos. ¡Inténtalo de nuevo! 😔`;
     }
-    
+
     gameArea.innerHTML = `
         <div class="memory-container" style="text-align: center;">
             <h2 style="color: #FFD700;">Juego Terminado</h2>
@@ -659,23 +364,221 @@ function endMemoryGame(completed) {
     `;
 }
 
-// 💰 SISTEMA DE RECOMPENSAS
-function addCoins(amount) {
-    // Esta función se comunicará con el sistema principal
-    if (window.addCoinsToGame) {
-        window.addCoinsToGame(amount);
+// ============================
+// 🎮 SISTEMA DE MINIJUEGOS
+// ============================
+let currentMinigame = null;
+
+function playMinigame(gameType) {
+    const gameArea = document.getElementById('gameArea');
+    if (!gameArea) return;
+
+    currentMinigame = gameType;
+    gameArea.classList.remove('hidden');
+    gameArea.innerHTML = '';
+
+    switch(gameType) {
+        case 'wordsearch':
+            initWordsearch();
+            break;
+        case 'trivia':
+            initTrivia();
+            break;
+        case 'memory':
+            initMemory();
+            break;
     }
 }
 
-// 🔔 SISTEMA DE MENSAJES
-function showMessage(text, type = 'success') {
-    // Esta función se comunicará con el sistema principal
-    if (window.showGameMessage) {
-        window.showGameMessage(text, type);
+function closeMinigame() {
+    const gameArea = document.getElementById('gameArea');
+    if (gameArea) {
+        gameArea.classList.add('hidden');
+        gameArea.innerHTML = '';
+    }
+    currentMinigame = null;
+}
+
+function initWordsearch() {
+    const game = new WordSearchGame();
+    game.generateGrid();
+
+    const gameArea = document.getElementById('gameArea');
+    gameArea.innerHTML = `
+        <div class="wordsearch-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="color: #FFD700; margin: 0;">🔤 Sopa de Letras</h2>
+                <button onclick="closeMinigame()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; cursor: pointer;">❌ Cerrar</button>
+            </div>
+            <div id="wordsearch-selected-word" style="text-align: center; margin-bottom: 1rem; font-size: 1.2rem; color: #FFD700; min-height: 30px;"></div>
+            <div id="wordsearch-grid" class="wordsearch-grid" style="display: grid; gap: 2px; justify-content: center; margin: 1rem 0;"></div>
+            <div id="wordsearch-words" class="wordsearch-list"></div>
+            <div id="wordsearch-score" style="text-align: center; margin-top: 1rem; color: #d4af37;">
+                Palabras encontradas: <span id="found-count">0</span>/${game.words.length}
+            </div>
+        </div>
+    `;
+
+    // Renderizar grid
+    const gridContainer = document.getElementById('wordsearch-grid');
+    gridContainer.style.gridTemplateColumns = `repeat(${game.gridSize}, 40px)`;
+
+    for (let row = 0; row < game.gridSize; row++) {
+        for (let col = 0; col < game.gridSize; col++) {
+            const cell = document.createElement('div');
+            cell.className = 'wordsearch-cell';
+            cell.textContent = game.grid[row][col];
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            cell.dataset.letter = game.grid[row][col];
+
+            cell.addEventListener('mousedown', (e) => startWordSelection(e, game));
+            cell.addEventListener('mouseenter', (e) => continueWordSelection(e, game));
+            cell.addEventListener('mouseup', (e) => endWordSelection(e, game));
+            cell.addEventListener('touchstart', (e) => handleTouchStart(e, game), { passive: false });
+            cell.addEventListener('touchmove', (e) => handleTouchMove(e, game), { passive: false });
+            cell.addEventListener('touchend', (e) => handleTouchEnd(e, game), { passive: false });
+
+            gridContainer.appendChild(cell);
+        }
+    }
+
+    // Renderizar lista de palabras
+    const wordsContainer = document.getElementById('wordsearch-words');
+    game.words.forEach(wordObj => {
+        const wordElement = document.createElement('div');
+        wordElement.className = 'word-item';
+        wordElement.textContent = wordObj.word;
+        wordElement.dataset.word = wordObj.word;
+
+        if (game.foundWords.includes(wordObj.word)) {
+            wordElement.classList.add('found');
+        }
+
+        wordsContainer.appendChild(wordElement);
+    });
+}
+
+function startWordSelection(e, game) {
+    e.preventDefault();
+    game.isSelecting = true;
+    game.currentSelection = [];
+
+    const cell = e.target;
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    game.currentSelection.push({
+        row, col, letter: cell.dataset.letter, element: cell
+    });
+
+    cell.classList.add('selected');
+    updateSelectedWord(game);
+}
+
+function continueWordSelection(e, game) {
+    if (!game.isSelecting) return;
+    e.preventDefault();
+
+    const cell = e.target;
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    const lastCell = game.currentSelection[game.currentSelection.length - 1];
+    const rowDiff = Math.abs(row - lastCell.row);
+    const colDiff = Math.abs(col - lastCell.col);
+
+    if (rowDiff <= 1 && colDiff <= 1 && !(rowDiff === 0 && colDiff === 0)) {
+        const alreadySelected = game.currentSelection.some(c => c.row === row && c.col === col);
+
+        if (!alreadySelected) {
+            game.currentSelection.push({
+                row, col, letter: cell.dataset.letter, element: cell
+            });
+            cell.classList.add('selected');
+            updateSelectedWord(game);
+        }
     }
 }
 
-// 🌍 HACER FUNCIONES GLOBALES
+function endWordSelection(e, game) {
+    if (!game.isSelecting) return;
+    e.preventDefault();
+
+    game.isSelecting = false;
+
+    if (game.currentSelection.length > 1) {
+        const foundWord = game.checkWord(game.currentSelection);
+
+        if (foundWord) {
+            game.currentSelection.forEach(cell => {
+                cell.element.classList.remove('selected');
+                cell.element.classList.add('found');
+            });
+
+            // Actualizar UI
+            const wordElement = document.querySelector(`[data-word="${foundWord.word}"]`);
+            if (wordElement) wordElement.classList.add('found');
+
+            document.getElementById('found-count').textContent = game.foundWords.length;
+
+            // Recompensa
+            window.addCoins(foundWord.reward);
+            window.showMessage(`¡Encontraste "${foundWord.word}"! +${foundWord.reward} monedas 💰`, 'success');
+
+            if (game.foundWords.length === game.words.length) {
+                setTimeout(() => {
+                    window.showMessage('¡Felicidades! ¡Completaste la sopa de letras! 🎉', 'success');
+                    window.addCoins(100);
+                }, 500);
+            }
+        } else {
+            game.currentSelection.forEach(cell => {
+                cell.element.classList.remove('selected');
+            });
+        }
+    } else if (game.currentSelection.length === 1) {
+        game.currentSelection[0].element.classList.remove('selected');
+    }
+
+    game.currentSelection = [];
+    updateSelectedWord(game);
+}
+
+function updateSelectedWord(game) {
+    const selectedWordElement = document.getElementById('wordsearch-selected-word');
+    if (!selectedWordElement) return;
+
+    if (game.currentSelection.length > 0) {
+        const word = game.currentSelection.map(cell => cell.letter).join('');
+        selectedWordElement.textContent = word;
+    } else {
+        selectedWordElement.textContent = '';
+    }
+}
+
+function handleTouchStart(e, game) {
+    e.preventDefault();
+    startWordSelection(e, game);
+}
+
+function handleTouchMove(e, game) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (element && element.classList.contains('wordsearch-cell')) {
+        continueWordSelection({ target: element }, game);
+    }
+}
+
+function handleTouchEnd(e, game) {
+    e.preventDefault();
+    endWordSelection(e, game);
+}
+
+// ============================
+// 🌍 FUNCIONES GLOBALES
+// ============================
 window.playMinigame = playMinigame;
 window.closeMinigame = closeMinigame;
 window.selectTriviaAnswer = selectTriviaAnswer;
