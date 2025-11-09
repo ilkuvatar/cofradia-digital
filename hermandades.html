@@ -3,47 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Hermandades - Cofradía Digital</title>
+    <title>Hermandades - Cofradía Digital</title>
     <style>
-        /* (Estilos similares al login - tema cofrade) */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
         
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 50%, #4a0e4e 100%);
             min-height: 100vh;
-            color: white;
+            color: #f5f5f5;
+            margin: 0;
             padding: 2rem;
         }
         
-        .hermandades-container {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        .page-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            color: #FFD700;
+        header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(0,0,0,0.8);
+            border-radius: 25px;
+            border: 3px solid #FFD700;
         }
         
-        .user-info-bar {
-            background: rgba(0,0,0,0.6);
-            padding: 1rem;
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: #FFD700;
+            font-size: 3rem;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #6a0dad;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
             border-radius: 15px;
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
         }
         
-        .hermandad-grid {
+        .hermandades-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-top: 2rem;
         }
         
         .hermandad-card {
@@ -67,478 +77,75 @@
         
         .hermandad-name {
             font-family: 'Cinzel', serif;
+            color: #FFD700;
             font-size: 1.5rem;
-            color: #FFD700;
             margin-bottom: 1rem;
         }
         
-        .hermandad-city {
+        .hermandad-desc {
             color: #d4af37;
-            margin-bottom: 1rem;
-        }
-        
-        .hermandad-members {
-            font-size: 0.9rem;
-            color: #aaa;
-            margin-bottom: 1rem;
-        }
-        
-        .join-btn {
-            background: linear-gradient(145deg, #6a0dad, #4a0e4e);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .join-btn:hover {
-            background: #FFD700;
-            color: #000;
-        }
-        
-        .join-btn.joined {
-            background: #808080;
-            cursor: not-allowed;
-        }
-        
-        .activities-section {
-            background: rgba(0,0,0,0.6);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .activities-title {
-            font-family: 'Cinzel', serif;
-            color: #FFD700;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .activity-card {
-            background: rgba(106,13,173,0.2);
-            border: 2px solid #6a0dad;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .activity-info h4 {
-            color: #FFD700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .activity-info p {
-            color: #d4af37;
-            margin: 0;
-        }
-        
-        .activity-reward {
-            background: linear-gradient(145deg, #FFD700, #d4af37);
-            color: #000;
-            padding: 0.5rem 1rem;
-            border-radius: 15px;
-            font-weight: bold;
-        }
-        
-        .complete-btn {
-            background: #00ff00;
-            color: #000;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .complete-btn:hover {
-            transform: scale(1.05);
-        }
-        
-        .complete-btn:disabled {
-            background: #808080;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .ranking-section {
-            background: rgba(0,0,0,0.6);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .ranking-title {
-            font-family: 'Cinzel', serif;
-            color: #FFD700;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        
-        .ranking-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(106,13,173,0.2);
-            border-radius: 10px;
-            margin-bottom: 0.5rem;
-        }
-        
-        .ranking-position {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #FFD700;
-            width: 40px;
-        }
-        
-        .ranking-user {
-            flex: 1;
-            margin-left: 1rem;
-        }
-        
-        .ranking-name {
-            font-weight: bold;
-            color: white;
-        }
-        
-        .ranking-hermandad {
-            font-size: 0.8rem;
-            color: #d4af37;
-        }
-        
-        .ranking-points {
-            font-size: 1.1rem;
-            color: #FFD700;
-            font-weight: bold;
-        }
-        
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid #FFD700;
-            color: #FFD700;
-            padding: 0.8rem 1.5rem;
-            border-radius: 20px;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        .back-btn:hover {
-            background: #FFD700;
-            color: #000;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-btn">← Volver al Juego</a>
+    <button class="back-btn" onclick="window.location.href='index.html'">← Volver</button>
     
-    <div class="hermandades-container">
-        <h1 class="page-title">🏛️ GESTIÓN DE HERMANDADES</h1>
+    <div class="container">
+        <header>
+            <h1>🏛️ HERMANDADES COFRADES</h1>
+            <p style="color: #d4af37; font-size: 1.2rem;">Explora las principales hermandades de España</p>
+        </header>
         
-        <div class="user-info-bar" id="userInfoBar">
-            <div>
-                <strong>Usuario:</strong> <span id="userName">Cargando...</span>
+        <div class="hermandades-grid">
+            <div class="hermandad-card">
+                <div class="hermandad-icon">⛪</div>
+                <div class="hermandad-name">Hermandad del Gran Poder</div>
+                <div class="hermandad-desc">Sevilla - Fundada en 1343. Una de las hermandades más antiguas y veneradas.</div>
             </div>
-            <div>
-                <strong>Hermandad:</strong> <span id="userHermandad">Ninguna</span>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🌹</div>
+                <div class="hermandad-name">Hermandad de la Macarena</div>
+                <div class="hermandad-desc">Sevilla - Devoción mariana de toda la ciudad. Su imagen es un símbolo sevillano.</div>
             </div>
-            <div>
-                <strong>Puntos:</strong> <span id="userPoints">0</span> ⭐
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🏛️</div>
+                <div class="hermandad-name">Hermandad de la Esperanza de Triana</div>
+                <div class="hermandad-desc">Sevilla - Reina y señora del barrio de Triana desde el siglo XV.</div>
             </div>
-        </div>
-        
-        <h2 style="color: #FFD700; margin-bottom: 1rem;">Hermandades Disponibles</h2>
-        <div class="hermandad-grid" id="hermandadGrid"></div>
-        
-        <div class="activities-section">
-            <h3 class="activities-title">📋 Actividades Semanales</h3>
-            <div id="activitiesList"></div>
-        </div>
-        
-        <div class="ranking-section">
-            <h3 class="ranking-title">🏆 Ranking de Cofrades</h3>
-            <div id="rankingList"></div>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🌊</div>
+                <div class="hermandad-name">Hermandad del Rocío</div>
+                <div class="hermandad-desc">Almonte - La romería más famosa de España. Millones de devotos cada año.</div>
+            </div>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">⚱️</div>
+                <div class="hermandad-name">Hermandad de la Sangre</div>
+                <div class="hermandad-desc">Málaga - Procesión única con legionarios en el Día de la Victoria.</div>
+            </div>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🦁</div>
+                <div class="hermandad-name">Hermandad de Mena</div>
+                <div class="hermandad-desc">Málaga - Pasión militarizada con legionarios españoles.</div>
+            </div>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🕊️</div>
+                <div class="hermandad-name">Hermandad del Silencio</div>
+                <div class="hermandad-desc">Sevilla - Procesión en absoluto silencio. El más sobrecogedor.</div>
+            </div>
+            
+            <div class="hermandad-card">
+                <div class="hermandad-icon">🌿</div>
+                <div class="hermandad-name">Hermandad de la Hiniesta</div>
+                <div class="hermandad-desc">Sevilla - Verde esperanza de la Semana Santa sevillana.</div>
+            </div>
         </div>
     </div>
-
-    <script>
-        // BASE DE DATOS DE HERMANDADES
-        const HERMANDADES = [
-            {
-                id: 1,
-                name: "Hermandad del Gran Poder",
-                city: "Sevilla",
-                icon: "⛪",
-                description: "La hermandad más antigua de Sevilla",
-                members: 1247,
-                activities: ["Procesión del Silencio", "Besapié", "Estación de Penitencia"]
-            },
-            {
-                id: 2,
-                name: "Hermandad de la Macarena",
-                city: "Sevilla",
-                icon: "🌹",
-                description: "Esperanza de todos los sevillanos",
-                members: 2156,
-                activities: ["Rosario de la Aurora", "Triduo", "Besamanos"]
-            },
-            {
-                id: 3,
-                name: "Hermandad de Triana",
-                city: "Sevilla",
-                icon: "🚢",
-                description: "La esperanza del barrio",
-                members: 1890,
-                activities: ["Pregón", "Quinario", "Estación de Penitencia"]
-            },
-            {
-                id: 4,
-                name: "Hermandad del Rocío",
-                city: "Almonte",
-                icon: "🌾",
-                description: "La blanca paloma",
-                members: 3421,
-                activities: ["Romero del Rocío", "Novena", "Peregrinación"]
-            },
-            {
-                id: 5,
-                name: "Hermandad de los Gitanos",
-                city: "Sevilla",
-                icon: "💃",
-                description: "Cristo de los gitanos",
-                members: 987,
-                activities: ["Saeta", "Quinario", "Procesión"]
-            }
-        ];
-
-        // ACTIVIDADES SEMANALES
-        const WEEKLY_ACTIVITIES = [
-            {
-                id: 1,
-                name: "Asistir a la procesión",
-                description: "Participa en una procesión de tu hermandad",
-                reward: 100,
-                type: "weekly",
-                completed: false
-            },
-            {
-                id: 2,
-                name: "Rezar el rosario",
-                description: "Reza el rosario los 7 días de la semana",
-                reward: 50,
-                type: "daily",
-                completed: false
-            },
-            {
-                id: 3,
-                name: "Compartir en redes",
-                description: "Comparte una foto de tu hermandad en redes sociales",
-                reward: 25,
-                type: "weekly",
-                completed: false
-            },
-            {
-                id: 4,
-                name: "Invitar a un amigo",
-                description: "Invita a un amigo a unirse a tu hermandad",
-                reward: 200,
-                type: "weekly",
-                completed: false
-            },
-            {
-                id: 5,
-                name: "Completar el triduo",
-                description: "Asiste a los 3 días del triduo",
-                reward: 150,
-                type: "special",
-                completed: false
-            }
-        ];
-
-        let currentUser = null;
-
-        // CARGAR USUARIO ACTUAL
-        window.onload = function() {
-            const savedUser = localStorage.getItem('cofradiaUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUserDisplay();
-                renderHermandades();
-                renderActivities();
-                renderRanking();
-            } else {
-                alert('⚠️ Debes iniciar sesión primero');
-                window.location.href = 'login.html';
-            }
-        };
-
-        function updateUserDisplay() {
-            document.getElementById('userName').textContent = currentUser.name;
-            document.getElementById('userHermandad').textContent = currentUser.hermandad || 'Ninguna';
-            document.getElementById('userPoints').textContent = currentUser.points || 0;
-        }
-
-        function renderHermandades() {
-            const grid = document.getElementById('hermandadGrid');
-            grid.innerHTML = '';
-            
-            HERMANDADES.forEach(hermandad => {
-                const isMember = currentUser.hermandad === hermandad.name;
-                
-                const card = document.createElement('div');
-                card.className = 'hermandad-card';
-                card.innerHTML = `
-                    <div class="hermandad-icon">${hermandad.icon}</div>
-                    <div class="hermandad-name">${hermandad.name}</div>
-                    <div class="hermandad-city">${hermandad.city}</div>
-                    <div class="hermandad-members">${hermandad.members} miembros</div>
-                    <div class="hermandad-description">${hermandad.description}</div>
-                    <button class="join-btn ${isMember ? 'joined' : ''}" 
-                            onclick="joinHermandad(${hermandad.id})" 
-                            ${isMember ? 'disabled' : ''}>
-                        ${isMember ? '✅ Miembro' : 'Unirse'}
-                    </button>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function joinHermandad(hermandadId) {
-            if (currentUser.hermandad) {
-                alert('⚠️ Ya perteneces a una hermandad');
-                return;
-            }
-            
-            const hermandad = HERMANDADES.find(h => h.id === hermandadId);
-            currentUser.hermandad = hermandad.name;
-            currentUser.hermandadId = hermandadId;
-            currentUser.points = currentUser.points || 0;
-            currentUser.activities = currentUser.activities || [];
-            
-            // Bono de bienvenida
-            currentUser.points += 50;
-            
-            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-            
-            alert(`¡Bienvenido a la ${hermandad.name}! 🎉\nHas ganado 50 puntos de bienvenida`);
-            
-            updateUserDisplay();
-            renderHermandades();
-            renderActivities();
-        }
-
-        function renderActivities() {
-            if (!currentUser.hermandad) {
-                document.getElementById('activitiesList').innerHTML = `
-                    <p style="text-align: center; color: #d4af37;">
-                        Únete a una hermandad para ver las actividades disponibles
-                    </p>
-                `;
-                return;
-            }
-            
-            const container = document.getElementById('activitiesList');
-            container.innerHTML = '';
-            
-            WEEKLY_ACTIVITIES.forEach(activity => {
-                const isCompleted = currentUser.activities.includes(activity.id);
-                
-                const card = document.createElement('div');
-                card.className = 'activity-card';
-                card.innerHTML = `
-                    <div class="activity-info">
-                        <h4>${activity.name}</h4>
-                        <p>${activity.description}</p>
-                    </div>
-                    <div class="activity-reward">+${activity.reward} ⭐</div>
-                    <button class="complete-btn" 
-                            onclick="completeActivity(${activity.id})" 
-                            ${isCompleted ? 'disabled' : ''}>
-                        ${isCompleted ? '✅ Completado' : 'Completar'}
-                    </button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function completeActivity(activityId) {
-            if (currentUser.activities.includes(activityId)) {
-                alert('⚠️ Ya has completado esta actividad');
-                return;
-            }
-            
-            const activity = WEEKLY_ACTIVITIES.find(a => a.id === activityId);
-            
-            // Simular completado
-            currentUser.activities.push(activityId);
-            currentUser.points += activity.reward;
-            
-            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-            
-            alert(`¡Actividad completada! 🎉\nHas ganado ${activity.reward} puntos`);
-            
-            updateUserDisplay();
-            renderActivities();
-            renderRanking();
-        }
-
-        function renderRanking() {
-            const container = document.getElementById('rankingList');
-            container.innerHTML = '';
-            
-            // Obtener todos los usuarios (simulado)
-            const allUsers = getAllUsers();
-            const sortedUsers = allUsers.sort((a, b) => (b.points || 0) - (a.points || 0));
-            
-            sortedUsers.slice(0, 10).forEach((user, index) => {
-                const item = document.createElement('div');
-                item.className = 'ranking-item';
-                item.innerHTML = `
-                    <div class="ranking-position">#${index + 1}</div>
-                    <div class="ranking-user">
-                        <div class="ranking-name">${user.name}</div>
-                        <div class="ranking-hermandad">${user.hermandad || 'Sin hermandad'}</div>
-                    </div>
-                    <div class="ranking-points">${user.points || 0} ⭐</div>
-                `;
-                
-                if (user.id === currentUser.id) {
-                    item.style.background = 'rgba(255,215,0,0.2)';
-                    item.style.border = '2px solid #FFD700';
-                }
-                
-                container.appendChild(item);
-            });
-        }
-
-        function getAllUsers() {
-            // Simulación de base de datos de usuarios
-            // En producción, esto vendría de una API real
-            const defaultUsers = [
-                { id: 'user1', name: 'Fachascal', hermandad: 'Hermandad del Gran Poder', points: 1250 },
-                { id: 'user2', name: 'María Gracía', hermandad: 'Hermandad de la Macarena', points: 980 },
-                { id: 'user3', name: 'Kepa Jamexo', hermandad: 'Hermandad de Triana', points: 750 },
-                { id: 'user4', name: 'Ana Bolizante', hermandad: 'Hermandad del Rocío', points: 650 },
-                { id: 'user5', name: 'Perro Xánxe', hermandad: 'Hermandad de los Gitanos', points: 520 }
-            ];
-            
-            // Añadir usuario actual
-            const updatedUsers = defaultUsers.filter(u => u.id !== currentUser.id);
-            updatedUsers.push(currentUser);
-            
-            return updatedUsers;
-        }
-    </script>
 </body>
 </html>
