@@ -531,6 +531,130 @@
     <script src="main.js"></script>
     <script src="minigames.js"></script>
     <script>
+                // Función para iniciar minijuegos
+        function playMinigame(game) {
+            switch (game) {
+                case 'wordsearch':
+                    initWordSearch();
+                    break;
+                case 'memory':
+                    initMemoryGame();
+                    break;
+                case 'trivia':
+                    initTrivia(); // ✅ Ahora sí se ejecuta
+                    break;
+                default:
+                    showMessage('Minijuego no disponible', 'error');
+            }
+        }
+
+        // Función para iniciar el Trivial Cofrade
+        function initTrivia() {
+            const questions = [...window.TRIVIA_QUESTIONS].sort(() => Math.random() - 0.5);
+            let currentQuestion = 0;
+            let score = 0;
+            let timeLeft = 15;
+            let timerInterval = null;
+
+            const gameArea = document.getElementById('gameArea');
+            gameArea.classList.remove('hidden');
+            gameArea.innerHTML = `
+                <div class="trivia-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2 style="color: #FFD700; margin: 0;">❓ Trivial Cofrade</h2>
+                        <button onclick="closeMinigame()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; cursor: pointer;">❌ Cerrar</button>
+                    </div>
+                    <div id="trivia-content"></div>
+                </div>
+            `;
+
+            showNextQuestion();
+
+            function showNextQuestion() {
+                if (currentQuestion >= questions.length) {
+                    endTrivia();
+                    return;
+                }
+
+                const q = questions[currentQuestion];
+                const content = document.getElementById('trivia-content');
+                content.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 1rem; color: #d4af37;">
+                        Pregunta ${currentQuestion + 1} de ${questions.length} | Puntuación: ${score}
+                    </div>
+                    <div class="question-text">${q.question}</div>
+                    <div style="text-align: center; font-size: 2rem; color: #FFD700; margin: 1rem 0;" id="timer">${timeLeft}s</div>
+                    <div class="answer-buttons">
+                        ${q.answers.map((ans, i) => `
+                            <button class="answer-btn" onclick="checkTriviaAnswer(${i}, ${q.correct}, '${q.explanation.replace(/'/g, "\\'")}')">${ans}</button>
+                        `).join('')}
+                    </div>
+                    <div id="trivia-feedback" style="margin-top: 1rem; text-align: center; min-height: 30px;"></div>
+                `;
+
+                startTimer();
+            }
+
+            function startTimer() {
+                timeLeft = 15;
+                updateTimerDisplay();
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        checkTriviaAnswer(-1, questions[currentQuestion].correct, "⏰ Tiempo agotado");
+                    }
+                }, 1000);
+            }
+
+            function updateTimerDisplay() {
+                const timerEl = document.getElementById('timer');
+                if (timerEl) {
+                    timerEl.textContent = `${timeLeft}s`;
+                    timerEl.style.color = timeLeft <= 5 ? '#ff4444' : '#FFD700';
+                }
+            }
+
+            window.checkTriviaAnswer = function(selected, correct, explanation) {
+                clearInterval(timerInterval);
+                const buttons = document.querySelectorAll('.answer-btn');
+                const feedback = document.getElementById('trivia-feedback');
+                buttons.forEach((btn, i) => {
+                    btn.disabled = true;
+                    if (i === correct) btn.classList.add('correct');
+                    else if (i === selected) btn.classList.add('incorrect');
+                });
+
+                if (selected === correct) {
+                    score += 50;
+                    feedback.innerHTML = `<div style="color: #00ff00; font-weight: bold;">¡Correcto! +50 monedas 💰</div>`;
+                    window.addCoins(50);
+                } else {
+                    feedback.innerHTML = `<div style="color: #ff4444;">${explanation}</div>`;
+                }
+
+                setTimeout(() => {
+                    currentQuestion++;
+                    showNextQuestion();
+                }, 2000);
+            };
+
+            function endTrivia() {
+                const content = document.getElementById('trivia-content');
+                content.innerHTML = `
+                    <div style="text-align: center;">
+                        <h2 style="color: #FFD700;">¡Trivia Completada! 🎉</h2>
+                        <div style="font-size: 1.5rem; margin: 2rem 0; color: #d4af37;">
+                            Puntuación final: ${score} monedas
+                        </div>
+                        <button onclick="closeMinigame()" class="game-btn" style="background: linear-gradient(145deg, #FFD700, #d4af37); color: #000;">
+                            Volver al juego
+                        </button>
+                    </div>
+                `;
+            }
+        }
         // 🎵 SoundCloud Integration
         let soundCloudWidget = null;
         let soundCloudReady = false;
@@ -718,4 +842,5 @@
     </script>
 </body>
 </html>
+
 
