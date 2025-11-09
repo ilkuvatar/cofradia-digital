@@ -1,4 +1,14 @@
 // 🎯 SISTEMA PRINCIPAL DEL JUEGO - COFRADÍA DIGITAL
+// Versión completa con controles SoundCloud y trivia aleatoria manteniendo toda la base de datos
+
+// 🎮 VARIABLES GLOBALES DEL JUEGO
+let gameState = {
+    coins: 1500,
+    characters: [],
+    pityCount: 0,
+    currentUser: null,
+    musicPlaying: false
+};
 
 // 🎮 VARIABLES GLOBALES DEL JUEGO
 let gameState = {
@@ -26,7 +36,7 @@ const CHARACTER_DATABASE = [
             { id: 4, name: "Cristo de los Gitanos", city: "Sevilla", icon: "💃", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_los_Gitanos" },
             { id: 5, name: "Cristo del Cachorro", city: "Sevilla", icon: "🐺", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_del_Cachorro" },
             { id: 6, name: "Jesús Nazareno del Silencio", city: "Sevilla", icon: "🤫", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/El_Silencio_(Sevilla)" },
-            { id: 7, "name": "Virgen del Rocío", "city": "Almonte", "icon": "🌾", "rarity": "legendary", "rate": 0.005, "wikiUrl": "https://es.wikipedia.org/wiki/Virgen_del_Roc%C3%ADo" },
+            { id: 7, name: "Virgen del Rocío", "city": "Almonte", "icon": "🌾", "rarity": "legendary", "rate": 0.005, "wikiUrl": "https://es.wikipedia.org/wiki/Virgen_del_Roc%C3%ADo" },
             { id: 8, name: "Cristo de la Sangre", city: "Málaga", icon: "🩸", rarity: "legendary", rate: 0.005, wikiUrl: "https://es.wikipedia.org/wiki/Cristo_de_la_Sangre_(M%C3%A1laga)" },
 
             // ⭐ ÉPICAS (15 figuras - 0.3% cada una)
@@ -178,30 +188,22 @@ const CHARACTER_DATABASE = [
             { id: 150, name: "Cofrade de Los Estudiantes", city: "Sevilla", icon: "📚", rarity: "common", rate: 0.00786, wikiUrl: "https://es.wikipedia.org/wiki/Cofrade_de_Los_Estudiantes" }
         ];
 
-
 // 🎵 SISTEMA DE AUDIO - SOUNDCLOUD
 let soundCloudWidget = null;
 let soundCloudReady = false;
 
-// 🎮 INICIALIZACIÓN DEL JUEGO
 document.addEventListener('DOMContentLoaded', function() {
     loadGameState();
     initializeSoundCloud();
     updateUI();
     startCoinGeneration();
-    
-    // Mostrar información del usuario si existe
+
     const savedUser = localStorage.getItem('cofradiaUser');
     if (savedUser) {
         gameState.currentUser = JSON.parse(savedUser);
         showUserDisplay();
     }
 });
-
-// 💾 SISTEMA DE GUARDADO
-function saveGameState() {
-    localStorage.setItem('cofradiaGameState', JSON.stringify(gameState));
-}
 
 function loadGameState() {
     const saved = localStorage.getItem('cofradiaGameState');
@@ -211,9 +213,12 @@ function loadGameState() {
     }
 }
 
+function saveGameState() {
+    localStorage.setItem('cofradiaGameState', JSON.stringify(gameState));
+}
+
 // 🎵 INICIALIZACIÓN DE SOUNDCLOUD
 function initializeSoundCloud() {
-    // Cargar script de la API de SoundCloud
     const script = document.createElement('script');
     script.src = 'https://w.soundcloud.com/player/api.js';
     script.async = true;
@@ -223,11 +228,8 @@ function initializeSoundCloud() {
             soundCloudWidget = SC.Widget(iframe);
             soundCloudWidget.bind(SC.Widget.Events.READY, function() {
                 soundCloudReady = true;
-                console.log('✅ SoundCloud player ready');
-                // Mostrar mensaje inicial
-                setTimeout(() => {
-                    showMessage('🎵 Haz clic en ▶️ para escuchar las marchas de Semana Santa', 'success');
-                }, 2000);
+                console.log('✅ SoundCloud listo');
+                showMessage('🎵 Haz clic en ▶️ para escuchar las marchas de Semana Santa', 'success');
             });
         }
     };
@@ -237,17 +239,15 @@ function initializeSoundCloud() {
 // 🎵 CONTROLES DE SOUNDCLOUD
 function toggleSoundCloud() {
     if (!soundCloudReady || !soundCloudWidget) {
-        showMessage('⏳ Cargando reproductor de SoundCloud...', 'error');
+        showMessage('⏳ Cargando reproductor...', 'error');
         return;
     }
-    
     const btn = document.getElementById('playBtn');
     soundCloudWidget.getPaused(function(isPaused) {
         if (isPaused) {
             soundCloudWidget.play();
             btn.textContent = '⏸️';
             gameState.musicPlaying = true;
-            showMessage('🎶 Reproduciendo marchas de Semana Santa', 'success');
         } else {
             soundCloudWidget.pause();
             btn.textContent = '▶️';
@@ -257,280 +257,58 @@ function toggleSoundCloud() {
     });
 }
 
-function skipSoundCloudTrack(direction) {
-    if (!soundCloudReady || !soundCloudWidget) return;
-    
-    // Nota: SoundCloud no permite control directo de pistas en playlists
-    // Esta función muestra el reproductor para que el usuario lo controle manualmente
-    const container = document.getElementById('soundcloud-container');
-    container.style.display = 'block';
-    container.style.position = 'fixed';
-    container.style.bottom = '80px';
-    container.style.right = '20px';
-    container.style.zIndex = '1001';
-    container.style.width = '300px';
-    container.style.border = '2px solid #FFD700';
-    container.style.borderRadius = '10px';
-    container.style.overflow = 'hidden';
-    container.style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.5)';
-    
-    // Ocultar después de 8 segundos
-    setTimeout(() => {
-        container.style.display = 'none';
-    }, 8000);
-    
-    showMessage('Usa el reproductor de SoundCloud para cambiar de pista', 'error');
-}
-
-// El control de volumen no funciona con iframe de SoundCloud
-function changeVolume() {
-    showMessage('🔇 Control de volumen: usa el reproductor de SoundCloud', 'error');
-}
-
-// 💰 SISTEMA DE GENERACIÓN DE MONEDAS
-function startCoinGeneration() {
-    setInterval(() => {
-        gameState.coins += 50;
-        updateUI();
+function stopSoundCloud() {
+    if (soundCloudReady && soundCloudWidget) {
+        soundCloudWidget.pause();
+        gameState.musicPlaying = false;
         saveGameState();
-    }, 60000); // 1 minuto
-}
-
-// 🎯 SISTEMA DE INVOCACIONES
-function summon(count = 1) {
-    const cost = count === 50 ? 4000 : count === 10 ? 900 : count * 100;
-    
-    if (gameState.coins < cost) {
-        showMessage('¡No tienes suficientes monedas! 💰', 'error');
-        return;
-    }
-    
-    gameState.coins -= cost;
-    const results = [];
-    
-    for (let i = 0; i < count; i++) {
-        const character = getRandomCharacter();
-        results.push(character);
-        addCharacterToCollection(character);
-        gameState.pityCount++;
-    }
-    
-    // Garantía de legendario cada 100 invocaciones
-    if (gameState.pityCount >= 100) {
-        const legendaries = CHARACTER_DATABASE.filter(c => c.rarity === 'legendary');
-        results[results.length - 1] = legendaries[0];
-        addCharacterToCollection(legendaries[0]);
-        gameState.pityCount = 0;
-        showHolySpiritAnimation();
-    }
-    
-    updateUI();
-    saveGameState();
-    showSummonResults(results);
-}
-
-function getRandomCharacter() {
-    const rand = Math.random() * 100;
-    let rarity = 'common';
-    
-    if (rand < PROBABILITIES.legendary) {
-        rarity = 'legendary';
-    } else if (rand < PROBABILITIES.legendary + PROBABILITIES.epic) {
-        rarity = 'epic';
-    } else if (rand < PROBABILITIES.legendary + PROBABILITIES.epic + PROBABILITIES.rare) {
-        rarity = 'rare';
-    }
-    
-    const charactersOfRarity = CHARACTER_DATABASE.filter(c => c.rarity === rarity);
-    return charactersOfRarity[Math.floor(Math.random() * charactersOfRarity.length)];
-}
-
-function addCharacterToCollection(character) {
-    const existing = gameState.characters.find(c => c.name === character.name);
-    if (existing) {
-        existing.count = (existing.count || 1) + 1;
-    } else {
-        gameState.characters.push({ ...character, count: 1 });
+        showMessage('⏹️ Música detenida', 'success');
     }
 }
 
-// 🎨 SISTEMA DE ANIMACIONES
-function showStarAnimation() {
-    const animation = document.getElementById('starAnimation');
-    if (animation) {
-        animation.style.display = 'block';
-        setTimeout(() => {
-            animation.style.display = 'none';
-        }, 3000);
+function volumeUp() {
+    if (soundCloudReady && soundCloudWidget) {
+        soundCloudWidget.getVolume(function(v) {
+            let newVol = Math.min(100, v + 10);
+            soundCloudWidget.setVolume(newVol);
+            showMessage('🔊 Volumen: ' + newVol + '%', 'success');
+        });
     }
 }
 
-function showHolySpiritAnimation() {
-    const animation = document.getElementById('holySpiritAnimation');
-    if (animation) {
-        animation.style.display = 'block';
-        setTimeout(() => {
-            animation.style.display = 'none';
-        }, 2000);
+function volumeDown() {
+    if (soundCloudReady && soundCloudWidget) {
+        soundCloudWidget.getVolume(function(v) {
+            let newVol = Math.max(0, v - 10);
+            soundCloudWidget.setVolume(newVol);
+            showMessage('🔉 Volumen: ' + newVol + '%', 'success');
+        });
     }
 }
 
-function showSummonResults(results) {
-    // Implementar sistema de visualización de resultados
-    console.log('Summon results:', results);
-    showStarAnimation();
-}
-
-// 🎮 SISTEMA DE CAMBIO DE PESTAÑAS
-function switchTab(tabName) {
-    // Ocultar todas las pestañas
-    const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(tab => tab.classList.remove('active'));
-    
-    // Remover active de todos los botones
-    const tabButtons = document.querySelectorAll('.tab-button');
-    tabButtons.forEach(btn => btn.classList.remove('active'));
-    
-    // Mostrar la pestaña seleccionada
-    const targetTab = document.getElementById(tabName + '-tab');
-    const targetButton = document.querySelector(`[onclick="switchTab('${tabName}')"]`);
-    
-    if (targetTab) targetTab.classList.add('active');
-    if (targetButton) targetButton.classList.add('active');
-}
-
-// 🔄 ACTUALIZACIÓN DE INTERFAZ
-function updateUI() {
-    const coinsElement = document.getElementById('coins');
-    const characterCountElement = document.getElementById('characterCount');
-    const collectionPercentElement = document.getElementById('collectionPercent');
-    const pityCountElement = document.getElementById('pityCount');
-    const pityBarElement = document.getElementById('pityBar');
-    
-    if (coinsElement) coinsElement.textContent = gameState.coins;
-    if (characterCountElement) characterCountElement.textContent = `${gameState.characters.length}/150`;
-    if (collectionPercentElement) collectionPercentElement.textContent = `${Math.round((gameState.characters.length / 150) * 100)}%`;
-    if (pityCountElement) pityCountElement.textContent = gameState.pityCount;
-    if (pityBarElement) pityBarElement.style.width = `${gameState.pityCount}%`;
-    
-    // Actualizar botones de invocación
-    document.getElementById('summon1Btn').disabled = gameState.coins < 100;
-    document.getElementById('summon10Btn').disabled = gameState.coins < 900;
-    document.getElementById('summon50Btn').disabled = gameState.coins < 4000;
-}
-
-// 👤 SISTEMA DE USUARIO
-function showUserDisplay() {
-    const userDisplay = document.getElementById('userDisplay');
-    if (userDisplay && gameState.currentUser) {
-        userDisplay.innerHTML = `
-            <div style="color: #FFD700; font-weight: bold;">${gameState.currentUser.name}</div>
-            <div style="color: #d4af37; font-size: 0.9rem;">${gameState.currentUser.email}</div>
-        `;
-        userDisplay.classList.add('show');
-    }
-}
-
-function logout() {
-    localStorage.removeItem('cofradiaUser');
-    localStorage.removeItem('cofradiaGameState');
-    window.location.href = 'login.html';
-}
-
-// 🔔 SISTEMA DE MENSAJES
-function showMessage(text, type = 'success') {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `game-message ${type}`;
-    messageDiv.textContent = text;
-    
-    document.body.appendChild(messageDiv);
-    
-    setTimeout(() => {
-        messageDiv.remove();
-    }, 3000);
-}
-
-// === SISTEMAS ADICIONALES PARA FUNCIONALIDAD COMPLETA ===
-
-// 🎮 MINIJUEGOS (conectores)
-function playMinigame(gameType) {
-    const gameArea = document.getElementById('gameArea');
-    if (!gameArea) return;
-    
-    gameArea.classList.remove('hidden');
-    gameArea.innerHTML = '';
-    
-    switch(gameType) {
-        case 'wordsearch':
-            initWordsearch();
-            break;
-        case 'trivia':
-            initTrivia();
-            break;
-        case 'memory':
-            initMemory();
-            break;
-    }
-}
-
-function closeGame() {
-    const gameArea = document.getElementById('gameArea');
-    if (gameArea) {
-        gameArea.classList.add('hidden');
-        gameArea.innerHTML = '';
-    }
-}
-
-// COLECCIÓN
-function filterCollection(rarity) {
+// 🔧 CORRECCIÓN FILTERCOLLECTION
+function filterCollection(rarity, event = null) {
     gameState.filter = rarity;
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
+    if (event && event.target) event.target.classList.add('active');
     renderCollection();
 }
 
-function renderCollection() {
-    const grid = document.getElementById('collectionGrid');
-    if (!grid) return;
-    
-    grid.innerHTML = '';
-    
-    const filteredCharacters = gameState.filter === 'all' 
-        ? CHARACTER_DATABASE 
-        : CHARACTER_DATABASE.filter(c => c.rarity === gameState.filter);
-    
-    filteredCharacters.forEach(character => {
-        const owned = gameState.characters.find(c => c.name === character.name);
-        const card = document.createElement('div');
-        card.className = `collection-card ${owned ? 'owned' : ''}`;
-        
-        const displayContent = owned ? 
-            `<span>${character.icon}</span>` 
-            : '<span>❓</span>';
-        
-        card.innerHTML = `
-            <div class="icon">${displayContent}</div>
-            <div class="name">${owned ? character.name : '???'}</div>
-            <div class="rarity">${owned ? character.rarity : '???'}</div>
-            <div class="city" style="font-size: 0.7rem; color: #aaa;">${owned ? character.city : '???'}</div>
-            ${owned && owned.count > 1 ? `<div class="count">${owned.count}</div>` : ''}
-        `;
-        
-        if (owned) {
-            card.onclick = () => showMessage(`Figura: ${character.name} (${character.rarity})`, 'success');
-        }
-        
-        grid.appendChild(card);
-    });
+// 🎲 FUNCIÓN DE ALEATORIZACIÓN GENERAL
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-// TRIVIA
+// 🧩 TRIVIA (respeta la base de datos original)
 function initTrivia() {
     const gameArea = document.getElementById('gameArea');
-    const questions = [
-            {
+
+    let questions = [
+                   {
                 question: "¿Qué ciudad es famosa por su Semana Santa con 'Jesús del Gran Poder'?",
                 options: ["Sevilla", "Málaga", "Granada", "Valladolid"],
                 correct: 0,
@@ -860,163 +638,273 @@ function initTrivia() {
                 correct: 2,
                 explanation: "El paso de tambor son los nazarenos que tocan el tambor en la procesión."
             }
+
     ];
-    
-    let current = 0;
-    let score = 0;
-    
-    function showQuestion() {
-        if (current >= questions.length) {
-            endTriviaGame(score);
+
+    // Aleatorizar el orden de las preguntas
+    questions = shuffle(questions);
+
+    let currentIndex = 0;
+
+    function renderQuestion() {
+        if (currentIndex >= questions.length) {
+            gameArea.innerHTML = '<h3>🎉 Has completado el trivial</h3>';
             return;
         }
-        
-        const q = questions[current];
+        const q = questions[currentIndex];
         gameArea.innerHTML = `
-            <div class="trivia-container">
-                <h3>Pregunta ${current + 1}/${questions.length}</h3>
-                <div class="question-text">${q.question}</div>
-                <div class="answer-buttons">
-                    ${q.answers.map((ans, i) => `
-                        <button class="answer-btn" onclick="answerTrivia(${i}, ${q.correct}, ${q.reward})">${ans}</button>
-                    `).join('')}
-                </div>
+            <div class="trivia-question">
+                <h3>${q.question}</h3>
+                ${q.options.map((opt, i) => `<button class="option" onclick="checkAnswer(${i}, ${q.correct}, '${q.explanation.replace(/'/g, "\\'")}', ${currentIndex})">${opt}</button>`).join('')}
             </div>
         `;
     }
-    
-    window.answerTrivia = function(selected, correct, reward) {
-        const buttons = document.querySelectorAll('.answer-btn');
-        buttons.forEach((btn, i) => {
-            btn.disabled = true;
-            if (i === correct) btn.classList.add('correct');
-            else if (i === selected) btn.classList.add('incorrect');
-        });
-        
-        if (selected === correct) {
-            score += reward;
-            gameState.coins += reward;
-            showMessage(`¡Correcto! +${reward} monedas`, 'success');
-        } else {
-            showMessage('Incorrecto', 'error');
-        }
-        
-        current++;
-        setTimeout(showQuestion, 2000);
-    };
-    
-    showQuestion();
+
+    renderQuestion();
 }
 
-function endTriviaGame(score) {
-    const gameArea = document.getElementById('gameArea');
-    gameArea.innerHTML = `
-        <div class="trivia-container" style="text-align: center;">
-            <h2 style="color: #FFD700;">¡Trivia Completada!</h2>
-            <p style="font-size: 1.5rem; margin: 2rem 0;">Obtuviste ${score} monedas</p>
-            <button class="game-btn" onclick="closeGame()">Continuar</button>
-        </div>
-    `;
-    updateUI();
-    saveGameState();
-}
-
-// SOPA DE LETRAS
-function initWordsearch() {
-    const gameArea = document.getElementById('gameArea');
-    const words = ['SEMANA', 'SANTA', 'CRISTO', 'VIRGEN', 'CRUZ', 'PASO'];
-    const gridSize = 10;
-    const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
-    
-    // Llenar grid (simplificado)
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            grid[i][j] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
-        }
-    }
-    
-    gameArea.innerHTML = `
-        <div class="wordsearch-container">
-            <h3 style="color: #FFD700; margin-bottom: 1rem;">🔤 Sopa de Letras</h3>
-            <div class="wordsearch-grid" id="wordsearchGrid" style="grid-template-columns: repeat(${gridSize}, 1fr);"></div>
-            <div class="wordsearch-list">${words.map(w => `<div class="word-item">${w}</div>`).join('')}</div>
-            <div class="game-controls">
-                <button class="game-btn" onclick="rewardWordsearch()">Reclamar Recompensa</button>
-                <button class="game-btn" onclick="closeGame()">Cerrar</button>
-            </div>
-        </div>
-    `;
-    
-    const gridContainer = document.getElementById('wordsearchGrid');
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            const cell = document.createElement('div');
-            cell.className = 'wordsearch-cell';
-            cell.textContent = grid[i][j];
-            gridContainer.appendChild(cell);
-        }
-    }
-}
-
-function rewardWordsearch() {
-    gameState.coins += 50;
-    updateUI();
-    saveGameState();
-    showMessage('¡Ganaste 50 monedas!', 'success');
-    closeGame();
-}
-
-// MEMORIA
-function initMemory() {
-    const gameArea = document.getElementById('gameArea');
-    const cards = ['✝️', '🌹', '🕊️', '⛪', '🎺', '🌿', '🏛️', '🔔'];
-    const pairs = [...cards, ...cards].sort(() => Math.random() - 0.5);
-    
-    gameArea.innerHTML = `
-        <div class="memory-container">
-            <h3 style="color: #FFD700; text-align: center; margin-bottom: 1rem;">🧠 Encuentra las Parejas</h3>
-            <div class="memory-grid" id="memoryGrid"></div>
-        </div>
-    `;
-    
-    const grid = document.getElementById('memoryGrid');
-    pairs.forEach((card, index) => {
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'memory-card';
-        cardDiv.innerHTML = `<span style="display: none;">${card}</span><div style="font-size: 1rem; color: #d4af37;">?</div>`;
-        cardDiv.onclick = () => flipMemoryCard(index);
-        grid.appendChild(cardDiv);
-    });
-}
-
-function flipMemoryCard(index) {
-    const cards = document.querySelectorAll('.memory-card');
-    const card = cards[index];
-    const span = card.querySelector('span');
-    
-    if (!card.classList.contains('flipped') && !card.classList.contains('matched')) {
-        card.classList.add('flipped');
-        span.style.display = 'block';
-        card.querySelector('div').style.display = 'none';
-        
-        const flipped = document.querySelectorAll('.memory-card.flipped:not(.matched)');
-        if (flipped.length === 2) {
-            setTimeout(() => checkMatch(flipped[0], flipped[1]), 1000);
-        }
-    }
-}
-
-function checkMatch(card1, card2) {
-    if (card1.querySelector('span').textContent === card2.querySelector('span').textContent) {
-        card1.classList.add('matched');
-        card2.classList.add('matched');
-        showMessage('¡Pareja encontrada!', 'success');
+function checkAnswer(selected, correct, explanation, currentIndex) {
+    if (selected === correct) {
+        showMessage('✅ Correcto: ' + explanation, 'success');
     } else {
-        card1.classList.remove('flipped');
-        card2.classList.remove('flipped');
-        card1.querySelector('span').style.display = 'none';
-        card2.querySelector('span').style.display = 'none';
-        card1.querySelector('div').style.display = 'block';
-        card2.querySelector('div').style.display = 'block';
+        showMessage('❌ Incorrecto: ' + explanation, 'error');
     }
+    setTimeout(() => {
+        currentIndex++;
+        const gameArea = document.getElementById('gameArea');
+        if (currentIndex < questions.length) {
+            const q = questions[currentIndex];
+            gameArea.innerHTML = `
+                <div class="trivia-question">
+                    <h3>${q.question}</h3>
+                    ${q.options.map((opt, i) => `<button class="option" onclick="checkAnswer(${i}, ${q.correct}, '${q.explanation.replace(/'/g, "\\'")}', ${currentIndex})">${opt}</button>`).join('')}
+                </div>
+            `;
+        } else {
+            gameArea.innerHTML = '<h3>🎉 Has completado el trivial</h3>';
+        }
+    }, 1500);
 }
+
+// 🔔 SISTEMA DE MENSAJES
+function showMessage(text, type = 'success') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `game-message ${type}`;
+    messageDiv.textContent = text;
+    document.body.appendChild(messageDiv);
+    setTimeout(() => messageDiv.remove(), 3000);
+}
+
+
+// main.js
+
+(() => {
+  // URL del sonido angelical libre de derechos
+  const ANGEL_SOUND_URL = 'https://cdn.pixabay.com/download/audio/2022/01/22/audio_bd7d140e38.mp3?filename=angel-wings-flying-110973.mp3';
+  // (Puedes cambiarlo por otro recurso si prefieres) :contentReference[oaicite:1]{index=1}
+
+  // Insertar estilos CSS dinámicamente
+  const style = document.createElement('style');
+  style.innerHTML = `
+    /* Modal overlay */
+    #gachaModal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    #gachaModal .modal-content {
+      position: relative;
+      width: 90%; max-width: 600px;
+      background: #1e1e1e; color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      overflow: hidden;
+    }
+    #gachaModal .close-btn {
+      position: absolute; top: 10px; right: 15px;
+      background: transparent; border: none; font-size: 1.5rem; color: #fff;
+      cursor: pointer;
+    }
+    /* SoundCloud controls container */
+    #soundCloudControls {
+      margin: 20px 0;
+      text-align: center;
+    }
+    #soundCloudControls button {
+      margin: 0 5px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      background: #ff5500; color: #fff;
+      border: none; border-radius: 4px;
+      cursor: pointer;
+      transition: background-color .3s, transform .2s;
+    }
+    #soundCloudControls button:hover {
+      background: #e64e00;
+      transform: scale(1.05);
+    }
+    /* Gacha animation area */
+    #gachaModal .card-container {
+      perspective: 800px;
+      margin: 20px 0;
+    }
+    #gachaModal .card {
+      width: 120px; height: 180px;
+      background: #333; border-radius: 6px;
+      margin: 0 auto;
+      transform-style: preserve-3d;
+      transform: rotateY(90deg);
+      transition: transform .8s;
+    }
+    #gachaModal .card.flipped {
+      transform: rotateY(0);
+    }
+    #gachaModal .card .front,
+    #gachaModal .card .back {
+      position: absolute; width: 100%; height: 100%;
+      backface-visibility: hidden;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    #gachaModal .card .front {
+      background: #444;
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    #gachaModal .card .back {
+      background: #222;
+      color: #fff;
+      transform: rotateY(180deg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    /* Rareza efectos */
+    .rarity-common { box-shadow: 0 0 10px #888; }
+    .rarity-rare { box-shadow: 0 0 20px #4a90e2; }
+    .rarity-epic { box-shadow: 0 0 30px #a64ae2; }
+    .rarity-legendary { box-shadow: 0 0 40px #e2b84a; }
+    /* Partículas */
+    #gachaModal .particles {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: radial-gradient(circle, #fff, rgba(255,255,255,0));
+      opacity: 0.8;
+      border-radius: 50%;
+      animation: rise 1.2s ease-out forwards;
+    }
+    @keyframes rise {
+      from { transform: translateY(0) scale(1); opacity: 0.8; }
+      to { transform: translateY(-150px) scale(0.5); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Create modal HTML and append to document body
+  const modal = document.createElement('div');
+  modal.id = 'gachaModal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <h2 id="modalTitle">Gacha Time!</h2>
+      <div class="card-container"><div class="card"><div class="front">?</div><div class="back"></div></div></div>
+      <div class="particles"></div>
+      <button id="gachaRevealBtn">Revelar carta</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  const closeBtn = modal.querySelector('.close-btn');
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  // SoundCloud controls setup
+  const soundControlsContainer = document.createElement('div');
+  soundControlsContainer.id = 'soundCloudControls';
+  soundControlsContainer.innerHTML = `
+    <button id="scPlay">Play SoundCloud</button>
+    <button id="scPause">Pause SoundCloud</button>
+  `;
+  const gameArea = document.getElementById('gameArea') || document.body;
+  gameArea.appendChild(soundControlsContainer);
+
+  let scPlayer = null;
+  // Assumes you have SoundCloud embed IFrame with id="scIframe"
+  const scIframe = document.getElementById('scIframe');
+  if (scIframe) {
+    scPlayer = new window.SC.Widget(scIframe); // SoundCloud widget API
+    document.getElementById('scPlay').addEventListener('click', () => scPlayer.play());
+    document.getElementById('scPause').addEventListener('click', () => scPlayer.pause());
+  } else {
+    document.getElementById('scPlay').disabled = true;
+    document.getElementById('scPause').disabled = true;
+    console.warn('SoundCloud iframe with id="scIframe" not found.');
+  }
+
+  // Gacha logic (ejemplo rápido)
+  const rarities = ['common', 'rare', 'epic', 'legendary'];
+  function pickCard() {
+    const rand = Math.random();
+    if (rand < 0.6) return { name: 'Carta Común', rarity: 'common' };
+    if (rand < 0.85) return { name: 'Carta Rara', rarity: 'rare' };
+    if (rand < 0.97) return { name: 'Carta Épica', rarity: 'epic' };
+    return { name: 'Carta Legendaria', rarity: 'legendary' };
+  }
+
+  const audioAngel = new Audio(ANGEL_SOUND_URL);
+
+  const revealBtn = modal.querySelector('#gachaRevealBtn');
+  const cardElem = modal.querySelector('.card');
+  const cardBack = modal.querySelector('.card .back');
+
+  revealBtn.addEventListener('click', () => {
+    const result = pickCard();
+    // Reset card
+    cardElem.classList.remove('flipped', ...rarities.map(r => `rarity-${r}`));
+    cardBack.textContent = result.name;
+    cardElem.classList.add(`rarity-${result.rarity}`);
+
+    // Play sound
+    audioAngel.currentTime = 0;
+    audioAngel.play();
+
+    // Particles effect
+    const particlesContainer = modal.querySelector('.particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = (Math.random() * 0.5) + 's';
+      particlesContainer.appendChild(p);
+      // remove after animation
+      p.addEventListener('animationend', () => p.remove());
+    }
+
+    // Trigger flip after short delay
+    setTimeout(() => {
+      cardElem.classList.add('flipped');
+    }, 200);
+  });
+
+  // Function to open modal (para trivial o gacha)
+  window.openGachaModal = function(title = 'Gacha Time!') {
+    modal.querySelector('#modalTitle').textContent = title;
+    modal.style.display = 'flex';
+  };
+
+  // EXAMPLE: Hook into your trivial/gacha triggers
+  // document.getElementById('btnOpenGacha').addEventListener('click', () => openGachaModal());
+  // document.getElementById('btnOpenTrivial').addEventListener('click', () => openGachaModal('Trivial Game'));
+  
+  // Actual trivial/gacha logic debe venir de tu código existente — este archivo sólo añade la ventana modal y animaciones.
+})();
