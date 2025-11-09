@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:;">
     <title>Login - Cofradía Digital</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
@@ -39,7 +40,7 @@
             margin-bottom: 2rem;
         }
         
-        .google-btn {
+        .google-btn, .guest-btn, .logout-btn {
             background: #4285f4;
             color: white;
             border: none;
@@ -53,27 +54,37 @@
             justify-content: center;
             gap: 1rem;
             margin: 1rem auto;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .google-btn:hover, .guest-btn:hover, .logout-btn:hover {
+            transform: translateY(-3px);
         }
         
         .google-btn:hover {
             background: #357ae8;
-            transform: translateY(-3px);
         }
         
         .guest-btn {
             background: transparent;
             color: #d4af37;
             border: 2px solid #d4af37;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
         }
         
         .guest-btn:hover {
             background: #d4af37;
             color: #000;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
         }
         
         .user-info {
@@ -101,6 +112,7 @@
         .user-email {
             color: #d4af37;
             margin-bottom: 1rem;
+            word-break: break-all;
         }
         
         .continue-btn {
@@ -125,20 +137,21 @@
         <h1 class="login-title">⚜️ COFRADÍA DIGITAL</h1>
         <p class="login-subtitle">Inicia sesión para acceder al juego</p>
         
-        <button class="google-btn" onclick="loginWithGoogle()">
+        <button class="google-btn" onclick="loginWithGoogle()" aria-label="Iniciar sesión con Google">
             <span>🔍</span>
             <span>Iniciar con Google</span>
         </button>
         
-        <button class="guest-btn" onclick="loginAsGuest()">
+        <button class="guest-btn" onclick="loginAsGuest()" aria-label="Jugar como invitado">
             🎭 Jugar como invitado
         </button>
         
         <div class="user-info" id="userInfo">
-            <img class="user-avatar" id="userAvatar" src="" alt="Avatar">
+            <img class="user-avatar" id="userAvatar" src="" alt="Avatar del usuario">
             <div class="user-name" id="userName"></div>
             <div class="user-email" id="userEmail"></div>
             <button class="continue-btn" onclick="continueToGame()">Continuar al juego</button>
+            <button class="logout-btn" onclick="logout()">🚪 Cerrar sesión</button>
         </div>
     </div>
 
@@ -147,91 +160,155 @@
     
     <script>
         // ⬇️ CONFIGURA TU CLIENT ID AQUÍ ⬇️
-        const GOOGLE_CLIENT_ID = 'const GOOGLE_CLIENT_ID = '992689185747-9b58bplv4aoqio8bcnju4ppun8occutn.apps.googleusercontent.com';';
+        const GOOGLE_CLIENT_ID = '992689185747-9b58bplv4aoqio8bcnju4ppun8occutn.apps.googleusercontent.com';
+        const PLACEHOLDER_CLIENT_ID = 'YOUR_CLIENT_ID_HERE';
         
         let currentUser = null;
         
         // Inicializar Google OAuth
-        window.onload = function() {
-            if (GOOGLE_CLIENT_ID === 'const GOOGLE_CLIENT_ID = '992689185747-9b58bplv4aoqio8bcnju4ppun8occutn.apps.googleusercontent.com';') {
+        window.addEventListener('load', function() {
+            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
                 alert('⚠️ Por favor, configura tu Google Client ID en el código');
+                console.warn('Google Client ID no configurado');
+                return;
             }
             
-            // Verificar si ya hay usuario logueado
-            const savedUser = localStorage.getItem('cofradiaUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showUserInfo(currentUser);
+            try {
+                // Verificar si ya hay usuario logueado
+                const savedUser = localStorage.getItem('cofradiaUser');
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    showUserInfo(currentUser);
+                }
+            } catch (error) {
+                console.error('Error al cargar datos de usuario:', error);
+                localStorage.removeItem('cofradiaUser');
             }
-        };
+        });
         
         function loginWithGoogle() {
-            if (GOOGLE_CLIENT_ID === 'const GOOGLE_CLIENT_ID = '992689185747-9b58bplv4aoqio8bcnju4ppun8occutn.apps.googleusercontent.com';') {
+            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
                 alert('⚠️ Debes configurar tu Google Client ID primero');
                 return;
             }
             
-            google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                callback: handleGoogleResponse
-            });
-            
-            google.accounts.id.prompt();
+            try {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleResponse,
+                    context: 'signin'
+                });
+                
+                google.accounts.id.prompt();
+            } catch (error) {
+                console.error('Error inicializando Google OAuth:', error);
+                alert('❌ Error al conectar con Google. Intenta recargar la página.');
+            }
         }
         
         function handleGoogleResponse(response) {
-            // Decodificar el token JWT
-            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            if (!response?.credential) {
+                console.error('Error: No se recibió credencial de Google');
+                alert('❌ Error en la autenticación con Google');
+                return;
+            }
             
-            currentUser = {
-                id: payload.sub,
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture,
-                type: 'google',
-                coins: 1500,
-                hermandad: null,
-                activities: [],
-                loginDate: new Date().toISOString()
-            };
-            
-            // Guardar usuario
-            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-            
-            showUserInfo(currentUser);
+            try {
+                // NOTA: En producción, valida el token en el backend
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                
+                currentUser = {
+                    id: payload.sub,
+                    name: sanitizeInput(payload.name),
+                    email: sanitizeInput(payload.email),
+                    picture: sanitizeUrl(payload.picture),
+                    type: 'google',
+                    coins: 1500,
+                    hermandad: null,
+                    activities: [],
+                    loginDate: new Date().toISOString()
+                };
+                
+                // Guardar usuario (advertencia: localStorage no es seguro para producción)
+                localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
+                
+                showUserInfo(currentUser);
+            } catch (error) {
+                console.error('Error procesando respuesta de Google:', error);
+                alert('❌ Error al procesar datos de Google');
+            }
         }
         
         function loginAsGuest() {
-            currentUser = {
-                id: 'guest_' + Date.now(),
-                name: 'Cofrade Invitado',
-                email: 'invitado@cofradia.com',
-                picture: 'https://via.placeholder.com/150/6a0dad/FFFFFF?text=👤',
-                type: 'guest',
-                coins: 1000,
-                hermandad: null,
-                activities: [],
-                loginDate: new Date().toISOString()
-            };
-            
-            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-            
-            showUserInfo(currentUser);
+            try {
+                currentUser = {
+                    id: 'guest_' + Date.now(),
+                    name: 'Cofrade Invitado',
+                    email: 'invitado@cofradia.com',
+                    picture: 'https://via.placeholder.com/150/6a0dad/FFFFFF?text=%F0%9F%91%A4',
+                    type: 'guest',
+                    coins: 1000,
+                    hermandad: null,
+                    activities: [],
+                    loginDate: new Date().toISOString()
+                };
+                
+                localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
+                showUserInfo(currentUser);
+            } catch (error) {
+                console.error('Error en login de invitado:', error);
+                alert('❌ Error al iniciar como invitado');
+            }
         }
         
         function showUserInfo(user) {
-            document.getElementById('userInfo').style.display = 'block';
+            const userInfo = document.getElementById('userInfo');
+            const googleBtn = document.querySelector('.google-btn');
+            const guestBtn = document.querySelector('.guest-btn');
+            
+            // Sanitizar y mostrar datos
             document.getElementById('userAvatar').src = user.picture;
+            document.getElementById('userAvatar').alt = `Avatar de ${user.name}`;
             document.getElementById('userName').textContent = user.name;
             document.getElementById('userEmail').textContent = user.email;
             
-            // Ocultar botones de login
-            document.querySelector('.google-btn').style.display = 'none';
-            document.querySelector('.guest-btn').style.display = 'none';
+            userInfo.style.display = 'block';
+            
+            // Deshabilitar botones de login
+            googleBtn.style.display = 'none';
+            googleBtn.disabled = true;
+            guestBtn.style.display = 'none';
+            guestBtn.disabled = true;
+        }
+        
+        function logout() {
+            if (confirm('¿Seguro que quieres cerrar sesión?')) {
+                localStorage.removeItem('cofradiaUser');
+                location.reload();
+            }
         }
         
         function continueToGame() {
+            if (!currentUser) {
+                alert('❌ No hay usuario autenticado');
+                return;
+            }
             window.location.href = 'index.html';
+        }
+        
+        // Funciones de seguridad
+        function sanitizeInput(text) {
+            if (typeof text !== 'string') return '';
+            return text.replace(/[<>\"']/g, '').trim();
+        }
+        
+        function sanitizeUrl(url) {
+            try {
+                const parsed = new URL(url);
+                return parsed.protocol === 'https:' ? url : '';
+            } catch {
+                return '';
+            }
         }
     </script>
 </body>
