@@ -3,35 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Semana Santa Gacha - 150 Figuras + Minijuegos + Música ⚜️</title>
+    <title>Cofradía Digital - Juego Gacha de Semana Santa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Roboto', sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 30%, #4a0e4e 70%, #1a1a1a 100%);
             min-height: 100vh;
             color: #f5f5f5;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
         }
 
         header {
             text-align: center;
             padding: 2rem 0;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px);
             border-bottom: 4px solid #FFD700;
             position: sticky;
             top: 0;
@@ -52,10 +39,10 @@
             to { text-shadow: 3px 3px 20px rgba(255,215,0,0.8); }
         }
 
-        .subtitle {
-            font-size: 1.3rem;
-            color: #d4af37;
-            font-style: italic;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
 
         .game-stats {
@@ -136,394 +123,103 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .minigames-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+        .summon-area {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            margin: 2rem 0;
         }
 
-        .minigame-card {
-            background: rgba(0,0,0,0.6);
-            border: 3px solid #6a0dad;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
+        .summon-button {
+            padding: 2rem 3rem;
+            margin: 1rem;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.4s;
         }
 
-        .minigame-card:hover {
-            transform: translateY(-8px);
-            border-color: #FFD700;
-            box-shadow: 0 10px 30px rgba(255,215,0,0.3);
-        }
-
-        .minigame-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .minigame-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
-            color: #FFD700;
-            margin-bottom: 1rem;
-        }
-
-        .minigame-desc {
-            color: #d4af37;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-
-        .minigame-reward {
+        .summon-1 {
             background: linear-gradient(145deg, #FFD700, #d4af37);
             color: #000;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
         }
 
-        .wordsearch-container {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .wordsearch-grid {
-            display: grid;
-            gap: 2px;
-            justify-content: center;
-            margin: 2rem 0;
-        }
-
-        .wordsearch-cell {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .wordsearch-cell.found {
-            background: #FFD700;
-            color: #000;
-        }
-
-        .wordsearch-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .word-item {
-            padding: 0.5rem 1rem;
-            background: rgba(106,13,173,0.3);
-            border-radius: 15px;
-            font-weight: bold;
-        }
-
-        .word-item.found {
-            background: #FFD700;
-            color: #000;
-            text-decoration: line-through;
-        }
-
-        .trivia-container {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-            text-align: center;
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            color: #FFD700;
-            margin-bottom: 2rem;
-            font-family: 'Cinzel', serif;
-        }
-
-        .answer-buttons {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .answer-btn {
-            padding: 1rem;
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            border: 2px solid #6a0dad;
-            border-radius: 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .answer-btn:hover {
-            border-color: #FFD700;
-            transform: translateY(-3px);
-        }
-
-        .answer-btn.correct {
-            background: #00ff00;
-            color: #000;
-            border-color: #00ff00;
-        }
-
-        .answer-btn.incorrect {
-            background: #ff4444;
-            color: white;
-            border-color: #ff4444;
-        }
-
-        .trivia-stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 2rem;
-            font-size: 1.2rem;
-        }
-
-        .memory-container {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .memory-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            max-width: 600px;
-            margin: 2rem auto;
-        }
-
-        .memory-card {
-            aspect-ratio: 1;
+        .summon-10 {
             background: linear-gradient(145deg, #6a0dad, #4a0e4e);
-            border: 3px solid #4a0e4e;
+            color: #fff;
+            border: 3px solid #FFD700;
+        }
+
+        .summon-50 {
+            background: linear-gradient(145deg, #ff6b6b, #c92a2a);
+            color: #fff;
+            border: 3px solid #FFD700;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .collection-card {
+            background: rgba(0,0,0,0.6);
+            border: 3px solid #6a0dad;
             border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .collection-card.owned {
+            border-color: #FFD700;
+            background: rgba(255,215,0,0.1);
+        }
+
+        .collection-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            min-height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 3rem;
-            overflow: hidden;
         }
 
-        .memory-card:hover {
-            transform: scale(1.05);
-            border-color: #FFD700;
+        .collection-card .name {
+            font-size: 0.8rem;
+            color: #FFD700;
+            margin-bottom: 0.3rem;
         }
 
-        .memory-card.flipped {
-            background: linear-gradient(145deg, #FFD700, #d4af37);
-            border-color: #FFD700;
+        .collection-card .rarity {
+            font-size: 0.7rem;
+            color: #d4af37;
         }
 
-        .memory-card.matched {
-            background: #00ff00;
-            border-color: #00ff00;
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .memory-card span {
-            display: none;
-        }
-
-        .memory-card.flipped span, .memory-card.matched span {
-            display: block;
-        }
-
-        .game-controls {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .game-btn {
-            padding: 1rem 2rem;
-            background: linear-gradient(145deg, #FFD700, #d4af37);
-            color: #000;
-            border: none;
-            border-radius: 25px;
+        .collection-card .count {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #6a0dad;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin: 0 0.5rem;
         }
 
-        .game-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
-        }
-
-        .game-message {
-            text-align: center;
-            font-size: 1.2rem;
-            margin: 1rem 0;
-            padding: 1rem;
-            border-radius: 15px;
-        }
-
-        .game-message.success {
-            background: rgba(0,255,0,0.2);
-            border: 2px solid #00ff00;
-            color: #00ff00;
-        }
-
-        .game-message.error {
-            background: rgba(255,68,68,0.2);
-            border: 2px solid #ff4444;
-            color: #ff4444;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* 🌟 ANIMACIÓN ESTRELLA DE BELÉN */
-        .star-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
-            z-index: 9998;
-            display: none;
-            overflow: hidden;
-        }
-
-        .star-of-bethlehem {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            top: 50%;
-            left: -100px;
-            transform: translateY(-50%);
-            animation: starCrossSky 3s ease-in-out forwards;
-        }
-
-        .star-of-bethlehem::before {
-            content: '✦';
-            font-size: 80px;
-            color: #FFD700;
-            text-shadow: 0 0 30px #FFD700, 0 0 60px #FFD700;
-            position: absolute;
-            animation: starPulse 0.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes starCrossSky {
-            0% { left: -100px; }
-            50% { left: 50%; transform: translate(-50%, -50%) scale(1.5); }
-            100% { left: 100%; transform: translateY(-50%); }
-        }
-
-        @keyframes starPulse {
-            from { opacity: 0.8; transform: scale(1); }
-            to { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* 🔥 ANIMACIÓN ESPÍRITU SANTO */
-        .holy-spirit-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0.9) 100%);
-            z-index: 9999;
-            display: none;
-            backdrop-filter: blur(5px);
-        }
-
-        .holy-spirit {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 150px;
-            color: #FFD700;
-            animation: holySpiritReveal 2s ease-out forwards;
-        }
-
-        @keyframes holySpiritReveal {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(0deg); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2) rotate(180deg); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(360deg); }
-        }
-
-        .holy-spirit::before {
-            content: '🔥';
-            position: absolute;
-            top: -50px;
-            left: -50px;
-            font-size: 50px;
-            animation: flameFloat 1s ease-in-out infinite;
-        }
-
-        .holy-spirit::after {
-            content: '🕊️';
-            position: absolute;
-            bottom: -50px;
-            right: -50px;
-            font-size: 50px;
-            animation: doveFloat 1.5s ease-in-out infinite;
-        }
-
-        @keyframes flameFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes doveFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* 🎵 Ajustes para SoundCloud */
-        #soundcloud-container {
-            display: none;
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            z-index: 1001;
-            width: 300px;
-            border: 2px solid #FFD700;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            background: #000;
-        }
-
-        /* Reducir tamaño del iframe en móviles */
-        @media (max-width: 768px) {
-            #soundcloud-container {
-                width: 250px;
-                right: 10px;
-            }
-        }
-
-        /* Controles de música más compactos */
         .music-controls {
             position: fixed;
             bottom: 20px;
@@ -563,364 +259,56 @@
             box-shadow: 0 3px 8px rgba(255,215,0,0.4);
         }
 
-        /* Ocultar slider de volumen (no funciona con SoundCloud) */
-        .volume-slider {
-            display: none;
+        .hidden {
+            display: none !important;
         }
 
-        /* 🖼️ ESTILOS PARA IMÁGENES */
-        .collection-card img {
-            transition: transform 0.3s;
+        .game-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            z-index: 9999;
+            font-weight: bold;
+            animation: fadeIn 0.3s ease;
         }
 
-        .collection-card:hover img {
-            transform: scale(1.1);
+        .game-message.success {
+            border: 2px solid #00ff00;
+            color: #00ff00;
         }
 
-        .memory-card img {
-            display: none;
-            width: 80%;
-            height: 80%;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        .memory-card.flipped img, .memory-card.matched img {
-            display: block;
-        }
-
-        .wordsearch-cell.selected {
-            background: #6a0dad !important;
-            color: white !important;
-            transform: scale(1.1);
-        }
-
-        .wordsearch-cell.found {
-            background: #00ff00 !important;
-            color: #000 !important;
-            animation: foundPulse 0.5s ease;
-        }
-
-        @keyframes foundPulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        .game-message.error {
+            border: 2px solid #ff4444;
+            color: #ff4444;
         }
 
         @media (max-width: 768px) {
-            .wordsearch-cell {
-                width: 30px !important;
-                height: 30px !important;
-                font-size: 1rem !important;
+            h1 {
+                font-size: 2.5rem;
             }
 
-            .memory-grid {
-                grid-template-columns: repeat(4, 80px) !important;
-                gap: 0.5rem !important;
+            .stat-box {
+                padding: 1rem 1.5rem;
             }
 
-            .memory-card {
-                font-size: 2rem !important;
+            .tab-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
             }
-        }
-        
-        /* ESTILOS PARA INVOCACIÓN */
-        .summon-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 9997;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
 
-        .summon-card {
-            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
-            border: 4px solid;
-            border-radius: 25px;
-            padding: 3rem;
-            text-align: center;
-            animation: cardReveal 1s ease-out;
-            box-shadow: 0 0 50px rgba(255,215,0,0.5);
-        }
-
-        @keyframes cardReveal {
-            0% { transform: scale(0) rotate(720deg); opacity: 0; }
-            50% { transform: scale(1.1) rotate(360deg); opacity: 0.8; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        .summon-card.rarity-common { border-color: #ccc; }
-        .summon-card.rarity-rare { border-color: #3498db; }
-        .summon-card.rarity-epic { border-color: #9b59b6; }
-        .summon-card.rarity-legendary { 
-            border-color: #FFD700; 
-            animation: cardReveal 1s ease-out, legendaryGlow 2s infinite alternate;
-        }
-
-        @keyframes legendaryGlow {
-            from { box-shadow: 0 0 50px rgba(255,215,0,0.5); }
-            to { box-shadow: 0 0 80px rgba(255,215,0,1), 0 0 120px rgba(255,215,0,0.8); }
-        }
-
-        .character-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            animation: iconBounce 0.5s ease;
-        }
-
-        @keyframes iconBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-        }
-
-        .character-rarity {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-        }
-
-        .character-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.5rem;
-            color: #FFD700;
-            margin-bottom: 0.5rem;
-        }
-
-        .character-city {
-            color: #d4af37;
-            font-size: 1.1rem;
-        }
-
-        .collection-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .collection-card {
-            background: rgba(0,0,0,0.6);
-            border: 3px solid #6a0dad;
-            border-radius: 15px;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .collection-card.owned {
-            border-color: #FFD700;
-            background: rgba(255,215,0,0.1);
-        }
-
-        .collection-card .icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .collection-card .icon img {
-            width: 100%;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 10px;
-            transition: transform 0.3s;
-        }
-
-        .collection-card:hover .icon img {
-            transform: scale(1.1);
-        }
-
-        .collection-card .name {
-            font-size: 0.8rem;
-            color: #FFD700;
-            margin-bottom: 0.3rem;
-        }
-
-        .collection-card .rarity {
-            font-size: 0.7rem;
-            color: #d4af37;
-        }
-
-        .collection-card .count {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #6a0dad;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .filter-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(106,13,173,0.3);
-            border: 2px solid #6a0dad;
-            border-radius: 20px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-
-        .filter-btn.active {
-            background: #6a0dad;
-            border-color: #FFD700;
-        }
-
-        .probability-info {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid #FFD700;
-            border-radius: 20px;
-            padding: 2rem;
-            margin: 2rem 0;
-        }
-
-        .rate-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.8rem;
-            margin: 0.5rem 0;
-            background: rgba(106,13,173,0.2);
-            border-radius: 10px;
-        }
-
-        .summon-area {
-            text-align: center;
-            padding: 2rem;
-            background: rgba(0,0,0,0.6);
-            border-radius: 20px;
-            margin: 2rem 0;
-        }
-
-        .summon-button {
-            padding: 2rem 3rem;
-            margin: 1rem;
-            border: none;
-            border-radius: 30px;
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.4s;
-        }
-
-        .summon-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .summon-1 {
-            background: linear-gradient(145deg, #FFD700, #d4af37);
-            color: #000;
-        }
-
-        .summon-10 {
-            background: linear-gradient(145deg, #6a0dad, #4a0e4e);
-            color: #fff;
-            border: 3px solid #FFD700;
-        }
-
-        .summon-50 {
-            background: linear-gradient(145deg, #ff6b6b, #c92a2a);
-            color: #fff;
-            border: 3px solid #FFD700;
-        }
-
-        .progress-bar {
-            width: 100%;
-            max-width: 400px;
-            height: 30px;
-            background: rgba(255,255,255,0.1);
-            border: 2px solid #FFD700;
-            border-radius: 15px;
-            margin: 2rem auto;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #6a0dad);
-            width: 0%;
-            transition: width 0.5s ease;
-            border-radius: 13px;
-        }
-
-        .user-display {
-            position: fixed;
-            top: 120px;
-            right: 20px;
-            background: rgba(0,0,0,0.9);
-            padding: 1rem;
-            border-radius: 15px;
-            border: 2px solid #FFD700;
-            z-index: 99;
-            display: none;
-            min-width: 200px;
-        }
-
-        .user-display.show {
-            display: block;
+            .summon-button {
+                padding: 1.5rem 2rem;
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- 🌟 ANIMACIÓN ESTRELLA DE BELÉN -->
-    <div class="star-animation" id="starAnimation">
-        <div class="star-of-bethlehem"></div>
-    </div>
-
-    <!-- 🔥 ANIMACIÓN ESPÍRITU SANTO -->
-    <div class="holy-spirit-animation" id="holySpiritAnimation">
-        <div class="holy-spirit"></div>
-    </div>
-
-    <!-- 🎵 Reproductor de SoundCloud -->
-    <div id="soundcloud-container" style="display: none;">
-        <iframe 
-            id="soundcloudPlayer"
-            width="100%" 
-            height="166" 
-            scrolling="no" 
-            frameborder="no" 
-            allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/ondanaquera/sets/marchas-semana-santa-6&color=%23FFD700&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false&sharing=false&download=false">
-        </iframe>
-    </div>
-
-    <!-- 🎵 Controles de música (adaptados para SoundCloud) -->
-    <div class="music-controls">
-        <button class="music-btn" id="playBtn" onclick="toggleSoundCloud()">▶️</button>
-        <button class="music-btn" onclick="skipSoundCloudTrack(-1)">⏮️</button>
-        <button class="music-btn" onclick="skipSoundCloudTrack(1)">⏭️</button>
-        <span style="color: #d4af37; margin-left: 0.5rem; font-size: 0.9rem; font-weight: bold;">SoundCloud</span>
-    </div>
-
-    <!-- CABECERA -->
     <header>
         <div style="position: absolute; top: 20px; right: 20px;">
             <button onclick="logout()" style="background: #dc3545; color: white; border: none; padding: 0.5rem 1rem; border-radius: 15px; cursor: pointer; margin-right: 0.5rem;">
@@ -931,13 +319,9 @@
             </button>
         </div>
         <h1>⚜️ COFRADÍA DIGITAL ⚜️</h1>
-        <p class="subtitle">Juego Gacha + Minijuegos - Semana Santa Española</p>
+        <p style="color: #d4af37; font-style: italic;">Juego Gacha + Minijuegos - Semana Santa Española</p>
     </header>
 
-    <!-- PANEL DE USUARIO -->
-    <div class="user-display" id="userDisplay"></div>
-
-    <!-- CONTENIDO PRINCIPAL -->
     <div class="container">
         <div class="game-stats">
             <div class="stat-box">
@@ -957,11 +341,9 @@
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('summon')">🎯 Invocar</button>
             <button class="tab-button" onclick="switchTab('collection')">📖 Colección</button>
-            <button class="tab-button" onclick="switchTab('probabilities')">📊 Probabilidades</button>
             <button class="tab-button" onclick="switchTab('minigames')">🎮 Minijuegos</button>
         </div>
 
-        <!-- PESTAÑA INVOCAR -->
         <div id="summon-tab" class="tab-content active">
             <div class="summon-area">
                 <h2 style="margin-bottom: 2rem; color: #FFD700; font-family: 'Cinzel', serif;">
@@ -971,65 +353,25 @@
                     Gasta monedas para obtener figuras icónicas de la Semana Santa
                 </p>
                 
-                <button class="summon-button summon-1" id="summon1Btn" onclick="summon(1)">
+                <button class="summon-button summon-1" onclick="summon(1)">
                     🎯 Invocar x1<br>(100 💰)
                 </button>
-                <button class="summon-button summon-10" id="summon10Btn" onclick="summon(10)">
+                <button class="summon-button summon-10" onclick="summon(10)">
                     ⚜️ Invocar x10<br>(900 💰)
                 </button>
-                <button class="summon-button summon-50" id="summon50Btn" onclick="summon(50)">
+                <button class="summon-button summon-50" onclick="summon(50)">
                     🔥 Invocar x50<br>(4000 💰)
                 </button>
-                
-                <div class="progress-bar">
-                    <div class="progress-fill" id="pityBar"></div>
-                </div>
-                <p style="font-size: 0.95rem; margin-top: 0.5rem; color: #d4af37;">
-                    Garantía Legendario: <span id="pityCount">0</span>/100
-                </p>
             </div>
         </div>
 
-        <!-- PESTAÑA COLECCIÓN -->
         <div id="collection-tab" class="tab-content">
             <h2 style="text-align: center; margin-bottom: 1rem; color: #FFD700; font-family: 'Cinzel', serif;">
                 📿 COLECCIÓN COFRADE
             </h2>
-            <div class="filter-buttons">
-                <button class="filter-btn active" onclick="filterCollection('all')">Todas</button>
-                <button class="filter-btn" onclick="filterCollection('legendary')">🏆 Leg.</button>
-                <button class="filter-btn" onclick="filterCollection('epic')">⭐ Épicas</button>
-                <button class="filter-btn" onclick="filterCollection('rare')">💙 Raras</button>
-                <button class="filter-btn" onclick="filterCollection('common')">🤍 Comunes</button>
-            </div>
             <div class="collection-grid" id="collectionGrid"></div>
         </div>
 
-        <!-- PESTAÑA PROBABILIDADES -->
-        <div id="probabilities-tab" class="tab-content">
-            <div class="probability-info">
-                <h3>📊 Probabilidades de Invocación</h3>
-                <div class="rate-item"><span>🏆 LEGENDARIAS</span><span>4.0%</span></div>
-                <div class="rate-item"><span>⭐ ÉPICAS</span><span>4.5%</span></div>
-                <div class="rate-item"><span>💙 RARAS</span><span>30.0%</span></div>
-                <div class="rate-item"><span>🤍 COMUNES</span><span>61.5%</span></div>
-                <hr style="margin: 1rem 0; border-color: #6a0dad;">
-                <div class="rate-item"><span>🎯 Garantía Legendario</span><span>100 invocaciones</span></div>
-                <div class="rate-item"><span>💰 Monedas por minuto</span><span>+50</span></div>
-            </div>
-            <div class="probability-info" style="margin-top: 1rem;">
-                <h3>💡 Consejos</h3>
-                <p style="font-size: 0.9rem; line-height: 1.5;">
-                    • Las figuras LEGENDARIAS solo aparecen en el 4% de las invocaciones.<br>
-                    • Cada 100 invocaciones sin legendario, te garantizamos una.<br>
-                    • Invocar x50 es más económico (80 monedas/invocación).<br>
-                    • ¡Juega los minijuegos para ganar monedas extra!<br>
-                    • Cierra el navegador para guardar tu progreso automáticamente.
-                </p>
-            </div>
-        </div>
-
-        <!-- PESTAÑA MINIJUEGOS -->
         <div id="minigames-tab" class="tab-content">
             <h2 style="text-align: center; margin-bottom: 2rem; color: #FFD700; font-family: 'Cinzel', serif;">
                 🎮 MINIJUEGOS COFRADES
@@ -1038,105 +380,43 @@
                 ¡Juega y gana monedas para tus invocaciones!
             </p>
             
-            <div class="minigames-grid">
-                <div class="minigame-card" onclick="playMinigame('wordsearch')">
-                    <div class="minigame-icon">🔤</div>
-                    <div class="minigame-title">Sopa de Letras</div>
-                    <div class="minigame-desc">
-                        Encuentra palabras ocultas relacionadas con la Semana Santa. 
-                        ¡10 monedas por palabra encontrada!
-                    </div>
-                    <div class="minigame-reward">💰 10-100 monedas</div>
+            <div class="collection-grid">
+                <div class="collection-card" onclick="playMinigame('wordsearch')">
+                    <div class="icon">🔤</div>
+                    <div class="name">Sopa de Letras</div>
+                    <div class="rarity">10-100 monedas</div>
                 </div>
-
-                <div class="minigame-card" onclick="playMinigame('trivia')">
-                    <div class="minigame-icon">❓</div>
-                    <div class="minigame-title">Trivial Cofrade</div>
-                    <div class="minigame-desc">
-                        Responde 5 preguntas sobre la Semana Santa. 
-                        ¡50 monedas por respuesta correcta!
-                    </div>
-                    <div class="minigame-reward">💰 0-250 monedads</div>
+                <div class="collection-card" onclick="playMinigame('trivia')">
+                    <div class="icon">❓</div>
+                    <div class="name">Trivial Cofrade</div>
+                    <div class="rarity">0-250 monedas</div>
                 </div>
-
-                <div class="minigame-card" onclick="playMinigame('memory')">
-                    <div class="minigame-icon">🧠</div>
-                    <div class="minigame-title">Encuentra las Parejas</div>
-                    <div class="minigame-desc">
-                        Voltea cartas y encuentra las parejas de figuras. 
-                        ¡200 monedas si completas en menos de 20 intentos!
-                    </div>
-                    <div class="minigame-reward">💰 0-200 monedads</div>
+                <div class="collection-card" onclick="playMinigame('memory')">
+                    <div class="icon">🧠</div>
+                    <div class="name">Encuentra las Parejas</div>
+                    <div class="rarity">0-200 monedas</div>
                 </div>
             </div>
 
-            <!-- ÁREA DE JUEGO -->
             <div id="gameArea" class="hidden"></div>
         </div>
     </div>
-    
-    <!-- ANIMACIÓN DE INVOCACIÓN -->
-    <div class="summon-animation" id="summonAnimation">
-        <div class="summon-card" id="summonCard"></div>
+
+    <div class="music-controls">
+        <button class="music-btn" onclick="toggleMusic()">🎵</button>
+        <span style="color: #d4af37; margin-left: 0.5rem; font-size: 0.9rem;">Música</span>
     </div>
 
     <script src="main.js"></script>
     <script src="minigames.js"></script>
     <script>
-        // Conectar sistemas
-        window.addCoinsToGame = function(amount) {
-            if (window.gameState) {
-                window.gameState.coins += amount;
-                if (window.updateUI) window.updateUI();
-                if (window.saveGameState) window.saveGameState();
-            }
-        };
-        
-        window.showGameMessage = function(text, type) {
-            if (window.showMessage) window.showMessage(text, type);
-        };
-        
-        // Estilos adicionales para la sopa de letras mejorada
-        const additionalStyles = `
-            .wordsearch-cell.selected {
-                background: #6a0dad !important;
-                color: white !important;
-                transform: scale(1.1);
-            }
-            
-            .wordsearch-cell.found {
-                background: #00ff00 !important;
-                color: #000 !important;
-                animation: foundPulse 0.5s ease;
-            }
-            
-            @keyframes foundPulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.2); }
-                100% { transform: scale(1); }
-            }
-            
-            @media (max-width: 768px) {
-                .wordsearch-cell {
-                    width: 30px !important;
-                    height: 30px !important;
-                    font-size: 1rem !important;
-                }
-                
-                .memory-grid {
-                    grid-template-columns: repeat(4, 80px) !important;
-                    gap: 0.5rem !important;
-                }
-                
-                .memory-card {
-                    font-size: 2rem !important;
-                }
-            }
-        `;
-        
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = additionalStyles;
-        document.head.appendChild(styleSheet);
+        // Inicializar juego
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGameState();
+            updateUI();
+            startCoinGeneration();
+            renderCollection();
+        });
     </script>
 </body>
 </html>
