@@ -839,8 +839,93 @@
             startCoinGeneration();
             renderCollection();
         });
-    </script>
+<!-- ✅ FIX GLOBAL: exponemos funciones al objeto window -->
+<script>
+    // ✅ Exponemos funciones al ámbito global
+    window.playMinigame = function (game) {
+        switch (game) {
+            case 'wordsearch':
+                initWordSearch();
+                break;
+            case 'memory':
+                initMemoryGame();
+                break;
+            case 'trivia':
+                initTrivia();
+                break;
+            default:
+                showMessage('Minijuego no disponible', 'error');
+        }
+    };
+
+    window.toggleSoundCloud = function () {
+        if (!window.soundCloudReady || !window.soundCloudWidget) {
+            showMessage('⏳ Cargando reproductor...', 'error');
+            return;
+        }
+        window.soundCloudWidget.getPaused(function (isPaused) {
+            const btn = document.getElementById('playBtn');
+            if (isPaused) {
+                window.soundCloudWidget.play();
+                btn.textContent = '⏸️';
+            } else {
+                window.soundCloudWidget.pause();
+                btn.textContent = '▶️';
+            }
+        });
+    };
+
+    window.skipSoundCloudTrack = function (direction) {
+        if (!window.soundCloudReady || !window.soundCloudWidget) return;
+        window.soundCloudWidget.next(); // SoundCloud soporta next/prev
+        showMessage(direction > 0 ? '⏭️ Siguiente pista' : '⏮️ Anterior pista', 'success');
+    };
+
+    window.toggleSoundCloudPlayer = function () {
+        const container = document.getElementById('soundcloud-container');
+        container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    };
+</script>
+
+<!-- ✅ Inicialización segura de SoundCloud -->
+<script>
+    window.soundCloudWidget = null;
+    window.soundCloudReady = false;
+
+    function initSoundCloud() {
+        const iframe = document.getElementById('soundcloudPlayer');
+        if (!iframe) return;
+        if (typeof SC === 'undefined') {
+            // Si la API no está cargada, reintenta en 500 ms
+            setTimeout(initSoundCloud, 500);
+            return;
+        }
+        window.soundCloudWidget = SC.Widget(iframe);
+        window.soundCloudWidget.bind(SC.Widget.Events.READY, function () {
+            window.soundCloudReady = true;
+            document.getElementById('playBtn').textContent = '⏸️';
+        });
+    }
+
+    // Cargamos la API de SoundCloud de forma dinámica
+    const scScript = document.createElement('script');
+    scScript.src = 'https://w.soundcloud.com/player/api.js';
+    scScript.onload = initSoundCloud;
+    document.head.appendChild(scScript);
+</script>
+
+<!-- ✅ Inicialización normal del juego -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        loadGameState();
+        updateUI();
+        startCoinGeneration();
+        renderCollection();
+    });
+</script>
 </body>
 </html>
+
+
 
 
