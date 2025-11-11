@@ -3,248 +3,1827 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Cofradía Digital</title>
+    <title>Cofradía Digital - Todo en Uno</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d1810 50%, #4a0e4e 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .login-container {
-            background: rgba(0,0,0,0.8);
-            border: 3px solid #FFD700;
-            border-radius: 25px;
-            padding: 3rem;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .login-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2.5rem;
-            color: #FFD700;
-            margin-bottom: 1rem;
-        }
-        
-        .login-subtitle {
-            color: #d4af37;
-            margin-bottom: 2rem;
-        }
-        
-        .google-btn, .guest-btn {
-            background: #4285f4;
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem auto;
-            width: 100%;
-            max-width: 300px;
-        }
-        
-        .google-btn:hover { background: #357ae8; transform: translateY(-3px); }
-        
-        .guest-btn {
-            background: transparent;
-            color: #d4af37;
-            border: 2px solid #d4af37;
-        }
-        
-        .guest-btn:hover {
-            background: #d4af37;
-            color: #000;
-        }
-        
-        .user-info {
-            display: none;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(106,13,173,0.2);
+        :root{ --dorado:#FFD700; --morado:#6a0dad; --negro:#1a1a1a; --gris:#2a2a2a;}
+        body{margin:0;font-family:'Roboto',sans-serif;background:linear-gradient(135deg,var(--negro) 0%,#2d1810 50%,#4a0e4e 100%);min-height:100vh;color:#f5f5f5;}
+        h1,h2,h3{font-family:'Cinzel',serif;color:var(--dorado);}
+        button{cursor:pointer;border:none;font-weight:bold;transition:all .3s;}
+        .hidden{display:none !important;}
+        .container { padding: 0 1rem; }
+        /* LOGIN */
+        .login-container{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;}
+        .login-box{background:rgba(0,0,0,.8);border:3px solid var(--dorado);border-radius:25px;padding:3rem;text-align:center;max-width:400px;width:90%;}
+        .login-title{font-size:2.5rem;margin-bottom:1rem;}
+        .google-btn,.guest-btn{width:100%;margin:.5rem 0;padding:1rem;border-radius:50px;font-size:1.1rem;}
+        .google-btn{background:#4285f4;color:#fff;}
+        .guest-btn{background:transparent;color:#d4af37;border:2px solid #d4af37;}
+        /* CABECERA */
+        header{text-align:center;padding:1rem 0;background:rgba(0,0,0,.8);border-bottom:4px solid var(--dorado);position:sticky;top:0;z-index:100;}
+        header h1{font-size:2.5rem;text-shadow:3px 3px 12px rgba(0,0,0,.9);}
+        header > div{position:absolute;top:10px;right:10px;display:flex;gap:.5rem;}
+        /* STATS */
+        .game-stats{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin:1rem 0;}
+        .stat-box{background:linear-gradient(145deg,var(--gris),var(--negro));padding:1rem 2rem;border-radius:20px;border:3px solid var(--morado);}
+        .stat-value{font-size:2rem;font-weight:bold;}
+        /* TABS */
+        .tabs{display:flex;justify-content:center;gap:.5rem;margin:1rem 0;flex-wrap:wrap;}
+        .tab-button{padding:1rem 2rem;background:rgba(106,13,173,.3);border:3px solid var(--morado);border-radius:30px;color:#fff;font-family:'Cinzel',serif;}
+        .tab-button.active{background:var(--morado);border-color:var(--dorado);transform:scale(1.05);}
+        .tab-content{display:none;animation:fadeIn .5s ease;}
+        .tab-content.active{display:block;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+        /* INVOCAR */
+        .summon-area{text-align:center;padding:2rem;background:rgba(0,0,0,.6);border-radius:20px;margin:1rem;}
+        .summon-button{padding:1.5rem 2rem;margin:.5rem;border-radius:30px;font-family:'Cinzel',serif;font-size:1.2rem;}
+        .summon-1{background:linear-gradient(145deg,var(--dorado),#d4af37);color:#000;}
+        .summon-10{background:linear-gradient(145deg,var(--morado),#4a0e4e);color:#fff;border:3px solid var(--dorado);}
+        .summon-50{background:linear-gradient(145deg,#ff6b6b,#c92a2a);color:#fff;border:3px solid var(--dorado);}
+        /* COLECCIÓN */
+        .collection-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:1rem;margin-top:1rem;}
+        .collection-card{background:rgba(0,0,0,.6);border:3px solid var(--morado);border-radius:15px;padding:1rem;text-align:center;position:relative;}
+        .collection-card.owned{border-color:var(--dorado);background:rgba(255,215,0,.1);}
+        .collection-card .icon{font-size:2rem;margin-bottom:.5rem;min-height:60px;display:flex;align-items:center;justify-content:center;}
+        .collection-card .count{position:absolute;top:5px;right:5px;background:var(--morado);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:bold;}
+        /* MINIJUEGOS */
+        .game-btn{padding:1rem 2rem;border-radius:25px;background:var(--dorado);color:#000;font-weight:bold;}
+        /* MEMORY */
+        .memory-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:600px;margin:0 auto;}
+        .memory-card{aspect-ratio:1/1;background:rgba(0,0,0,.6);border:3px solid var(--morado);border-radius:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+        .memory-card.flipped{background:var(--gris);}
+        .memory-card.matched{border-color:var(--dorado);opacity:.8;}
+        .memory-card img{width:90%;height:auto;border-radius:8px;display:none;}
+        /* WORDSEARCH */
+        .wordsearch-grid{display:grid;gap:4px;justify-content:center;}
+        .wordsearch-cell{width:40px;height:40px;background:var(--gris);border:1px solid var(--morado);display:flex;align-items:center;justify-content:center;font-weight:bold;border-radius:4px;user-select:none;}
+        .wordsearch-cell.selected{background:var(--dorado);color:#000;}
+        .wordsearch-cell.found{background:#28a745;color:#fff;}
+        .wordsearch-list{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1rem;}
+        .word-item{background:rgba(0,0,0,.5);padding:.4rem .8rem;border-radius:15px;font-size:.9rem;}
+        .word-item.found{background:#28a745;color:#fff;text-decoration:line-through;}
+        /* TRIVIA */
+        .answer-buttons{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem;}
+        .answer-btn{padding:1rem;border-radius:15px;background:var(--gris);color:#fff;font-size:1rem;border:2px solid var(--morado);}
+        .answer-btn.correct{background:#28a745;border-color:#28a745;}
+        .answer-btn.incorrect{background:#dc3545;border-color:#dc3545;}
+        /* PAC-NAZARENO CSS */
+        .pacnazareno-container {
+            max-width: fit-content;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid var(--morado);
             border-radius: 15px;
         }
-        
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin: 0 auto 1rem;
-            border: 3px solid #FFD700;
+        .pacnazareno-grid {
+            display: grid;
+            border: 4px solid var(--morado);
+            box-shadow: 0 0 20px rgba(106, 13, 173, 0.5);
+            margin: 0 auto;
+            background-color: #000;
         }
-        
-        .user-name {
-            font-size: 1.3rem;
-            color: #FFD700;
-            margin-bottom: 0.5rem;
+        .pacnazareno-cell {
+            width: 30px; /* Tamaño por defecto (desktop) */
+            height: 30px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        
-        .user-email {
-            color: #d4af37;
-            margin-bottom: 1rem;
+        .pacnazareno-cell.wall {
+            background-color: var(--morado);
+            border: 1px solid #4a0e4e;
         }
-        
-        .continue-btn {
-            background: linear-gradient(145deg, #FFD700, #d4af37);
-            color: #000;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
+        .pacnazareno-cell.coin { position: relative; }
+        .pacnazareno-cell.coin::after {
+            content: '•';
+            color: var(--dorado);
+            font-size: 1.5rem;
+            line-height: 0;
+            display: block;
         }
+        .pacnazareno-cell.cross::after { content: '✝️'; font-size: 20px; }
+        .pacnazareno-cell.nazareno { border-radius: 50%; animation: pulse-nazareno 0.5s infinite alternate; }
+        .pacnazareno-cell.nazareno::after { content: '👸'; display: block; font-size: 20px; color: var(--nazareno-color, var(--dorado)); }
+        @keyframes pulse-nazareno {
+            from { transform: scale(0.9); }
+            to { transform: scale(1.1); }
+        }
+        .pacnazareno-cell.penitente::after { content: '👻'; display: block; font-size: 20px;}
+        .pacnazareno-cell.scared-penitente::after { content: '😱'; }
+
+        /* MENSAJES */
+        .game-message{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);padding:1rem 2rem;border-radius:15px;z-index:9999;font-weight:bold;}
+        .game-message.success{border:2px solid #00ff00;color:#00ff00;}
+        .game-message.error{border:2px solid #ff4444;color:#ff4444;}
+        /* MODALES */
+        .modal-fixed{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:9999;}
+        .modal-content{background:linear-gradient(145deg,var(--gris),var(--negro));border:4px solid var(--dorado);border-radius:25px;padding:2rem;max-width:90%;max-height:90%;overflow-y:auto;text-align:center;}
         
-        .continue-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+        /* SOUNDCLOUD PLAYER OCULTABLE */
+        .soundcloud-player-container{position:fixed;bottom:20px;right:20px;z-index:9000;width:300px;transition:transform .3s ease-out;}
+        .soundcloud-player-container.hidden-player{transform:translateX(320px);}
+        .player-toggle-btn{position:absolute;top:0;left:-50px;width:50px;height:50px;border-radius:50% 0 0 50%;background:var(--morado);color:var(--dorado);font-size:1.5rem;box-shadow:-2px 0 5px rgba(0,0,0,.5);border:2px solid var(--dorado);border-right:none;}
+
+        /* CIRIO TIMER */
+        .cirio-container { width: 100px; height: 150px; margin: 1rem auto; position: relative; overflow: hidden; background: #000; border-radius: 5px; }
+        .cirio-base { position: absolute; bottom: 0; width: 100%; height: 100%; background: #e8d0a9; border-radius: 5px; border: 1px solid #c8b089; box-sizing: border-box; transform-origin: bottom; }
+        .cirio-wick { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 2px; height: 10px; background: #000; z-index: 15; }
+        .cirio-flame { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-bottom: 15px solid orange; border-left: 7px solid transparent; border-right: 7px solid transparent; animation: pulse 1s infinite alternate; z-index: 15; }
+        .timer-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5rem; font-family: 'Cinzel', serif; font-weight: bold; color: #4a0e4e; text-shadow: 1px 1px 2px #FFD700; z-index: 10; }
+        @keyframes flash-gold {
+            0%, 100% { color: var(--dorado); text-shadow: 0 0 10px var(--dorado), 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { color: #fff; text-shadow: none; }
+        }
+        .flashing-gold-text { font-family: 'Cinzel', serif; font-size: 3rem; font-weight: bold; animation: flash-gold 1s infinite alternate; }
+
+        /* ============================ 
+           OPTIMIZACIÓN MÓVIL (Max 600px)
+        ============================ */
+        @media (max-width: 600px) {
+            /* CABECERA */
+            header h1 { font-size: 2rem; }
+            header p { font-size: 0.8rem; }
+            header > div { top: 5px; right: 5px; gap: 0.2rem; }
+            header button { padding: 0.3rem 0.6rem; font-size: 0.7rem; border-radius: 10px; }
+
+            /* ESTADÍSTICAS */
+            .game-stats { gap: 0.5rem; }
+            .stat-box { 
+                padding: 0.6rem; 
+                width: 45%; /* Dos columnas */
+                min-width: unset; 
+                border-radius: 15px;
+            }
+            .stat-box h3 { font-size: 1rem; margin: 0; }
+            .stat-value { font-size: 1.3rem; }
+
+            /* PESTAÑAS Y CONTENIDO */
+            .tabs { flex-direction: column; gap: 0.3rem; }
+            .tab-button { width: 90%; margin: 0 auto; padding: 0.8rem 1rem; font-size: 0.9rem; }
+            .summon-area { padding: 1rem; margin: 0.5rem; }
+            .summon-button { 
+                width: 100%; /* Botones de invocación apilados */
+                margin: 0.3rem 0; 
+                font-size: 1rem;
+                padding: 1rem;
+            }
+
+            /* COLECCIÓN Y MINIJUEGOS GRID */
+            .collection-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 0.5rem; }
+            .collection-card { padding: 0.5rem; }
+            .collection-card .icon { font-size: 1.5rem; min-height: 40px; }
+            .collection-card .name { font-size: 0.7rem; }
+            
+            /* TRIVIAL */
+            .answer-buttons { 
+                grid-template-columns: 1fr; /* Una columna */
+                gap: 0.5rem;
+            }
+            .answer-btn { padding: 0.8rem; font-size: 0.9rem; }
+
+            /* SOPA DE LETRAS */
+            .wordsearch-cell { 
+                width: 25px; 
+                height: 25px; 
+                font-size: 0.7rem; 
+                gap: 2px;
+            }
+            .wordsearch-list { font-size: 0.8rem; }
+
+            /* PAC-NAZARENO */
+            .pacnazareno-container { margin: 1rem auto; padding: 0.5rem; }
+            .pacnazareno-grid { border: 2px solid var(--morado); }
+            .pacnazareno-cell { 
+                width: 18px; /* Reducción drástica para grid 21x21 */
+                height: 18px; 
+            }
+            .pacnazareno-cell.nazareno::after, .pacnazareno-cell.penitente::after { font-size: 14px; }
+            .pacnazareno-cell.coin::after { font-size: 1rem; }
+
+            /* UTILS */
+            .game-btn { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
+            .modal-content { padding: 1rem; border-radius: 15px; }
+            .flashing-gold-text { font-size: 2rem; }
+
+            /* OCULTAR REPRODUCTOR */
+            .soundcloud-player-container { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1 class="login-title">⚜️ COFRADÍA DIGITAL</h1>
-        <p class="login-subtitle">Inicia sesión para acceder al juego</p>
-        
-        <button class="google-btn" onclick="loginWithGoogle()" aria-label="Iniciar sesión con Google">
-            <span>🔍</span>
-            <span>Iniciar con Google</span>
-        </button>
-        
-        <button class="guest-btn" onclick="loginAsGuest()" aria-label="Jugar como invitado">
-            🎭 Jugar como invitado
-        </button>
-        
-        <div class="user-info" id="userInfo">
-            <img class="user-avatar" id="userAvatar" src="" alt="Avatar">
-            <div class="user-name" id="userName"></div>
-            <div class="user-email" id="userEmail"></div>
-            <button class="continue-btn" onclick="continueToGame()">Continuar al juego</button>
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <h1 class="login-title">⚜️ COFRADÍA DIGITAL</h1>
+            <button class="guest-btn" onclick="loginAsGuest()">🎭 Jugar como invitado</button>
         </div>
     </div>
 
-    <!-- Google OAuth Script -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div id="gameScreen" class="hidden">
+        <header>
+            <div>
+                <button onclick="logout()" style="background:#dc3545;color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;">🚪 Cerrar Sesión</button>
+                <button onclick="location.reload()" style="background:var(--morado);color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;">🏛️ Hermandades</button>
+            </div>
+            <h1>⚜️ COFRADÍA DIGITAL ⚜️</h1>
+            <p style="color:#d4af37;font-style:italic;">Juego Gacha + Minijuegos - Semana Santa Española</p>
+        </header>
+
+        <div class="container">
+            <div class="game-stats">
+                <div class="stat-box"><h3>💰 Monedas</h3><div class="stat-value" id="coins">1500</div></div>
+                <div class="stat-box"><h3>📿 Colección</h3><div class="stat-value" id="characterCount">0/150</div></div>
+                <div class="stat-box"><h3>🏆 Progreso</h3><div class="stat-value" id="collectionPercent">0%</div></div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('summon')">🎯 Invocar</button>
+                <button class="tab-button" onclick="switchTab('collection')">📖 Colección</button>
+                <button class="tab-button" onclick="switchTab('minigames')">🎮 Minijuegos</button>
+            </div>
+
+            <div id="summon-tab" class="tab-content active">
+                <div class="summon-area">
+                    <h2 style="font-family:'Cinzel',serif;margin-bottom:1rem;">¡Invoca a los Hermanos!</h2>
+                    <button class="summon-button summon-1" onclick="summon(1)">🎯 Invocar x1<br>(100 💰)</button>
+                    <button class="summon-button summon-10" onclick="summon(10)">⚜️ Invocar x10<br>(900 💰)</button>
+                    <button class="summon-button summon-50" onclick="summon(50)">🔥 Invocar x50<br>(4000 💰)</button>
+                </div>
+            </div>
+
+            <div id="collection-tab" class="tab-content">
+                <h2 style="text-align:center;font-family:'Cinzel',serif;margin-bottom:1rem;">📿 COLECCIÓN COFRADE</h2>
+                <div class="collection-grid" id="collectionGrid"></div>
+            </div>
+
+            <div id="minigames-tab" class="tab-content">
+                <h2 style="text-align:center;font-family:'Cinzel',serif;margin-bottom:1rem;">🎮 MINIJUEGOS COFRADES</h2>
+                <div class="collection-grid">
+                    <div class="collection-card" onclick="playMinigame('wordsearch')"><div class="icon">🔤</div><div class="name">Sopa de Letras</div><div class="rarity">10-100 monedas</div></div>
+                    <div class="collection-card" onclick="playMinigame('trivia')"><div class="icon">❓</div><div class="name">Trivial Cofrade</div><div class="rarity">0-250 monedas</div></div>
+                    <div class="collection-card" onclick="playMinigame('memory')"><div class="icon">🧠</div><div class="name">Encuentra las Parejas</div><div class="rarity">0-200 monedas</div></div>
+                    <div class="collection-card" onclick="playMinigame('pacnazareno')"><div class="icon">👸</div><div class="name">Pac-Nazareno</div><div class="rarity">20-500+ monedas</div></div>
+                </div>
+                <div id="gameArea" class="hidden"></div>
+            </div>
+        </div>
+    </div>
     
+<div class="soundcloud-player-container hidden-player" id="soundcloudPlayerContainer">
+        <button class="player-toggle-btn" id="playerToggleButton" onclick="toggleSoundcloudPlayer()">🎵</button>
+        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay"
+            src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/user-590154669/sets/semana-santa-2024-mas-de-600&amp;color=%23ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=true&amp;visual=true">
+        </iframe>
+        <div style="font-size:0.75rem; color:#cccccc; padding:10px; box-sizing:border-box; width:100%; text-align:center; background-color: rgba(0,0,0,0.6);">
+            <a href="https://soundcloud.com/user-590154669/sets/semana-santa-2024-mas-de-600" title="¡Al cielo con ella!" target="_blank" style="color:#cccccc;">Marchas de Semana Santa (Cambia de paso)</a>
+        </div>
+		</div>
+
     <script>
-        // ⬇️ CONFIGURA TU CLIENT ID AQUÍ ⬇️
-        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com';
-        const PLACEHOLDER_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
-        
-        let currentUser = null;
-        
-        // Inicializar Google OAuth
-        window.addEventListener('load', function() {
-            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
-                console.warn('Google Client ID no configurado. Usa modo invitado.');
+        /* ============================
+           CONFIG GLOBAL
+        ============================ */
+        const PROBABILITIES={legendary:4,epic:4.5,rare:30,common:61.5};
+        // game state se mantiene en el juego principal y se actualiza via localStorage en los pop-ups
+        let gameState={coins:1500,characters:[],pityCount:0,filter:'all'};
+        let currentUser=null, triviaGame={questions:[],currentQuestion:0,score:0,answered:false,timerInterval:null}, memoryGame=null, wordSearchGame=null, pacNazarenoGame=null;
+
+        /* ============================
+           BASE DE DATOS (150 figuras + 200 preguntas)
+        ============================ */
+        const CHARACTER_DATABASE=[
+            {id:1,name:"Jesús del Gran Poder",city:"Sevilla",icon:"⛪",rarity:"legendary",rate:0.005},
+            {id:2,name:"Virgen de la Macarena",city:"Sevilla",icon:"🌹",rarity:"legendary",rate:0.005},
+            {id:3,name:"Esperanza de Triana",city:"Sevilla",icon:"🚢",rarity:"legendary",rate:0.005},
+            {id:4,name:"Cristo de los Gitanos",city:"Sevilla",icon:"💃",rarity:"legendary",rate:0.005},
+            {id:5,name:"Cristo del Cachorro",city:"Sevilla",icon:"🐺",rarity:"legendary",rate:0.005},
+            {id:6,name:"Jesús Nazareno del Silencio",city:"Sevilla",icon:"🤫",rarity:"legendary",rate:0.005},
+            {id:7,name:"Virgen del Rocío",city:"Almonte",icon:"🌾",rarity:"legendary",rate:0.005},
+            {id:8,name:"Cristo de la Sangre",city:"Málaga",icon:"🩸",rarity:"legendary",rate:0.005}
+        ];
+        // Rellenamos hasta 150 figuras (comunes, raras, épicas) de forma simplificada
+        for(let i=9;i<=150;i++){
+            CHARACTER_DATABASE.push({
+                id:i,
+                name:`Cofrade ${i}`,
+                city:["Sevilla","Málaga","Granada","Valladolid","Zamora","León","Salamanca"][Math.floor(Math.random()*7)],
+                icon:["⚫","🙏","💪","📯","🕯️","🎩","⛪","🎵","⛓️","📿","🔔","⚔️","🛡️","🏮","🥁","🏋️","👴","👦","👶","👧","🌊","🐟","🩸","💰","🪖","🎖️","🏔️","🏰","🦁","🎓","🌺"][Math.floor(Math.random()*31)],
+                rarity:i<=23?"epic":i<=68?"rare":"common",
+                rate:i<=8?0.005:i<=23?0.003:i<=68?0.00666:0.00786
+            });
+        }
+        const TRIVIA_QUESTIONS = [
+            // Preguntas 1 - 50 (Originales y Nuevas Generales)
+            {question: "¿Qué ciudad es famosa por su Semana Santa con 'Jesús del Gran Poder'?",options: ["Sevilla", "Málaga", "Granada", "Valladolid"],correct: 0,explanation: "Sevilla es la ciudad del Jesús del Gran Poder, una de las imágenes más veneradas."},
+            {question: "¿Cuál es el color típico de la Semana Santa de Sevilla?",options: ["Morado", "Rojo", "Verde", "Azul"],correct: 0,explanation: "El morado es el color tradicional de la Semana Santa sevillana."},
+            {question: "¿Qué llevan los costaleros sobre la cabeza?",options: ["Una corona", "Un costal", "Un sombrero", "Una cinta"],correct: 1,explanation: "Los costaleros llevan un costal con algodón para protegerse la cabeza."},
+            {question: "¿En qué ciudad se venera a la Virgen del Rocío?",options: ["Sevilla", "Almonte", "Huelva", "Málaga"],correct: 1,explanation: "La Virgen del Rocío se venera en Almonte, provincia de Huelva."},
+            {question: "¿Qué cofradía es conocida como 'El Silencio'?",options: ["Jesús Nazareno", "Cristo de la Sed", "Jesús del Gran Poder", "Virgen de la Macarena"],correct: 0,explanation: "La cofradía de Jesús Nazareno es conocida como 'El Silencio'."},
+            {question: "¿Cuál es el origen de la palabra 'saeta'?",options: ["Latín", "Árabe", "Hebreo", "Griego"],correct: 1,explanation: "La palabra 'saeta' viene del árabe 'sā'ita', que significa flecha."},
+            {question: "¿Qué día comienza oficialmente la Semana Santa?",options: ["Domingo de Ramos", "Lunes Santo", "Viernes de Dolores", "Jueves Santo"],correct: 0,explanation: "La Semana Santa comienza el Domingo de Ramos con la entrada triunfal de Jesús en Jerusalén."},
+            {question: "¿Qué cofradía procesiona el Miércoles Santo en Sevilla?",options: ["El Cachorro", "La Hiniesta", "Los Javieres", "Todos los anteriores"],correct: 3,explanation: "El Miércoles Santo en Sevilla procesionan El Cachorro, La Hiniesta y Los Javieres."},
+            {question: "¿Qué representa el capirote en la Semana Santa?",options: ["Pena y humildad", "Poder y gloria", "Alegría y festividad", "Sabiduría"],correct: 0,explanation: "El capirote representa la penitencia y humildad de los cofrades."},
+            {question: "¿En qué ciudad se celebra la 'Tamborrada'?",options: ["Sevilla", "San Sebastián", "Zamora", "Salamanca"],correct: 1,explanation: "La Tamborrada es una tradición típica de San Sebastián, aunque no es propiamente Semana Santa."},
+            {question: "¿Qué es el 'paso' en una procesión?",options: ["El trono con la imagen", "El recorrido", "Los costaleros", "La música"],correct: 0,explanation: "El 'paso' es el trono o anda que lleva la imagen religiosa."},
+            {question: "¿Cuántos pasos tiene una cofradía típica?",options: ["Uno", "Dos", "Tres", "Cuatro"],correct: 1,explanation: "Tradicionalmente una cofradía tiene dos pasos: el de misterio y el de palio."},
+            {question: "¿Qué es el 'trono de palio'?",options: ["El paso con la imagen de Cristo", "El paso con la imagen de la Virgen", "El paso de los costaleros", "El paso de los nazarenos"],correct: 1,explanation: "El trono de palio es el que lleva la imagen de la Virgen, cubierto por un dosel."},
+            {question: "¿Qué cofradía es conocida como 'El Silencio'?",options: ["Jesús Nazareno", "Cristo de la Sed", "Jesús del Gran Poder", "Virgen de la Macarena"],correct: 0,explanation: "La cofradía de Jesús Nazareno es conocida como 'El Silencio'."},
+            {question: "¿Qué es el 'paso de misterio'?",options: ["El paso con Cristo", "El paso con la Virgen", "El paso de los costaleros", "El paso de los nazarenos"],correct: 0,explanation: "El paso de misterio lleva la imagen de Cristo representando alguna escena de la Pasión."},
+            {question: "¿Qué cofradía procesiona el Viernes Santo por la mañana en Sevilla?",options: ["Gran Poder", "Macarena", "El Cachorro", "Gitanos"],correct: 2,explanation: "El Cachorro procesiona el Viernes Santo por la mañana en Sevilla."},
+            {question: "¿Qué es el 'costal'?",options: ["Una prenda religiosa", "Una protección para la cabeza", "Un instrumento musical", "Una ofrenda"],correct: 1,explanation: "El costal es una especie de almohadilla que protege la cabeza de los costaleros."},
+            {question: "¿Qué significa 'levantar el paso'?",options: ["Terminar la procesión", "Alzar el trono", "Dar la vuelta", "Acelerar el paso"],correct: 1,explanation: "Levantar el paso significa alzar el trono desde el suelo."},
+            {question: "¿Qué es el 'capataz'?",options: ["El jefe de los costaleros", "El sacerdote", "El músico", "El penitente"],correct: 0,explanation: "El capataz es el encargado de dirigir a los costaleros."},
+            {question: "¿Qué lleva el nazareno en la mano?",options: ["Una cruz", "Un cirio", "Un libro", "Una campana"],correct: 1,explanation: "Tradicionalmente el nazareno lleva un cirio o vela encendida."},
+            {question: "¿Qué es el 'capirote'?",options: ["Un sombrero", "Una capa", "Una capucha cónica", "Una máscara"],correct: 2,explanation: "El capirote es una capucha cónica que cubre la cabeza del nazareno."},
+            {question: "¿Qué ciudad es famosa por su Semana Santa con 'Cristo de Mena'?",options: ["Sevilla", "Málaga", "Granada", "Valladolid"],correct: 1,explanation: "Málaga es famosa por su Cristo de Mena, obra de Pedro de Mena."},
+            {question: "¿Qué es la 'marcha procesional'?",options: ["Un tipo de procesión", "Una pieza musical", "Una vestimenta", "Una ofrenda"],correct: 1,explanation: "La marcha procesional es una pieza musical que acompaña las procesiones."},
+            {question: "¿Qué instrumento es típico en las procesiones?",options: ["Guitarra", "Corneta", "Piano", "Violín"],correct: 1,explanation: "La corneta es el instrumento típico que acompaña las procesiones."},
+            {question: "¿Qué es el 'trono'?",options: ["La procesión", "El paso", "La vestimenta", "La música"],correct: 1,explanation: "El trono es sinónimo de paso, el conjunto de la imagen y las andas."},
+            {question: "¿Qué es la 'mantilla'?",options: ["Una prenda de luto", "Un tipo de vela", "Una marcha musical", "Un tipo de pan"],correct: 0,explanation: "La mantilla es la prenda de luto que llevan algunas mujeres en las procesiones."},
+            {question: "¿Qué es la 'saeta'?",options: ["Un tipo de flor", "Un canto flamenco", "Un tipo de paso", "Una vestimenta"],correct: 1,explanation: "La saeta es un canto religioso, generalmente flamenco, improvisado y a capella..."},
+            // Preguntas Nuevas (Semana Santa y Cultura Eclesiástica)
+            {question: "¿Qué representa el Domingo de Ramos?",options: ["La Resurrección de Jesús", "El lavatorio de pies", "La entrada triunfal de Jesús en Jerusalén", "La Pasión de Cristo"],correct: 2,explanation: "Se conmemora la entrada de Jesús en Jerusalén, donde fue recibido con palmas y ramos."},
+            {question: "¿Cuál es el color litúrgico predominante en el Domingo de Ramos?",options: ["Morado", "Rojo", "Verde", "Blanco"],correct: 1,explanation: "El color litúrgico es el rojo, simbolizando la realeza de Cristo y su inminente Pasión."},
+            {question: "¿Qué se conmemora en la Misa Crismal?",options: ["La Última Cena", "La bendición de los Santos Óleos", "La Crucifixión", "La Vigilia Pascual"],correct: 1,explanation: "El obispo bendice los óleos (enfermos, catecúmenos) y consagra el Santo Crisma."},
+            {question: "¿Qué institución de Jesús se recuerda el Jueves Santo?",options: ["El Bautismo", "La Confirmación", "La Eucaristía y el Sacerdocio", "La Unción de los enfermos"],correct: 2,explanation: "Se conmemora la Última Cena, donde Jesús instituyó la Eucaristía y el Sacramento del Orden Sacerdotal."},
+            {question: "¿Qué es el 'Palio' en una procesión?",options: ["El recorrido completo", "El techo del trono que cubre a la Virgen", "Un tipo de música", "La vestidura del nazareno"],correct: 1,explanation: "Es el dosel que cubre el trono donde va la imagen de la Virgen, sostenido por varales."},
+            {question: "¿Qué ciudad es conocida por sus procesiones de 'El Silencio' y la 'Madrugá'?",options: ["Valladolid", "Málaga", "Sevilla", "Zamora"],correct: 2,explanation: "Sevilla es famosa por su 'Madrugá', la noche entre Jueves y Viernes Santo, con cofradías históricas como 'El Silencio'."},
+            {question: "¿Cuál es el principal símbolo de la Vigilia Pascual?",options: ["El Vía Crucis", "El Cirio Pascual", "La Saeta", "El Capillita"],correct: 1,explanation: "El Cirio Pascual simboliza a Cristo resucitado, luz del mundo."},
+            {question: "¿En qué día de la Semana Santa se guarda el luto más riguroso en la Iglesia?",options: ["Jueves Santo", "Viernes Santo", "Sábado Santo", "Domingo de Resurrección"],correct: 2,explanation: "El Sábado Santo es el día de luto total, en el que la Iglesia espera la Resurrección del Señor, que se celebra en la Vigilia Pascual."},
+            {question: "¿Qué significa la palabra 'Abba' utilizada por Jesús para dirigirse a Dios?",options: ["Rey", "Señor", "Amigo", "Padre"],correct: 3,explanation: "Abba es un término arameo íntimo que significa 'Padre' o 'Papá'."},
+            {question: "¿Qué significa la palabra 'Eucaristía'?",options: ["Cuerpo de Cristo", "Bendición", "Acción de gracias", "Sacrificio"],correct: 2,explanation: "Proviene del griego 'eucharistía' y significa 'acción de gracias'."},
+            {question: "¿Cuál de estos NO es un Sacramento en la Iglesia Católica?",options: ["Bautismo", "Confirmación", "Matrimonio", "Extrema Unción"],correct: 3,explanation: "El sacramento es 'Unción de los enfermos'. 'Extrema Unción' es un término antiguo."},
+            {question: "¿Cuántos Sacramentos tiene la Iglesia Católica?",options: ["Cinco", "Siete", "Doce", "Cuatro"],correct: 1,explanation: "Son siete: Bautismo, Confirmación, Eucaristía, Penitencia, Unción de los Enfermos, Orden Sacerdotal y Matrimonio."},
+            {question: "¿Cómo se llama el 'casco' de esparto o cartón que da forma al capirote del nazareno?",options: ["Costal", "Antifaz", "Morrión", "Armazón"],correct: 2,explanation: "El morrión es la estructura interna cónica que le da la forma característica al capirote."},
+            {question: "¿En qué ciudad es tradición 'saltar' o 'bailar' los pasos, al ritmo de la música, en lugar de llevar un paso más marcial?",options: ["Sevilla", "Málaga", "Granada", "Valladolid"],correct: 3,explanation: "En Valladolid, la solemnidad es más rigurosa, siguiendo un estilo castellano, con menos 'baile' o 'paso' rítmico que en Andalucía."},
+            {question: "¿Cuál es el primer sacramento que recibe un católico?",options: ["Confirmación", "Penitencia", "Bautismo", "Eucaristía"],correct: 2,explanation: "El Bautismo es el primer sacramento de iniciación cristiana."},
+            {question: "¿Qué significa la palabra 'católica' en su origen griego?",options: ["Creyente", "Universal", "Verdadera", "Elegida"],correct: 1,explanation: "La palabra 'católica' significa 'universal'."},
+            {question: "¿Cuál es el color litúrgico de la Cuaresma (tiempo de penitencia)?",options: ["Blanco", "Rojo", "Verde", "Morado"],correct: 3,explanation: "El color morado simboliza penitencia, austeridad y espera."},
+            {question: "¿Qué se utiliza en la Misa para consagrar y convertir en el Cuerpo y la Sangre de Cristo?",options: ["Agua y Aceite", "Pan y Agua", "Pan y Vino", "Sólo Pan"],correct: 2,explanation: "Se utiliza el pan (hostia) y el vino durante la Consagración."},
+            {question: "¿Qué cofradía de Sevilla es conocida por su túnica azul pavo y capirote morado?",options: ["La Macarena", "El Gran Poder", "La Esperanza de Triana", "Los Estudiantes"],correct: 3,explanation: "La Hermandad de Los Estudiantes es conocida por estos colores, siendo una de las cofradías universitarias."},
+            {question: "¿Quién es considerado el fundador de la Orden de Predicadores (Dominicos)?",options: ["San Francisco de Asís", "Santo Domingo de Guzmán", "San Ignacio de Loyola", "San Benito"],correct: 1,explanation: "Santo Domingo de Guzmán fundó la Orden para combatir la herejía mediante la predicación."},
+            {question: "¿Qué se celebra en el Domingo de Resurrección?",options: ["La Pasión de Cristo", "El Via Crucis", "La Resurrección de Jesús", "El encuentro con la Virgen"],correct: 2,explanation: "Se celebra que Jesús venció a la muerte, abriendo las puertas a la vida eterna."},
+            {question: "¿Qué es el 'triduo pascual'?",options: ["Los 3 días de ayuno", "Los 3 días de luto", "Los 3 días de la Pasión, Muerte y Resurrección de Jesús", "Las 3 caídas de Cristo"],correct: 2,explanation: "El Triduo Pascual es el centro del año litúrgico y comprende desde el Jueves Santo por la tarde hasta el Domingo de Resurrección."},
+            {question: "¿Cuál es el nombre de Dios revelado a Moisés en el Antiguo Testamento?",options: ["Adonai", "Yahvé", "Elohim", "Jehová"],correct: 1,explanation: "El nombre revelado a Moisés, a menudo traducido como 'Yo soy el que soy', es el tetragrámaton, vocalizado como Yahvé."},
+            {question: "¿Qué significa la palabra 'Amén' al final de una oración?",options: ["Gloria a Dios", "Que así sea", "Alaben a Dios", "Escucha, Señor"],correct: 1,explanation: "Amén, del hebreo, significa 'Así es' o 'Que así sea'."},
+            {question: "¿Qué número simboliza a menudo un período de prueba o penitencia en la Biblia?",options: ["Tres", "Siete", "Cuarenta", "Doce"],correct: 2,explanation: "El número cuarenta, como los 40 días de diluvio, la travesía por el desierto, o el ayuno de Jesús."},
+            {question: "¿Cuál es la última palabra de Jesús en la cruz según el evangelio de San Lucas?",options: ["Tengo sed", "Dios mío, ¿por qué me has abandonado?", "Todo está consumado", "Padre, en tus manos encomiendo mi espíritu"],correct: 3,explanation: "La frase 'Padre, en tus manos encomiendo mi espíritu' es la última registrada por Lucas."},
+            {question: "¿Qué postre es tradicional en la Semana Santa en España?",options: ["Flan", "Tarta de queso", "Torrijas", "Churros"],correct: 2,explanation: "Las torrijas son un dulce muy popular en estas fechas, aprovechando el pan duro."},
+            {question: "¿Qué llevan los nazarenos para recoger la cera de los cirios caídos?",options: ["Un cesto", "Una bolsa", "Un farol", "Un limón"],correct: 3,explanation: "Tradicionalmente se lleva un limón con alfileres para recoger la cera y no manchar la túnica."},
+            {question: "¿Cómo se llama la persona que va delante de la Cruz de Guía y guía a la cofradía?",options: ["El Capataz", "El Mayordomo", "El Diputado Mayor de Gobierno", "El Pregonero"],correct: 2,explanation: "El Diputado Mayor de Gobierno es el encargado de que la cofradía discurra por el itinerario correctamente."},
+            {question: "¿Qué es la 'Cruz de Guía'?",options: ["El primer paso que sale", "La cruz que abre el cortejo procesional", "El primer nazareno", "La cruz de penitencia que lleva el último nazareno"],correct: 1,explanation: "La Cruz de Guía es el estandarte que marca el inicio de la procesión."},
+            {question: "¿Quién dirige al grupo de costaleros desde el exterior del paso?",options: ["El Fiscal", "El Pertiguero", "El Capataz", "El Prioste"],correct: 2,explanation: "El Capataz, con la ayuda del 'llamador', dirige las 'levantás' y 'chicostás'."},
+            {question: "¿Qué instrumento de percusión es fundamental en la Semana Santa de ciudades como Zamora y Valladolid?",options: ["El Tambor", "La Corneta", "El Saxofón", "El Piano"],correct: 0,explanation: "El tambor es un elemento muy destacado en las procesiones de Castilla y León, especialmente en la 'Tamborrada' en San Sebastián, aunque es un elemento castellano."},
+            {question: "¿En qué ciudad se realiza la 'Procesión de las Turbas', una de las más singulares y ruidosas de España?",options: ["Sevilla", "Cuenca", "Málaga", "Cáceres"],correct: 1,explanation: "La Procesión 'Camino del Calvario' en Cuenca es popularmente conocida como la Procesión de las Turbas."},
+            {question: "¿Qué se recuerda en el Vía Crucis?",options: ["El nacimiento de Jesús", "La vida pública de Jesús", "La Pasión y el camino de Jesús hacia la crucifixión", "La Resurrección"],correct: 2,explanation: "El Vía Crucis recuerda las 14 estaciones o momentos del camino de Jesús al Calvario."},
+            {question: "¿Quién fue Santo Domingo de Guzmán?",options: ["Un evangelista", "El fundador de los Jesuitas", "El fundador de los Dominicos", "Un Papa medieval"],correct: 2,explanation: "Fue un sacerdote y teólogo español que fundó la Orden de Predicadores (Dominicos)."},
+            {question: "¿En la religión católica, ¿qué se celebra el día de la Asunción de la Virgen?",options: ["La Inmaculada Concepción", "La Coronación de María", "La subida de María al Cielo en cuerpo y alma", "La Anunciación"],correct: 2,explanation: "El 15 de agosto se celebra la Asunción de la Virgen María a los cielos."},
+            {question: "¿Qué significa el término 'Inri' que aparece en la cruz?",options: ["Jesús Salvador del Mundo", "Jesús Nazareno Rey de los Judíos", "Jesús Nazareno Redentor de Israel", "Jesús Rey Inmortal"],correct: 1,explanation: "Es el acrónimo de 'Iesus Nazarenus Rex Iudaeorum' (Jesús Nazareno, Rey de los Judíos)."},
+            {question: "¿Cómo se llama el 'llamador' que usa el capataz para indicar las órdenes a los costaleros?",options: ["Campana de paso", "Martillo", "Clamor", "Corneta"],correct: 1,explanation: "El Martillo, a golpe de metal, es la herramienta con la que se avisa para 'levantar' o 'arriar' el paso."},
+            {question: "¿Qué son las 'bambalinas' en un paso de palio?",options: ["Las varas laterales del paso", "Los faldones que cuelgan del techo del palio", "Las flores que adornan el paso", "Los candelabros"],correct: 1,explanation: "Son las telas bordadas que cuelgan del techo del palio (techo de palio) por los laterales."},
+            {question: "¿En la Última Cena, ¿quién de los discípulos traicionó a Jesús?",options: ["Pedro", "Juan", "Judas Iscariote", "Tomás"],correct: 2,explanation: "Judas Iscariote traicionó a Jesús por 30 monedas de plata."},
+            {question: "¿Qué evangelista es representado por un toro o buey?",options: ["Mateo", "Marcos", "Lucas", "Juan"],correct: 2,explanation: "Lucas, a menudo, es representado con un buey o toro, ya que su evangelio comienza con el sacrificio de Zacarías."},
+            {question: "¿Cuál es el color litúrgico de la Navidad y la Pascua de Resurrección?",options: ["Morado", "Rojo", "Blanco", "Verde"],correct: 2,explanation: "El blanco simboliza pureza, alegría y el tiempo de fiesta."},
+            {question: "¿Qué es el 'Laudes' en la Liturgia de las Horas?",options: ["La oración de medianoche", "La oración de la mañana", "La oración de la tarde", "La oración de la noche"],correct: 1,explanation: "Laudes es la oración litúrgica de alabanza que se reza al amanecer."},
+            // Preguntas 51 - 100 (Sevilla y Andalucía Central)
+            {question: "¿Cómo se llama el pañuelo o redecilla que sujeta el pelo de los costaleros?",options: ["Faja", "Costal", "Morrión", "Malla"],correct: 0,explanation: "La faja (o esparto) sujeta los riñones, pero el 'costal' (o la redecilla bajo él) sujeta el pelo."},
+            {question: "¿Qué es el 'llamador' de un paso?",options: ["Una campana", "Un martillo", "Un megáfono", "Un instrumento de viento"],correct: 1,explanation: "El llamador es el martillo que el capataz golpea para ordenar el inicio o fin de la 'levantá'."},
+            {question: "¿Qué hermandad sevillana lleva el nombre de 'La Macarena' en la Madrugá?",options: ["Esperanza de Triana", "El Gran Poder", "Virgen de la Esperanza Macarena", "Los Gitanos"],correct: 2,explanation: "La Hermandad de la Esperanza Macarena procesiona en la Madrugá sevillana."},
+            {question: "¿Qué día procesiona la Hermandad de 'El Gran Poder' en Sevilla?",options: ["Domingo de Ramos", "Lunes Santo", "Jueves Santo", "La Madrugá (Viernes)"],correct: 3,explanation: "El 'Señor de Sevilla' procesiona durante la Madrugá."},
+            {question: "¿Qué es la 'Antifaz' que lleva el nazareno?",options: ["La capa", "El capirote", "La tela que cubre la cara", "El cíngulo"],correct: 2,explanation: "El antifaz es la tela que cae del capirote y cubre el rostro del penitente."},
+            {question: "¿Qué Hermandad se conoce popularmente como 'El Cristo del Amor'?",options: ["El Gran Poder", "Los Gitanos", "El Amor", "La Lanzada"],correct: 2,explanation: "La Hermandad de El Amor procesiona con el Cristo del Amor."},
+            {question: "¿Cuál es el elemento principal que adorna los pasos de Cristo (misterio)?",options: ["Claveles rojos", "Azucenas", "Tulipanes", "Rosas blancas"],correct: 0,explanation: "Los claveles rojos y morados son la flor más tradicional en los pasos de misterio."},
+            {question: "¿Qué se conmemora en el Lunes Santo en la Semana Santa?",options: ["La Última Cena", "La Resurrección", "La unción en Betania o el prendimiento", "La entrada en Jerusalén"],correct: 2,explanation: "Dependiendo de la ciudad, se recuerdan pasajes como la Unción de Jesús o el Prendimiento."},
+            {question: "¿Qué hermandad sevillana tiene su sede en la Basílica de la Macarena?",options: ["La Macarena", "La Esperanza de Triana", "El Gran Poder", "San Bernardo"],correct: 0,explanation: "La Basílica es el hogar canónico de la Virgen de la Esperanza Macarena."},
+            {question: "¿En qué ciudad se encuentra la talla del 'Cristo de la Expiración' conocido como 'El Cachorro'?",options: ["Cádiz", "Córdoba", "Huelva", "Sevilla"],correct: 3,explanation: "La imagen del Cachorro, atribuida a Francisco Ruiz Gijón, se encuentra en Sevilla (Triana)."},
+            {question: "¿Cómo se llama el recipiente donde se quema el incienso?",options: ["Naveta", "Incensario", "Candelabro", "Farol"],correct: 1,explanation: "El incensario es el quemador; la naveta guarda el incienso sin quemar."},
+            {question: "¿Qué es el 'Cíngulo'?",options: ["La correa que sujeta el costal", "El cordón que ciñe la túnica del nazareno", "Un tipo de vela", "El adorno del capirote"],correct: 1,explanation: "El cíngulo es un cordón o cuerda que rodea la cintura de la túnica."},
+            {question: "¿En qué provincia se celebra la Romería de El Rocío?",options: ["Sevilla", "Cádiz", "Huelva", "Córdoba"],correct: 2,explanation: "La Aldea del Rocío se encuentra en Almonte, provincia de Huelva."},
+            {question: "¿Quién es el autor de la marcha 'Esperanza de Triana Coronada'?",options: ["Manuel López Farfán", "Pedro Morales", "José L. Peralto", "Antonio M. Claros"],correct: 1,explanation: "Compuesta por Pedro Morales en 1983."},
+            {question: "¿Qué significa 'Expiración' en la imaginería religiosa?",options: ["La agonía en el huerto", "La Última Cena", "El momento final de la muerte de Cristo en la Cruz", "La Resurrección"],correct: 2,explanation: "Representa el instante en que Jesús exhala su último aliento."},
+            {question: "¿Cuál es el color de la túnica de la Hermandad de 'Los Gitanos' de Sevilla?",options: ["Morada y negra", "Blanca y azul", "Morada", "Negra"],correct: 0,explanation: "La túnica es morada de cola y el antifaz negro, o túnica negra de cola y antifaz morado, según la imagen."},
+            {question: "¿Qué se coloca en la cima del capirote del nazareno para evitar que caiga?",options: ["Un escudo", "Un botón o borla", "Una cruz", "Un broche"],correct: 1,explanation: "Se coloca un pequeño botón o broche para asegurar la punta y darle consistencia."},
+            {question: "¿En qué ciudad se puede ver la 'Procesión de las capas pardas'?",options: ["Salamanca", "Zamora", "León", "Valladolid"],correct: 1,explanation: "Típica de Zamora, especialmente la Cofradía de las Capas Pardas, caracterizada por su rigor y silencio."},
+            {question: "¿Cómo se le llama al conjunto de cirios que alumbran un paso de palio?",options: ["Candelería", "Faroles", "Candelabros", "Ciriales"],correct: 0,explanation: "La candelería es el conjunto de cirios de cera blanca o de color que iluminan el palio."},
+            {question: "¿Qué día de la Semana Santa se celebra el 'Viernes de Dolores'?",options: ["El viernes antes del Domingo de Ramos", "El Jueves Santo", "El Viernes Santo", "El Sábado Santo"],correct: 0,explanation: "El Viernes de Dolores es el viernes anterior al inicio de la Semana Santa, aunque no forma parte del triduo."},
+            {question: "¿Qué paso de misterio de la Madrugá sevillana representa a Jesús Nazareno con la cruz al hombro?",options: ["El Gran Poder", "El Calvario", "El Silencio", "Los Gitanos"],correct: 0,explanation: "Jesús del Gran Poder es la imagen de Jesús con la cruz al hombro."},
+            {question: "¿Qué pieza musical cofrade fue compuesta por Abel Moreno y es muy popular?",options: ["Pasa la Macarena", "Soleá dame la mano", "La Madrugá", "Estrella Sublime"],correct: 2,explanation: "'La Madrugá' es una de las marchas más famosas de Abel Moreno."},
+            {question: "¿Qué es un 'Exorno floral'?",options: ["Un tipo de incienso", "La decoración floral del paso", "El adorno del capirote", "La música de la banda"],correct: 1,explanation: "Es el arreglo floral que decora artísticamente los pasos y tronos."},
+            {question: "¿Cuál es el nombre del lugar donde las cofradías hacen penitencia obligatoria en Sevilla?",options: ["La Sede Canónica", "La Plaza de España", "La Carrera Oficial", "La Campana"],correct: 2,explanation: "La Carrera Oficial es el recorrido común y obligatorio para todas las hermandades."},
+            {question: "¿Qué día tiene lugar el 'Pregón' de la Semana Santa en muchas ciudades?",options: ["Miércoles Santo", "Viernes de Dolores", "Sábado anterior a Ramos", "Domingo de Ramos"],correct: 2,explanation: "El Pregón suele tener lugar el Sábado antes del Domingo de Ramos, anunciando la inminente llegada de la Semana Mayor."},
+            {question: "¿Qué Hermandad sevillana tiene su sede en la Catedral, siendo la única de penitencia?",options: ["El Santo Entierro", "El Silencio", "La Carretería", "La Macarena"],correct: 0,explanation: "La Hermandad del Santo Entierro, con el 'Triunfo de la Santa Cruz', tiene su sede canónica en la Catedral."},
+            {question: "¿Qué representa la imagen de la 'Virgen de los Dolores'?",options: ["La alegría de la Resurrección", "El sufrimiento de María por la Pasión de su Hijo", "La Anunciación", "La Coronación"],correct: 1,explanation: "Representa a María en su dolor, a menudo con siete puñales simbolizando sus Siete Dolores."},
+            {question: "¿Qué es el 'senatus'?",options: ["El estandarte de la Virgen", "Un escudo romano en el paso de misterio", "La insignia que evoca el Senado de Roma", "El paso con el Cristo yacente"],correct: 2,explanation: "Insignia con el acrónimo SPQR (Senatus Populusque Romanus)."},
+            {question: "¿Qué ciudad es conocida por sus 'Manolas' vestidas de luto riguroso con mantilla el Jueves y Viernes Santo?",options: ["Granada", "Sevilla", "Madrid", "Málaga"],correct: 2,explanation: "Aunque en toda Andalucía se ve la mantilla, las de Madrid (Viernes Santo) son muy populares."},
+            {question: "¿Qué hermandad sevillana tiene la túnica de ruán negro y la lleva sin capirote?",options: ["El Silencio", "El Gran Poder", "La Vera-Cruz", "La Carretería"],correct: 2,explanation: "La Vera-Cruz lleva la túnica de ruán negro y antifaz de esparto, pero el hábito suele ser sin capirote (de ruan)."},
+            {question: "¿Qué es el 'Pértigo' o 'Pertiguero'?",options: ["Un tipo de vela grande", "El nazareno más antiguo", "El dignatario que abre el cortejo de insignias", "El jefe de la banda"],correct: 2,explanation: "El pertiguero guía la comitiva de insignias y va delante de los pasos."},
+            {question: "¿A qué se le llama 'Chicotá'?",options: ["El momento de la levantá", "El tramo de recorrido que hace un paso sin parar", "El descanso de los costaleros", "El golpe de martillo"],correct: 1,explanation: "Es el tramo corto que recorre el paso de un 'levantá' a un 'arriá'."},
+            {question: "¿Qué hermandad es conocida por la imagen de 'El Cautivo' en Málaga?",options: ["El Gran Poder", "El Cautivo (del Lunes Santo)", "La Paloma", "La Esperanza"],correct: 1,explanation: "Jesús Cautivo, el 'Señor de Málaga', procesiona el Lunes Santo."},
+            {question: "¿Qué significa 'Arriá'?",options: ["Alzar el paso", "Bajar el paso al suelo", "Girar el paso", "Acelerar el paso"],correct: 1,explanation: "La 'arriá' es la acción de bajar el paso al suelo para un descanso."},
+            {question: "¿Qué se coloca en la cruz de Jesús Nazareno del Silencio de Sevilla?",options: ["Un sudario", "Un letrero", "Una rama de olivo", "Un paño blanco de encaje"],correct: 3,explanation: "Un paño de encaje, conocido como el 'paño de El Silencio'."},
+            {question: "¿Qué metal es más común en los pasos de palio de Sevilla?",options: ["Plata de ley", "Aluminio", "Metal dorado", "Alpaca plateada"],correct: 3,explanation: "Aunque hay de plata, la alpaca plateada (metal blanco) es muy común en los varales y candelería."},
+            {question: "¿Quién era Simón de Cirene ('El Cirineo')?",options: ["El que condenó a Jesús", "El que ayudó a Jesús a llevar la cruz", "El discípulo amado", "El que lavó las manos"],correct: 1,explanation: "Simón de Cirene fue obligado a cargar la cruz de Jesús."},
+            {question: "¿Qué son las 'Borlas' en un paso de palio?",options: ["Los adornos de los faldones", "Las luces del paso", "Las flores", "Los varales"],correct: 0,explanation: "Las borlas son los adornos textiles o de flecos que rematan los faldones del paso."},
+            {question: "¿Qué día de la Semana Santa se celebra el 'Jueves de Pasión'?",options: ["El día después del Domingo de Ramos", "El jueves antes de Semana Santa", "El Jueves Santo", "El Sábado de Gloria"],correct: 1,explanation: "El Jueves anterior al Domingo de Ramos, no litúrgicamente parte de la Semana Santa."},
+            {question: "¿Qué es un 'Canasto' o 'Canastilla' en un paso?",options: ["La estructura sobre la que se apoya la imagen", "El cofre donde se guarda el incienso", "El lugar del capataz", "El palio de la Virgen"],correct: 0,explanation: "Es la parte más visible del paso, tallada y dorada, donde se asienta el misterio o la imagen."},
+            {question: "¿Qué se celebra en el Martes Santo?",options: ["La Última Cena", "La Pasión en el Huerto", "La Resurrección", "La Unción en Betania"],correct: 1,explanation: "Se recuerdan momentos de la Pasión en el Huerto de los Olivos y el prendimiento."},
+            {question: "¿Qué ciudad es conocida por sus 'desfiles' o procesiones de imaginería castellana de gran valor?",options: ["Sevilla", "Valladolid", "Cádiz", "Huelva"],correct: 1,explanation: "Valladolid destaca por la calidad de sus tallas, de la escuela castellana."},
+            {question: "¿Qué es el 'Sudario' en una imagen de Cristo?",options: ["La corona de espinas", "El paño que cubre la cintura", "La túnica", "La Cruz"],correct: 1,explanation: "Es el paño o tela que cubre la zona de la cintura o el cuerpo en el caso del Cristo Yacente."},
+            {question: "¿Cómo se llama la Hermandad de Sevilla que procesiona con el Cristo de la Expiración (El Cachorro)?",options: ["La Esperanza de Triana", "La O", "La Estrella", "El Cachorro"],correct: 3,explanation: "Aunque de Triana, se la conoce comúnmente como El Cachorro."},
+            {question: "¿Qué se coloca en el hombro del costalero para protegerlo de la 'trabajadera'?",options: ["Faja", "Costal", "Morrión", "Vendaje"],correct: 1,explanation: "El costal, colocado bajo el morrión, se apoya en la séptima vértebra cervical (la 'trabajadera')."},
+            {question: "¿Cuál es el color litúrgico que se usa en el Viernes Santo?",options: ["Blanco", "Morado", "Rojo", "Negro"],correct: 1,explanation: "El rojo, simbolizando la Sangre y la Pasión de Cristo, es el color litúrgico oficial en la liturgia."},
+            {question: "¿Qué objeto lleva el nazareno que lo identifica con la hermandad y se sitúa a la altura del pecho?",options: ["Escudo", "Medalla", "Cruz", "Estampita"],correct: 1,explanation: "La medalla o insignia de la Hermandad, que a veces cuelga del cuello."},
+            {question: "¿Qué cofradía de Huelva es conocida como 'Los Judíos'?",options: ["La Oración en el Huerto", "La Lanzada", "La Victoria", "El Cautivo"],correct: 0,explanation: "La Hermandad de la Oración en el Huerto en Huelva es popularmente conocida como 'Los Judíos'."},
+            {question: "¿Qué es el 'Bacalao' o 'Estandarte' en una procesión?",options: ["La túnica", "Un tipo de pescado", "La bandera que representa a la cofradía", "El cirio más grande"],correct: 2,explanation: "Es la insignia principal, una tela ovalada o rectangular con el escudo de la Hermandad."},
+            {question: "¿Cuál es el nombre del lugar donde las cofradías salen de su templo?",options: ["La Cuesta", "El Atrio", "La Salida", "La Sede Canónica"],correct: 3,explanation: "La Sede Canónica es el templo o iglesia donde tiene su base la hermandad."},
+            // Preguntas 101 - 150 (Imaginería, Música y Málaga)
+            {question: "¿Qué talla es una de las más famosas del escultor Juan de Mesa?",options: ["El Cristo de la Buena Muerte", "Jesús del Gran Poder", "El Cachorro", "La Macarena"],correct: 1,explanation: "Jesús del Gran Poder de Sevilla es una obra cumbre de Juan de Mesa."},
+            {question: "¿Cuál es el título que se le da a la Virgen de la Macarena?",options: ["Reina del Cielo", "Reina de la Madrugá", "Reina de Sevilla", "Reina y Madre de la Esperanza"],correct: 3,explanation: "Su título completo es María Santísima de la Esperanza Macarena, Reina y Madre de la Esperanza."},
+            {question: "¿Cómo se llama la parte del paso que va entre la canastilla y el suelo?",options: ["Trabajadera", "Faldón", "Bambalina", "Respiradero"],correct: 3,explanation: "El respiradero es la zona de orfebrería o bordado que permite la ventilación bajo el paso."},
+            {question: "¿Qué es una 'Marcha Fúnebre'?",options: ["Una marcha alegre", "Una pieza musical lenta y solemne", "Un canto a capella", "Un tamborileo"],correct: 1,explanation: "Un tipo de composición que acompaña pasos de luto o misterio."},
+            {question: "¿Qué cofradía de Málaga tiene el privilegio de liberar a un preso cada Miércoles Santo?",options: ["El Cautivo", "El Rico", "La Esperanza", "El Nazareno"],correct: 1,explanation: "La Hermandad de Jesús el Rico, por una Real Prerrogativa de Carlos III."},
+            {question: "¿Qué imagen de Cristo es conocida por su 'baile' en el traslado al paso el Jueves Santo en Málaga?",options: ["El Cautivo", "El Chiquito", "La Expiración", "El Cristo de la Cena"],correct: 0,explanation: "Aunque procesiona el Lunes Santo, su traslado al trono es un momento muy emotivo."},
+            {question: "¿Quién era Nicodemo en el relato de la Pasión?",options: ["El que condenó a Jesús", "El que bajó a Jesús de la cruz junto con José de Arimatea", "Uno de los apóstoles", "El sumo sacerdote"],correct: 1,explanation: "Nicodemo y José de Arimatea se encargaron de descolgar y sepultar el cuerpo de Jesús."},
+            {question: "¿Qué es un 'Mantolín'?",options: ["La capa de la Virgen", "Una pequeña capa que llevan algunas figuras secundarias en los misterios", "El pañuelo de la Virgen", "La túnica del nazareno"],correct: 1,explanation: "Una pequeña capa que usan personajes como San Juan o el Cirineo."},
+            {question: "¿Qué se le llama a la persona encargada del cuidado y vestimenta de la Virgen?",options: ["Prioste", "Fiscal", "Mayordomo", "Vestidor"],correct: 3,explanation: "El vestidor es el encargado artístico de vestir a las imágenes."},
+            {question: "¿Qué día procesiona la Hermandad de 'La Esperanza de Triana' en Sevilla?",options: ["Sábado Santo", "Viernes Santo", "La Madrugá (Viernes)", "Lunes Santo"],correct: 2,explanation: "Junto a la Macarena, es una de las cofradías más importantes de la Madrugá."},
+            {question: "¿Qué ciudad castellana es famosa por su procesión del 'Desenclavo' (descendimiento de la Cruz)?",options: ["Burgos", "Valladolid", "Zamora", "Palencia"],correct: 1,explanation: "El Sábado Santo en Valladolid se representa el acto del Desenclavo."},
+            {question: "¿Qué elemento es típico del paso de la Macarena y simboliza las lágrimas de la Virgen?",options: ["El puñal", "Los claveles", "Las cinco mariquillas (broches)", "El sudario"],correct: 2,explanation: "Las 'mariquillas' son 5 broches en forma de esmeralda en su pecho."},
+            {question: "¿Qué es la 'Cruz Parroquial'?",options: ["La cruz que lleva el nazareno", "La Cruz de Guía", "Una insignia con la cruz de la parroquia", "El crucifijo del paso"],correct: 2,explanation: "Insignia que representa a la parroquia a la que pertenece la hermandad."},
+            {question: "¿Qué es un 'Cirial'?",options: ["Un tipo de vela", "El encargado de portar la vara de la presidencia", "Un candelabro pequeño", "Una varilla larga con un cirio en el extremo, portada por acólitos"],correct: 3,explanation: "Los acólitos ceriferarios portan los ciriales."},
+            {question: "¿Cuál es el color de los cirios de la Virgen de la Amargura de Sevilla?",options: ["Blanco", "Morado", "Rojo", "Verde"],correct: 0,explanation: "El blanco en los pasos de palio simboliza la pureza o la realeza de la Virgen."},
+            {question: "¿Qué hermandad de Sevilla tiene el paso de misterio de 'El Prendimiento'?",options: ["La Redención", "El Valle", "Jesús Despojado", "Los Panaderos"],correct: 0,explanation: "La Hermandad de la Redención (Lunes Santo) tiene el misterio del beso de Judas y el Prendimiento."},
+            {question: "¿Qué son los 'Varales' en un paso de palio?",options: ["Las vigas que sostienen el techo", "Las barras de metal que sostienen el palio", "Los candelabros", "Las barras de madera para los costaleros"],correct: 1,explanation: "Las doce barras de metal que unen el techo del palio a la peana del paso."},
+            {question: "¿Qué es el 'Dintel' en la arquitectura de un paso?",options: ["La parte inferior", "La parte superior de la canastilla", "El techo del palio", "La mesa del paso"],correct: 2,explanation: "El 'techo de palio' también se denomina a veces 'dintel' del paso."},
+            {question: "¿Quién era Barrabás?",options: ["Un apóstol", "Un ladrón liberado en lugar de Jesús", "El que ayudó a cargar la cruz", "Un centurión romano"],correct: 1,explanation: "El pueblo eligió liberar a Barrabás en lugar de Jesús."},
+            {question: "¿Qué ciudad es conocida por la 'Procesión de las 13 palabras'?",options: ["Sevilla", "Valladolid", "Salamanca", "Zamora"],correct: 2,explanation: "En Salamanca, el Vía Crucis del Viernes Santo se conoce como la Procesión de las 13 Palabras."},
+            {question: "¿Qué es el 'Lignum Crucis'?",options: ["La madera de la cruz", "Una reliquia de la Cruz de Cristo", "El paso del crucificado", "El sudario de Cristo"],correct: 1,explanation: "Significa 'Madera de la Cruz', y se guarda en relicarios."},
+            {question: "¿Qué color de cera es habitual en los pasos de Cristo (misterio)?",options: ["Blanco", "Negro o morado", "Verde", "Azul"],correct: 1,explanation: "La cera de color tiniebla (morada, negra, o roja) es la más común en los misterios."},
+            {question: "¿Qué es un 'Maniguetero'?",options: ["El capataz", "El nazareno que sujeta la manigueta (esquina) del paso", "El que lleva el estandarte", "El músico"],correct: 1,explanation: "Suele ser un nazareno de la junta que va sujetando las esquinas del paso, cerca de los faldones."},
+            {question: "¿Qué es la 'Cola' en la túnica de un nazareno?",options: ["El adorno del capirote", "La parte más estrecha", "La tela sobrante que se recoge en la cintura", "El cordón del cíngulo"],correct: 2,explanation: "Es la tela extra de la túnica que arrastra o se recoge por el cíngulo, simbolizando humildad."},
+            {question: "¿Qué significa 'Calvario'?",options: ["Monte de la Resurrección", "Lugar del Huerto de los Olivos", "Lugar de la calavera (crucifixión)", "Ciudad de Jerusalén"],correct: 2,explanation: "Gólgota o Calvario, el lugar de la crucifixión, que significa 'lugar de la calavera'."},
+            {question: "¿En qué ciudad se realiza la 'Procesión del Silencio' en la noche de Jueves Santo con una solemnidad extrema?",options: ["Málaga", "Cádiz", "Sevilla", "Granada"],correct: 2,explanation: "La Hermandad del Silencio en Sevilla es una de las más antiguas y rigurosas."},
+            {question: "¿Qué objeto lleva el 'Fiscal' de una cofradía?",options: ["Un incensario", "Una vara de plata o madera", "Un martillo", "Un libro de reglas"],correct: 1,explanation: "El fiscal lleva una vara de metal y es el encargado de que el cortejo se mantenga en orden."},
+            {question: "¿Qué significa 'Peana' en un paso?",options: ["La mesa del paso", "La base o plataforma sobre la que se asienta la imagen", "El trono de la Virgen", "La peana del nazareno"],correct: 1,explanation: "Es el soporte donde se eleva la imagen dentro del paso."},
+            {question: "¿Qué día se conmemora la Última Cena y el Lavatorio de pies?",options: ["Miércoles Santo", "Jueves Santo", "Viernes Santo", "Sábado Santo"],correct: 1,explanation: "El Jueves Santo se inician los oficios del Triduo Pascual."},
+            {question: "¿Qué ciudad es conocida por la 'Salida del Cristo de la Buena Muerte' y la Legión Española?",options: ["Sevilla", "Málaga", "Cádiz", "Granada"],correct: 1,explanation: "La Legión acompaña al Cristo de la Buena Muerte de Mena en Málaga."},
+            {question: "¿Qué es un 'Acolitado'?",options: ["El grupo de costaleros", "El grupo de músicos", "El grupo de acólitos que asiste al paso", "El grupo de nazarenos de luz"],correct: 2,explanation: "El acolitado lo forman acólitos ceroferarios (ciriales) y turiferarios (incensarios)."},
+            {question: "¿Quién es el autor de la marcha 'Soleá dame la mano'?",options: ["Manuel López Farfán", "Antonio M. Claros", "Ricardo Dorado", "Manuel Font de Anta"],correct: 3,explanation: "Compuesta por Manuel Font de Anta y reorquestada por su hermano José Font de Anta."},
+            {question: "¿Qué tela se utiliza habitualmente para la túnica del nazareno en Sevilla?",options: ["Terciopelo", "Seda", "Sarga o ruán", "Lana"],correct: 2,explanation: "La sarga es una tela sencilla y mate, ideal para el carácter penitencial."},
+            {question: "¿Qué es un 'Armao' en la Semana Santa de Sevilla?",options: ["Un costalero", "Un nazareno de capa", "Un soldado romano de la Hermandad de la Macarena", "Un miembro de la banda"],correct: 2,explanation: "Los 'armaos' son los centuriones de la Centuria Romana Macarena."},
+            {question: "¿Qué representa el cirio de color verde en la Macarena?",options: ["El luto", "La esperanza", "La caridad", "La fe"],correct: 1,explanation: "El color verde es el color de la Esperanza, asociado a la Virgen de la Macarena."},
+            {question: "¿Qué son los 'faldones' de un paso?",options: ["Las varas que sujetan el palio", "Las telas que cubren la parte inferior de la mesa del paso", "Los mantos de la Virgen", "Los bordados del techo"],correct: 1,explanation: "Los faldones tapan a los costaleros que van debajo."},
+            {question: "¿Qué hermandad sevillana tiene como imagen titular al 'Cristo de la Misericordia'?",options: ["El Baratillo", "La Redención", "El Buen Fin", "El Valle"],correct: 0,explanation: "La Hermandad de El Baratillo (Miércoles Santo) tiene al Stmo. Cristo de la Misericordia."},
+            {question: "¿Qué es un 'Rosario de Penitencia'?",options: ["Una procesión con nazarenos y palios", "Una procesión de la Virgen sin acompañamiento de pasos", "Un rezo en la calle", "Una procesión con solo el estandarte"],correct: 1,explanation: "Procesiones más sencillas, a menudo solo con la imagen de la Virgen."},
+            {question: "¿Cuál es el color litúrgico de la Solemnidad de la Inmaculada Concepción?",options: ["Morado", "Rojo", "Blanco", "Azul"],correct: 2,explanation: "El blanco, aunque en España se usa el azul por privilegio papal."},
+            {question: "¿Qué son las 'Insignias' en una cofradía?",options: ["Los músicos", "Los adornos florales", "Los distintivos y estandartes que preceden a los pasos", "Los nazarenos con cirio"],correct: 2,explanation: "Cruz de Guía, Senatus, Estandarte, Simpecado, etc."},
+            {question: "¿Qué es el 'Bulla' en el contexto de la Madrugá?",options: ["Un tipo de incienso", "El ruido y alboroto de la gente en el paso de las cofradías", "El paso del misterio", "Un tipo de saeta"],correct: 1,explanation: "Concentración de público, a veces desordenada, al paso de las hermandades."},
+            {question: "¿Qué hermandad de Granada es conocida por su 'Cristo de los Gitanos' y el rito de la hoguera?",options: ["La Esperanza", "El Rescate", "Los Gitanos (Granada)", "La Estrella"],correct: 2,explanation: "Procesiona el Miércoles Santo y tiene su origen en el barrio del Sacromonte."},
+            {question: "¿Qué es un 'Contraguía'?",options: ["El ayudante del capataz que va dentro del paso", "El nazareno que cierra el cortejo", "El que va delante de la Cruz de Guía", "El encargado de las insignias"],correct: 0,explanation: "El ayudante del capataz, que da las órdenes desde dentro, bajo la canastilla."},
+            {question: "¿Qué se conmemora en el Sábado de Gloria?",options: ["La Resurrección de Jesús", "La vigilia y el luto por Cristo en el Sepulcro", "La Última Cena", "La Pasión"],correct: 1,explanation: "Tradicionalmente era el Sábado Santo de luto, antes de la Vigilia Pascual."},
+            // Preguntas 151 - 200 (Castilla, Córdoba, Huelva y Liturgia)
+            {question: "¿Qué cofradía de Valladolid es conocida por su rigurosa sobriedad y el Cristo de la Luz?",options: ["La Siete Palabras", "La Vera Cruz", "La Piedad", "El Cristo de la Luz"],correct: 3,explanation: "Una de las cofradías más importantes, con imaginería de Gregorio Fernández."},
+            {question: "¿Qué se utiliza en la Vigilia Pascual para encender el Cirio Pascual?",options: ["Una cerilla", "La luz de un farol", "Fuego nuevo (el lucernario)", "Una vela encendida previamente"],correct: 2,explanation: "El Cirio se enciende con el fuego nuevo bendecido en el Lucernario."},
+            {question: "¿Qué ciudad castellana celebra la procesión del 'Silencio' con la imagen de 'Jesús Nazareno de la Congregación'?",options: ["Zamora", "León", "Salamanca", "Valladolid"],correct: 1,explanation: "En León, la Cofradía de Jesús Nazareno de la Congregación."},
+            {question: "¿Qué es el 'Vía Lucis'?",options: ["El camino de la Cruz", "El camino de la Luz (Resurrección)", "El Vía Crucis", "El camino de la Cuaresma"],correct: 1,explanation: "Una devoción que medita los 14 momentos de Jesús resucitado hasta Pentecostés."},
+            {question: "¿Qué hermandad de Córdoba es conocida como 'El Rescatado' o 'Señor de Córdoba'?",options: ["El Gran Poder", "El Caído", "Nuestro Padre Jesús Nazareno Rescatado", "La Sentencia"],correct: 2,explanation: "Imagen de Jesús Rescatado de la Hermandad de la Sangre (Lunes Santo)."},
+            {question: "¿Qué es un 'Aparador' en un paso?",options: ["El faldón", "La pieza de orfebrería o bordado que adorna el interior del paso de palio", "El llamador", "El cirio más grande"],correct: 1,explanation: "Pieza ornamental que embellece el interior visible del palio."},
+            {question: "¿Qué se lleva en el 'Simpecado'?",options: ["La Cruz de Guía", "La representación de la Inmaculada Concepción de María", "El escudo de la Hermandad", "La bandera papal"],correct: 1,explanation: "Es la insignia que defiende el dogma de la Inmaculada Concepción."},
+            {question: "¿Qué día se celebra en la Iglesia el 'Día del Perdón' o 'Día de la Penitencia'?",options: ["Domingo de Ramos", "Lunes Santo", "Miércoles de Ceniza", "Viernes Santo"],correct: 3,explanation: "Aunque la penitencia es todo el tiempo, el Viernes Santo es el día de la Pasión y la Reconciliación."},
+            {question: "¿Cuál es el nombre de la madre de la Virgen María según la tradición católica?",options: ["Santa Isabel", "Santa Ana", "Santa María Magdalena", "Santa Marta"],correct: 1,explanation: "Santa Ana y San Joaquín son los padres de la Virgen María."},
+            {question: "¿Qué cofradía de Huelva procesiona con el Cristo de la Expiración y la Virgen de la Victoria?",options: ["El Santo Entierro", "La Victoria", "El Cautivo", "La Oración en el Huerto"],correct: 1,explanation: "La Hermandad de la Victoria (Miércoles Santo)."},
+            {question: "¿Qué significa 'Dolorosa'?",options: ["Una imagen de Cristo con dolor", "Una advocación de la Virgen María que expresa su dolor por la Pasión", "Una marcha lenta", "Un tipo de saeta"],correct: 1,explanation: "Se refiere a la Virgen en su advocación de los Dolores o Soledad."},
+            {question: "¿Qué es la 'Tramoya' en el contexto cofrade?",options: ["El sonido de la banda", "El mecanismo para mover el paso en el interior de la iglesia", "La vestidura del nazareno", "El exorno floral"],correct: 1,explanation: "Estructuras móviles y andamios internos para la maniobra de pasos."},
+            {question: "¿Qué paso representa la escena de Jesús cargando la Cruz y encontrándose con su Madre?",options: ["El Gran Poder", "La Amargura", "La Calle de la Amargura", "El Encuentro"],correct: 3,explanation: "La escena del 'Encuentro' de Jesús y María en el camino del Calvario."},
+            {question: "¿Cómo se llama el 'palo' que lleva el nazareno en la mano para sujetar el cirio?",options: ["Vara", "Cirial", "Pértiga", "Varilla"],correct: 2,explanation: "El cirio va sujeto a una 'varilla' o 'cirial', pero a veces se le llama 'pértiga' al palo de guía."},
+            {question: "¿Qué es el 'Palio de Cajón'?",options: ["Un palio sin techo", "Un palio con techo de terciopelo bordado sin caídas laterales", "Un palio muy alto", "Un palio de diseño moderno"],correct: 1,explanation: "Un tipo de palio de estética más sobria, con caída recta y sin bambalinas."},
+            {question: "¿Qué ciudad es conocida por su procesión de 'Los Borrachos' (Hermandad de la Vera-Cruz)?",options: ["Sevilla", "Córdoba", "Granada", "Huelva"],correct: 2,explanation: "En Granada, la Hermandad de la Vera-Cruz, cuyo Cristo es popularmente conocido por este nombre."},
+            {question: "¿Qué significa 'Titular' en una hermandad?",options: ["El hermano mayor", "El paso más importante", "La imagen o imágenes principales de la hermandad", "El fundador"],correct: 2,explanation: "Las imágenes de culto principales de la corporación."},
+            {question: "¿Qué hermandad sevillana tiene el título de 'Pontificia y Real'?",options: ["Todas", "La Macarena", "Solo las antiguas", "Depende del Papa y el Rey"],correct: 3,explanation: "El título se otorga por concesión de la Santa Sede (Pontificia) y la Casa Real (Real)."},
+            {question: "¿Qué se utiliza para bendecir con el incienso a las imágenes?",options: ["Turíbulo", "Naveta", "Incensario", "Mano de bendición"],correct: 0,explanation: "El turíbulo es el incensario que se usa en las funciones litúrgicas."},
+            {question: "¿Qué son los 'Antiguos' en una cofradía?",options: ["Los nazarenos más viejos", "Los hermanos más antiguos", "Las imágenes más antiguas", "Las insignias más viejas"],correct: 1,explanation: "Los hermanos de mayor antigüedad en la corporación."},
+            {question: "¿Qué paso se conoce como 'La Pollinica'?",options: ["La entrada de Jesús en Jerusalén (Domingo de Ramos)", "El Cristo de la Sed", "El Cristo de la Humildad", "El misterio de la Santa Cena"],correct: 0,explanation: "Representa a Jesús montado en un asno (pollino) el Domingo de Ramos."},
+            {question: "¿Qué ciudad es famosa por sus 'procesiones de las antorchas' con gran solemnidad?",options: ["Sevilla", "Zamora", "Málaga", "Cádiz"],correct: 1,explanation: "Zamora tiene procesiones de gran silencio e iluminación solo con antorchas o faroles."},
+            {question: "¿Qué son los 'Bocinas'?",options: ["Instrumentos de viento", "Grandes trompetas que anuncian el paso de la cofradía", "Megáfonos", "Los músicos del paso"],correct: 1,explanation: "Insignia que consiste en una gran trompeta heráldica, a menudo con paños bordados."},
+            {question: "¿Qué hermandad de Sevilla tiene a la Virgen de la Estrella?",options: ["La Macarena", "La Estrella (Domingo de Ramos)", "La O", "La Lanzada"],correct: 1,explanation: "La Hermandad de la Estrella, conocida por su palio de terciopelo verde."},
+            {question: "¿Qué es un 'Ánfora' o 'Jarrón' en un paso?",options: ["El recipiente para el incienso", "Los jarrones de orfebrería con flores en las esquinas del palio", "El pie del cirio", "El soporte de la Cruz de Guía"],correct: 1,explanation: "Jarro ornamental, generalmente en las esquinas de los pasos de palio."},
+            {question: "¿Qué día se conmemora la Crucifixión y Muerte de Jesús?",options: ["Jueves Santo", "Miércoles Santo", "Viernes Santo", "Sábado Santo"],correct: 2,explanation: "El Viernes Santo es el día central de la Pasión."},
+            {question: "¿Quién es el autor de la marcha 'Virgen de la Estrella'?",options: ["Gámez Laserna", "Pedro Gámez Laserna", "Pedro Morales", "Manuel López Farfán"],correct: 1,explanation: "Marcha clásica de Pedro Gámez Laserna."},
+            {question: "¿Qué es el 'llamador' de un paso?",options: ["Un martillo", "Una campana", "Un megáfono", "Un instrumento de viento"],correct: 0,explanation: "Es el martillo que el capataz golpea para ordenar el inicio o fin de la 'levantá'."},
+            {question: "¿Qué es el 'Dormán'?",options: ["Una túnica de nazareno", "Un tipo de capa", "El traje de gala de los miembros de la banda", "Un tipo de faldón"],correct: 2,explanation: "La indumentaria de gala de algunas bandas de música, inspirada en uniformes militares."},
+            {question: "¿Qué hermandad sevillana tiene un paso de misterio que representa el 'Beso de Judas'?",options: ["La Redención", "La Estrella", "El Gran Poder", "Los Estudiantes"],correct: 0,explanation: "La Hermandad de la Redención (Lunes Santo) tiene este misterio."},
+            {question: "¿Qué elemento de luto lleva la Virgen en el pecho, simbolizando el dolor?",options: ["El rostrillo", "El puñal o la espada de dolor", "La corona de espinas", "El rosario"],correct: 1,explanation: "El puñal o espada de dolor, clavado en el pecho de la Dolorosa."},
+            {question: "¿Qué significa 'Estación de Penitencia'?",options: ["El rezo de la saeta", "El camino de la cofradía desde su templo a la Catedral y vuelta", "El descanso de los costaleros", "El Vía Crucis"],correct: 1,explanation: "Es el nombre oficial del recorrido procesional de una hermandad."},
+            {question: "¿Qué es el 'Cruzado' en la túnica de un nazareno?",options: ["El cordón", "La capa", "La cruz de guía", "El adorno del capirote"],correct: 1,explanation: "Es la capa o esclavina que llevan algunos nazarenos sobre la túnica."},
+            {question: "¿Cuál es el color de la túnica de la Hermandad de 'El Cristo de la Vera-Cruz' en muchas ciudades?",options: ["Blanca", "Negra o ruán", "Roja", "Verde"],correct: 1,explanation: "El ruán (tela basta negra) es el color penitencial de las cofradías más antiguas."},
+            {question: "¿Qué es la 'Mediatriz'?",options: ["La Virgen María como mediadora de todas las gracias", "El pañuelo de la Virgen", "Una marcha musical", "Un tipo de saeta"],correct: 0,explanation: "Título teológico dado a la Virgen María."},
+            {question: "¿Qué día se conmemora la Traición de Judas Iscariote?",options: ["Domingo de Ramos", "Lunes Santo", "Miércoles Santo", "Jueves Santo"],correct: 3,explanation: "Se recuerda en la Última Cena y el posterior Prendimiento."},
+            {question: "¿Qué es la 'Caída' en un paso de palio?",options: ["La parte delantera y trasera del palio que cae", "La caída del costalero", "El bordado de la bambalina", "El fleco del manto"],correct: 0,explanation: "Las telas bordadas que cuelgan del techo del palio (techo de palio), también llamadas bambalinas."},
+            {question: "¿Qué ciudad es conocida por sus 'trompetas y tambores roncos' en sus procesiones?",options: ["Zamora", "Sevilla", "Málaga", "Cádiz"],correct: 0,explanation: "Zamora tiene un estilo de música muy austero y grave."},
+            {question: "¿Qué son los 'Ángeles Pasionarios'?",options: ["Nazarenos con alas", "Figuras secundarias en los misterios que sostienen atributos de la Pasión", "Ángeles en el palio", "Los costaleros"],correct: 1,explanation: "Ángeles niños que portan la Cruz, clavos, o la columna."},
+            {question: "¿Qué es un 'Prioste'?",options: ["El capataz", "El responsable del culto y la conservación de los pasos y enseres", "El hermano mayor", "El músico"],correct: 1,explanation: "Miembro de la Junta de Gobierno encargado del patrimonio material."},
+            {question: "¿Qué hermandad sevillana tiene el título de 'Pontificia, Real e Ilustre'?",options: ["El Gran Poder", "Todas", "La Macarena", "La Esperanza de Triana"],correct: 3,explanation: "La Macarena, el Gran Poder y la Esperanza de Triana lo ostentan."},
+            {question: "¿Qué es el 'Juego de Ciriales'?",options: ["Los cirios de la candelería", "El conjunto de varas y cirios que portan los acólitos", "El incienso", "Los faroles del paso"],correct: 1,explanation: "Conjunto de ciriales y sus portadores."},
+            {question: "¿Cómo se llama el 'cordón' o 'cinta' que ata el antifaz al capirote?",options: ["Cíngulo", "Verdugo", "Cordón", "Tocado"],correct: 1,explanation: "El verdugo es el cordón que ajusta el antifaz a la cabeza."},
+            {question: "¿Qué cofradía de Huelva es conocida como 'La Lanzada'?",options: ["La Merced", "La Sentencia", "La Lanzada", "El Cautivo"],correct: 2,explanation: "La Hermandad de La Lanzada (Miércoles Santo)."},
+            {question: "¿Qué es el 'Silencio' en una procesión?",options: ["El ruido de la gente", "La ausencia total de música y palabra, solo el sonido del paso", "El canto de la saeta", "El toque de campana"],correct: 1,explanation: "Máxima expresión de penitencia y recogimiento."},
+            {question: "¿Qué día se produce la procesión de 'El Encuentro' en muchas ciudades castellanas?",options: ["Domingo de Ramos", "Miércoles Santo", "Viernes Santo", "Domingo de Resurrección"],correct: 3,explanation: "El Encuentro de la Virgen con Jesús Resucitado."},
+            {question: "¿Qué significa 'Rostro' o 'Faz' en imaginería?",options: ["El cuerpo del Cristo", "La cara de la imagen", "El manto", "La corona"],correct: 1,explanation: "La expresión facial y la talla de la cara."},
+            // Preguntas 201 - 250 (Bíblicas y Litúrgicas)
+            {question: "¿Cuál de los siguientes no fue un apóstol de Jesús?",options: ["Judas Tadeo", "San Mateo", "San Pablo", "San Bartolomé"],correct: 2,explanation: "Pablo no fue uno de los doce, aunque fue apóstol de los gentiles."},
+            {question: "¿Quién negó a Jesús tres veces antes de que cantara el gallo?",options: ["Judas Iscariote", "Simón Pedro", "Tomás", "Santiago"],correct: 1,explanation: "Pedro, a pesar de su promesa, negó a Jesús."},
+            {question: "¿Qué evento bíblico se conmemora en el pasaje de 'El Huerto de los Olivos'?",options: ["La Última Cena", "La oración de Jesús antes de ser prendido", "La Resurrección", "El Sermón de la Montaña"],correct: 1,explanation: "Jesús ora a su Padre antes de la llegada de Judas y los guardias."},
+            {question: "¿Qué símbolo cristiano se relaciona con la traición de Judas?",options: ["Un cirio", "Una cruz", "Un beso", "Una paloma"],correct: 2,explanation: "Judas identificó a Jesús para los guardias con un beso."},
+            {question: "¿Qué se conmemora en la procesión de 'La Bofetá' en Sevilla?",options: ["El Prendimiento", "Jesús ante Pilato", "Jesús coronado de espinas", "Jesús en el paso de misterio"],correct: 1,explanation: "Representa a Jesús ante el Sumo Sacerdote y la bofetada recibida."},
+            {question: "¿Qué es el 'Mandato' o 'Sermón del Mandato'?",options: ["El Sermón de las Siete Palabras", "La promesa de Jesús de enviar al Espíritu Santo", "El mandamiento del amor y el lavatorio de pies (Jueves Santo)", "El Sermón de la Montaña"],correct: 2,explanation: "Se recuerda el 'Amaos los unos a los otros' y el lavatorio."},
+            {question: "¿Cuál de estos colores se asocia al Tiempo Ordinario en el calendario litúrgico?",options: ["Rojo", "Blanco", "Morado", "Verde"],correct: 3,explanation: "El verde simboliza la esperanza y la vida ordinaria de la Iglesia."},
+            {question: "¿Qué libro del Nuevo Testamento relata la Pasión, Muerte y Resurrección de Jesús?",options: ["Hechos de los Apóstoles", "Los Evangelios", "El Apocalipsis", "Las Cartas de San Pablo"],correct: 1,explanation: "Los cuatro Evangelios (Mateo, Marcos, Lucas, Juan) narran estos hechos."},
+            {question: "¿Qué es una 'Hermandad de Gloria'?",options: ["Una hermandad de penitencia", "Una hermandad que no procesiona", "Una hermandad que da culto a una imagen de la Virgen o un Santo, fuera de la Pasión", "Una hermandad de Semana Santa muy antigua"],correct: 2,explanation: "Se centran en el culto a santos o la Virgen en otras advocaciones (Rocío, Reyes)."},
+            {question: "¿Qué advocación de la Virgen está relacionada con la leyenda del Cristo de la Humillación de Granada?",options: ["La Esperanza", "La Soledad", "La Amargura", "La Humildad"],correct: 3,explanation: "La Virgen de la Humildad."},
+            {question: "¿Qué relata la escena del 'Despojo'?",options: ["El descendimiento de la cruz", "El momento en que desvisten a Jesús antes de la crucifixión", "El encuentro con la Virgen", "La unción"],correct: 1,explanation: "La Hermandad de Jesús Despojado (Domingo de Ramos)."},
+            {question: "¿Qué es el 'Hábito' en el contexto cofrade?",options: ["La túnica y el capirote del nazareno", "El escudo de la hermandad", "El paso", "El cirio"],correct: 0,explanation: "Es la vestimenta completa que llevan los nazarenos."},
+            {question: "¿Qué se conmemora en el Domingo 'In Albis'?",options: ["El Domingo de Ramos", "El Domingo de Pascua", "El primer domingo después de la Pascua (de la Divina Misericordia)", "El Domingo de la Trinidad"],correct: 2,explanation: "Se llamaba así porque los neófitos se quitaban las vestiduras blancas."},
+            {question: "¿Qué cofradía de Sevilla tiene la Virgen de la Paz?",options: ["El Cerro", "El Amor", "La Paz", "La Sed"],correct: 2,explanation: "La Hermandad de La Paz (Domingo de Ramos)."},
+            {question: "¿Qué es el 'Traslado' en el contexto de la Semana Santa de Málaga?",options: ["La salida del templo", "El recorrido de la imagen desde su sede hasta el trono procesional", "El regreso a la iglesia", "El recorrido por la Alameda"],correct: 1,explanation: "Movimiento de la imagen antes de la procesión."},
+            {question: "¿Qué instrumento es el protagonista de la 'Tamborrada' de Hellín (Albacete)?",options: ["Corneta", "Tambor", "Saxofón", "Trompeta"],correct: 1,explanation: "Miles de personas tocan el tambor ininterrumpidamente."},
+            {question: "¿Qué se le llama a la parte de la túnica que cubre los hombros y la espalda?",options: ["Antifaz", "Capa o esclavina", "Cíngulo", "Ruán"],correct: 1,explanation: "La capa (o esclavina) es la pieza que cae sobre los hombros."},
+            {question: "¿Qué son los 'Árboles de la Vida' en imaginería?",options: ["El madero de la Cruz", "Representaciones en la canastilla", "Los ramos del Domingo de Ramos", "El huerto de los olivos"],correct: 0,explanation: "Término teológico para la Cruz de Cristo."},
+            {question: "¿Qué hermandad sevillana tiene un paso de misterio que representa 'El Cristo de la Conversión del Buen Ladrón'?",options: ["El Buen Fin", "La Lanzada", "La Hiniesta", "Montserrat"],correct: 3,explanation: "La Hermandad de Montserrat (Viernes Santo)."},
+            {question: "¿Qué significa 'Exvoto'?",options: ["Una promesa", "Una ofrenda a una imagen en agradecimiento por un favor", "Una marcha", "Un cirio"],correct: 1,explanation: "Objeto que se ofrece a la imagen."},
+            {question: "¿Cuál es el nombre del lugar donde Jesús fue crucificado?",options: ["Getsemaní", "Monte de los Olivos", "Gólgota", "Betania"],correct: 2,explanation: "Gólgota o Calvario."},
+            {question: "¿Qué pieza de orfebrería sostiene la reliquia del 'Lignum Crucis'?",options: ["Cirial", "Relicario", "Estandarte", "Canastilla"],correct: 1,explanation: "El relicario es la caja o teca que contiene la reliquia."},
+            {question: "¿Qué se le llama a la persona que va en el paso de palio junto a la Virgen?",options: ["El Mayordomo", "San Juan o María Magdalena", "El Fiscal", "El Vestidor"],correct: 1,explanation: "Es común la presencia de San Juan Evangelista o María Magdalena en los palios."},
+            {question: "¿Qué es la 'Cruz Alzada'?",options: ["El crucificado", "La Cruz de Guía", "Una insignia en metal que se alza en la salida", "La cruz que llevan los penitentes"],correct: 2,explanation: "Una cruz de metal sobria, a menudo en las secciones de luto."},
+            {question: "¿Qué día se conmemora la Entrada en Jerusalén y la bendición de las palmas?",options: ["Sábado de Pasión", "Domingo de Ramos", "Lunes Santo", "Domingo de Resurrección"],correct: 1,explanation: "Da inicio a la Semana Santa."},
+            {question: "¿Qué ciudad de Castilla y León es conocida por sus túnicas de terciopelo morado y blanco y sus 'cruces de penitencia'?",options: ["León", "Zamora", "Salamanca", "Valladolid"],correct: 0,explanation: "León, con sus tradicionales túnicas y el rito del 'Juramento de la Cera'."},
+            {question: "¿Qué es el 'Palermo' en el contexto cofrade?",options: ["Un tipo de incienso", "El lugar donde descansan los costaleros", "El lugar donde se guardan los pasos", "Un tipo de saeta"],correct: 2,explanation: "El almacén o casa de hermandad donde se guardan pasos y enseres."},
+            {question: "¿Qué hermandad sevillana tiene el paso de 'Jesús atado a la Columna'?",options: ["Las Cigarreras", "El Valle", "El Museo", "El Silencio"],correct: 0,explanation: "La Hermandad de Las Cigarreras (Jueves Santo)."},
+            {question: "¿Qué significa 'Hosanna'?",options: ["Aleluya", "Sálvanos", "Gloria a Dios", "Amén"],correct: 1,explanation: "Expresión de aclamación, que significa 'Sálvanos, por favor'."},
+            {question: "¿Qué es el 'Escapulario' en algunas túnicas?",options: ["La capa", "Un pequeño trozo de tela que cuelga del cuello y se posa sobre la túnica", "El cinturón", "El capirote"],correct: 1,explanation: "Pieza de tela con el escudo de la orden o hermandad, usado por algunas cofradías."},
+            {question: "¿Cuál es el color de la túnica de la Hermandad de 'La Sed' de Sevilla?",options: ["Morada", "Negra", "Crema (blanco crudo)", "Verde"],correct: 2,explanation: "La túnica y antifaz son de color crema."},
+            {question: "¿Qué objeto lleva el 'Pertiguero' en las manos?",options: ["Un cirial", "Una vara (el pértigo)", "Un martillo", "Una campana"],correct: 1,explanation: "El pértigo es la vara de plata que distingue al Pertiguero."},
+            {question: "¿Qué es la 'Canastilla' de un paso?",options: ["El lugar del capataz", "La parte superior del paso donde se asienta el misterio", "La base del paso", "El faldón"],correct: 1,explanation: "La estructura dorada o tallada que forma la 'caja' del paso."},
+            {question: "¿Qué son los 'Faroles de Cola' en un paso de palio?",options: ["Los jarrones de flores", "Los candelabros que iluminan la parte trasera de la Virgen", "Los cirios de la candelería", "Los ciriales"],correct: 1,explanation: "Grandes faroles en las esquinas traseras del palio."},
+            {question: "¿Qué día se celebra en la Iglesia el 'Día de la Ascensión del Señor'?",options: ["40 días después de Pascua", "El Domingo de Resurrección", "50 días después de Pascua", "15 días después de Pascua"],correct: 0,explanation: "Se celebra 40 días después del Domingo de Resurrección."},
+            {question: "¿Qué es un 'Estandarte'?",options: ["Una bandera", "Una cruz", "Un tipo de cirio", "Una bandera cuadrada o rectangular con el escudo de la hermandad"],correct: 3,explanation: "Insignia oficial de la corporación."},
+            {question: "¿Qué hermandad sevillana tiene el misterio de 'Las Siete Palabras'?",options: ["El Cachorro", "El Silencio", "Las Siete Palabras", "El Valle"],correct: 2,explanation: "La Hermandad de Las Siete Palabras (Miércoles Santo)."},
+            {question: "¿Qué color se utiliza para representar a Cristo Rey?",options: ["Morado", "Rojo", "Blanco", "Verde"],correct: 1,explanation: "El rojo simboliza la realeza y la sangre del martirio."},
+            {question: "¿Qué son los 'Guantes' en la indumentaria del nazareno?",options: ["Siempre son blancos", "Se usan para proteger la cera", "Son parte del luto y la etiqueta, a menudo blancos o negros", "Son opcionales"],correct: 2,explanation: "Elemento de etiqueta y penitencia, obligatorios en casi todas las hermandades."},
+            {question: "¿Qué ciudad es conocida por sus 'procesiones de imaginería' en madera policromada de la escuela de Gregorio Fernández?",options: ["Sevilla", "Valladolid", "Málaga", "Cádiz"],correct: 1,explanation: "Valladolid, con imaginería de gran realismo y valor histórico."},
+            {question: "¿Qué es la 'Petalá'?",options: ["Un toque de campana", "Un rezo en el paso", "La ofrenda de pétalos de flores desde balcones al paso de la Virgen", "Un tipo de marcha"],correct: 2,explanation: "Ofrenda floral a la Virgen, muy popular en Andalucía."},
+            {question: "¿Qué es un 'Mayordomo'?",options: ["El capataz", "El responsable de las túnicas y la organización interna", "El hermano mayor", "El encargado del paso"],correct: 1,explanation: "Miembro de la Junta de Gobierno encargado de los enseres y la casa de hermandad."},
+            {question: "¿Qué día procesiona la Hermandad de 'La Macarena' en la Madrugá?",options: ["Jueves Santo", "Viernes Santo", "Madrugá (Viernes)", "Sábado Santo"],correct: 2,explanation: "La madrugada del Viernes Santo."},
+            {question: "¿Qué son las 'Borlas' en un paso de palio?",options: ["Los adornos de los faldones", "Las luces del paso", "Las flores", "Los varales"],correct: 0,explanation: "Adornos textiles que rematan los faldones del paso."},
+            {question: "¿Qué hermandad sevillana tiene a la Virgen de la Soledad de San Buenaventura?",options: ["El Santo Entierro", "La Soledad", "El Museo", "La Amargura"],correct: 1,explanation: "La Hermandad de la Soledad (Sábado Santo)."},
+            {question: "¿Qué es el 'Rostillo' en la Virgen?",options: ["El manto", "El pañuelo", "La tela que enmarca el rostro de la imagen", "La corona"],correct: 2,explanation: "Prenda de encaje o tul que enmarca el rostro de la Dolorosa."},
+            {question: "¿Qué son los 'Candeleros' en el paso?",options: ["Los cirios", "Las bases de orfebrería que sostienen los cirios", "Las luces", "Los nazarenos"],correct: 1,explanation: "Los candeleros son las bases de orfebrería sobre las que se colocan los cirios de la candelería."},
+            {question: "¿Qué simboliza el color azul en el manto de la Virgen?",options: ["El luto", "La pureza", "El cielo o la Inmaculada Concepción", "La esperanza"],correct: 2,explanation: "Símbolo de la realeza celestial y del dogma inmaculista."},
+            {question: "¿Qué es el 'Estandarte Sacramental'?",options: ["El estandarte del paso de Cristo", "El estandarte que representa el culto a la Eucaristía", "La Cruz de Guía", "El estandarte del escudo papal"],correct: 1,explanation: "Insignia con el Santísimo Sacramento (hostia consagrada)."},
+            {question: "¿Qué ciudad de Andalucía celebra la procesión de 'El Cautivo' con gran devoción popular?",options: ["Sevilla", "Málaga", "Cádiz", "Granada"],correct: 1,explanation: "Jesús Cautivo, el 'Señor de Málaga'."},
+            // Preguntas 251 - 300 (Diversas y Cultura Cofrade)
+            {question: "¿Qué dulce es tradicional en Semana Santa y se elabora con leche, vino o miel?",options: ["Pestiños", "Buñuelos", "Torrijas", "Roscos"],correct: 2,explanation: "La torrija, dulce típico de estas fechas."},
+            {question: "¿Qué es una 'Casa de Hermandad'?",options: ["La iglesia", "La sede social y almacén de la cofradía", "La casa del hermano mayor", "El palermo"],correct: 1,explanation: "Edificio donde se almacenan enseres y se realizan las actividades sociales."},
+            {question: "¿Qué se llama 'Tanda' en el argot costalero?",options: ["Un descanso", "El grupo de costaleros que llevan el paso en cada relevo", "Una chicotá", "El golpe de martillo"],correct: 1,explanation: "El conjunto de hombres que se turnan para llevar el peso."},
+            {question: "¿Qué es el 'Voto de Silencio' en algunas cofradías?",options: ["Una penitencia", "El compromiso de no hablar durante la estación de penitencia", "El toque de martillo", "Una saeta"],correct: 1,explanation: "Regla estricta de silencio y recogimiento."},
+            {question: "¿Qué hermandad sevillana tiene un misterio que representa el 'Cristo de la Salud'?",options: ["El Gran Poder", "La Redención", "La Carretería", "Montesión"],correct: 2,explanation: "La Hermandad de La Carretería (Viernes Santo)."},
+            {question: "¿Qué se conmemora en el Miércoles de Ceniza?",options: ["El inicio de la Semana Santa", "El inicio de la Cuaresma", "El primer Vía Crucis", "El final de la Semana Santa"],correct: 1,explanation: "Marca el comienzo de los 40 días de Cuaresma."},
+            {question: "¿Qué es un 'Tramo' en la procesión?",options: ["La distancia entre dos paradas del paso", "El grupo de nazarenos entre dos insignias", "El tramo de la Carrera Oficial", "La chicotá"],correct: 1,explanation: "División del cortejo por insignias."},
+            {question: "¿Qué ciudad es conocida por sus 'Crucificados con sudario' y gran solemnidad?",options: ["Valladolid", "Sevilla", "Málaga", "Cádiz"],correct: 0,explanation: "La imaginería castellana de Valladolid es muy sobria y a menudo con sudarios."},
+            {question: "¿Qué es el 'Escudo' de una hermandad?",options: ["El emblema oficial de la corporación", "El faldón del paso", "El martillo del capataz", "El cirial"],correct: 0,explanation: "El logo o emblema que identifica a la hermandad."},
+            {question: "¿Qué se coloca en la cruz de Jesús Nazareno del Gran Poder de Sevilla?",options: ["Un letrero", "Una rama de olivo", "Un paño morado", "Un sudario"],correct: 3,explanation: "El Señor lleva un paño de pureza (sudario) pero no letrero en la cruz."},
+            {question: "¿Qué hermandad sevillana es conocida por su palio de terciopelo rojo?",options: ["La Macarena", "La Esperanza de Triana", "Los Negritos", "La Amargura"],correct: 2,explanation: "La Hermandad de Los Negritos (Jueves Santo) con su palio rojo oscuro."},
+            {question: "¿Quién es el 'Hermano Mayor'?",options: ["El fundador de la hermandad", "El máximo responsable de la junta de gobierno", "El costalero más antiguo", "El capataz"],correct: 1,explanation: "Presidente de la hermandad, máxima autoridad."},
+            {question: "¿Qué son los 'Faroles de Misterio'?",options: ["Las luces del palio", "Los candelabros de cola", "Los faroles que iluminan las esquinas del paso de Cristo", "Los ciriales"],correct: 2,explanation: "Faroles en las esquinas de los pasos de misterio, a menudo de metal plateado o dorado."},
+            {question: "¿Qué elemento lleva el nazareno en la mano para recoger la cera de los cirios?",options: ["Una varilla", "Un limón", "Un pañuelo", "Un cirial"],correct: 1,explanation: "El 'limón de cera', para no tocar la cera con las manos."},
+            {question: "¿Qué ciudad es famosa por sus 'Cofradías Penitenciales' y su estilo de procesión sobrio y marcial?",options: ["Sevilla", "Málaga", "Valladolid", "Huelva"],correct: 2,explanation: "Valladolid, con una tradición de rigor castellano."},
+            {question: "¿Qué es el 'Libro de Reglas'?",options: ["La Biblia", "El libro donde se anotan los turnos de costaleros", "El documento que contiene las normas de la hermandad", "El libro de cuentas"],correct: 2,explanation: "Estatutos que rigen la vida de la hermandad."},
+            {question: "¿Qué es una 'Chaqueta' en el contexto costalero?",options: ["La túnica", "La protección para el hombro", "El nombre de la faja", "La prenda que va encima del costal"],correct: 1,explanation: "Término andaluz para referirse al costal o a la protección del hombro."},
+            {question: "¿Qué hermandad sevillana tiene un misterio que representa el 'Cristo de la Sagrada Cena'?",options: ["El Valle", "La Sagrada Cena", "La Amargura", "San Bernardo"],correct: 1,explanation: "La Hermandad de La Sagrada Cena (Domingo de Ramos)."},
+            {question: "¿Qué es el 'Aleluya' en la Vigilia Pascual?",options: ["Un canto de luto", "Un toque de campana", "El canto de la Resurrección (se omite en Cuaresma)", "Un toque de silencio"],correct: 2,explanation: "Se reintroduce el canto del 'Aleluya' tras el período de Cuaresma y Pasión."},
+            {question: "¿Qué es el 'Paso Yacente'?",options: ["El Cristo en el Sepulcro, muerto", "El Cristo que cae", "El Cristo atado a la columna", "El Cristo resucitado"],correct: 0,explanation: "Imagen de Cristo en el sepulcro o urna, como el del Santo Entierro."},
+            {question: "¿Qué objeto lleva el 'Diputado de Cruz de Guía'?",options: ["Un cirio", "Una vara de control", "La Cruz de Guía", "Un martillo"],correct: 1,explanation: "El Diputado Mayor de Gobierno usa una vara para organizar el tramo."},
+            {question: "¿Qué hermandad sevillana es conocida por su palio de color verde y blanco?",options: ["La Paz", "La Estrella", "La Esperanza de Triana", "La O"],correct: 1,explanation: "La Hermandad de La Estrella (Domingo de Ramos)."},
+            {question: "¿Qué es el 'Bordado en Oro'?",options: ["Un tipo de flor", "Técnica artesanal de bordar con hilo de oro o sedas preciosas", "El color de la candelería", "La túnica del nazareno"],correct: 1,explanation: "Técnica muy valorada en mantos y palios."},
+            {question: "¿Qué significa 'Rocío' en el contexto de la Virgen?",options: ["La pureza", "La lluvia", "Una advocación mariana de Huelva", "La esperanza"],correct: 2,explanation: "Virgen del Rocío."},
+            {question: "¿Qué hermandad sevillana tiene su misterio con la imagen de 'El Cristo de la Lanzada'?",options: ["Las Cigarreras", "La Lanzada", "El Valle", "La Amargura"],correct: 1,explanation: "La Hermandad de La Lanzada (Miércoles Santo)."},
+            {question: "¿Qué son los 'Flecos de Palio'?",options: ["Las borlas", "Los flecos que adornan la parte inferior de las caídas o bambalinas", "Los adornos de la túnica", "Las flores"],correct: 1,explanation: "Adornos textiles que dan movimiento al palio."},
+            {question: "¿Qué día se conmemora la Coronación de Espinas y la Sentencia de Jesús?",options: ["Jueves Santo", "Miércoles Santo", "Viernes Santo", "Martes Santo"],correct: 3,explanation: "El Martes Santo se recuerdan estos momentos."},
+            {question: "¿Qué es un 'Cruzado'?",options: ["La capa", "El cirio", "La cruz de guía", "El cordón"],correct: 0,explanation: "Es la capa o esclavina que llevan algunos nazarenos sobre la túnica."},
+            {question: "¿Qué hermandad sevillana es conocida por el 'Cristo de los Calvarios'?",options: ["El Cachorro", "El Silencio", "El Calvario", "La Carretería"],correct: 2,explanation: "La Hermandad de El Calvario (Madrugá)."},
+            {question: "¿Qué es el 'Canto de la Sibila'?",options: ["Una saeta", "Un canto profético medieval de la Nochebuena", "Un toque de martillo", "Un rezo en latín"],correct: 1,explanation: "Canto que anuncia el juicio final, de tradición medieval en Navidad, pero relacionado con el ciclo festivo."},
+            {question: "¿Cuál es el nombre del lugar donde Jesús fue prendido?",options: ["Gólgota", "Getsemaní", "Monte Sión", "Monte de la Sabiduría"],correct: 1,explanation: "El Huerto de Getsemaní."},
+            {question: "¿Qué es un 'Incensario'?",options: ["El que porta el incienso", "El recipiente para quemar el incienso", "El incienso", "El cirial"],correct: 1,explanation: "Recipiente para quemar incienso."},
+            {question: "¿Qué significa 'Jubileo'?",options: ["Una gran fiesta", "Un período de indulgencia y gracia en la Iglesia", "Un tipo de paso", "Un tipo de marcha"],correct: 1,explanation: "Tiempo especial de perdón de los pecados."},
+            {question: "¿Qué ciudad es conocida por el 'Cristo de la Buena Muerte' y la procesión de la Legión?",options: ["Sevilla", "Málaga", "Cádiz", "Granada"],correct: 1,explanation: "Málaga, con el Cristo de Mena (Buena Muerte)."},
+            {question: "¿Qué es la 'Horquilla' del costalero?",options: ["El costal", "La prenda del nazareno", "El objeto de madera para aliviar el peso del paso en el suelo", "El martillo"],correct: 2,explanation: "Pieza de madera con dos puntas que permite al costalero descansar el peso del paso."},
+            {question: "¿Qué es el 'Báculo'?",options: ["La vara del nazareno", "El bastón pastoral del obispo", "El cirial", "El martillo"],correct: 1,explanation: "Vara con remate curvado que usa el obispo o arzobispo."},
+            {question: "¿Qué hermandad sevillana tiene el misterio de 'El Cristo de la Lanzada' y la Virgen del Buen Fin?",options: ["La Lanzada", "El Buen Fin", "El Museo", "Las Cigarreras"],correct: 0,explanation: "La Hermandad de La Lanzada (Miércoles Santo)."},
+            {question: "¿Qué es el 'Santo Sudario'?",options: ["El paño de pureza", "La Sábana Santa que cubrió a Jesús en el sepulcro", "La tela que lleva la Virgen", "La túnica de Jesús"],correct: 1,explanation: "La Sábana Santa de Turín (tradicionalmente)."},
+            {question: "¿Qué es la 'Cerraja'?",options: ["El adorno del cirio", "La insignia de la Virgen", "El cierre del candelero", "El candelero más grande"],correct: 2,explanation: "Elemento de orfebrería que sujeta el cirio al candelero."},
+            {question: "¿Qué hermandad sevillana es conocida por el 'Cristo de la Humildad y Paciencia'?",options: ["El Gran Poder", "La Estrella", "La Sagrada Cena", "La Cena"],correct: 3,explanation: "La Hermandad de la Sagrada Cena (Domingo de Ramos)."},
+            {question: "¿Qué es la 'Cruz de Malta'?",options: ["Un tipo de cruz", "La cruz de los caballeros de la orden de Malta", "El escudo de la hermandad", "La Cruz de Guía"],correct: 1,explanation: "Cruz de ocho puntas, usada por algunas órdenes religiosas."},
+            {question: "¿Qué es el 'Ruan'?",options: ["Un tipo de incienso", "Una tela sencilla y basta (negra o morada) usada en túnicas penitenciales", "El escudo de la hermandad", "El cordón"],correct: 1,explanation: "Tejido de lana o algodón usado por cofradías de luto."},
+            {question: "¿Qué hermandad sevillana tiene un paso de misterio que representa el 'Cristo de la Sentencia'?",options: ["La Macarena", "La Sentencia", "La Esperanza de Triana", "Los Gitanos"],correct: 1,explanation: "La Hermandad de la Sentencia (Madrugá)."},
+            {question: "¿Qué es el 'Atrio' de una iglesia?",options: ["El campanario", "El patio o espacio exterior a la entrada de la iglesia", "El altar", "La nave central"],correct: 1,explanation: "Espacio abierto frente a la puerta principal."},
+            {question: "¿Qué ciudad es conocida por sus 'procesiones de imaginería' en madera policromada de gran valor histórico?",options: ["Sevilla", "Valladolid", "Málaga", "Cádiz"],correct: 1,explanation: "Valladolid, con imaginería de la escuela castellana."},
+            {question: "¿Qué es el 'Palio de Terciopelo'?",options: ["Un palio sin bordados", "Un palio con bambalinas y techo de terciopelo bordado", "Un palio de luto", "Un palio de diseño moderno"],correct: 1,explanation: "Palio con tela de terciopelo, a menudo con bordados ricos."},
+            {question: "¿Qué significa 'Pascua de Resurrección'?",options: ["El luto", "El nacimiento de Jesús", "La conmemoración de la Resurrección de Jesús", "La Última Cena"],correct: 2,explanation: "El centro del año litúrgico y la celebración de la vida nueva."},
+            {question: "¿Qué es un 'Mantón'?",options: ["El manto de la Virgen", "Una pequeña capa que cubre los hombros", "El pañuelo de la Virgen", "Una tela para tapar el rostro"],correct: 0,explanation: "El manto es la tela que cubre la espalda de la Virgen."},
+            {question: "¿Qué es la 'Candelería'?",options: ["El incienso", "El conjunto de cirios del paso de palio", "Los candelabros", "Los faroles"],correct: 1,explanation: "Los cirios que alumbran a la Virgen."},
+            {question: "¿Qué hermandad sevillana tiene a la Virgen de la Encarnación?",options: ["La Macarena", "La Amargura", "San Benito", "La Lanzada"],correct: 2,explanation: "La Hermandad de San Benito (Martes Santo)."},
+            {question: "¿Qué es el 'Cirio Votivo'?",options: ["Un cirio normal", "Un cirio ofrecido por un penitente en cumplimiento de una promesa", "El cirio más grande", "El Cirio Pascual"],correct: 1,explanation: "Vela ofrecida como ofrenda o voto."},
+            {question: "¿Qué día finaliza el Triduo Pascual?",options: ["Viernes Santo", "Sábado Santo", "Domingo de Resurrección", "Lunes de Pascua"],correct: 2,explanation: "El Triduo va desde el Jueves Santo al Domingo de Resurrección."},
+            {question: "¿Qué es el 'Llamador de Capataz'?",options: ["Un megáfono", "Un martillo", "Una campana", "Un instrumento"],correct: 1,explanation: "El martillo usado para dar órdenes al paso."},
+            {question: "¿Qué significa 'Cofrade'?",options: ["El costalero", "El nazareno", "Miembro de una cofradía o hermandad", "El capataz"],correct: 2,explanation: "Miembro de una cofradía."},
+            {question: "¿Cuál es el color litúrgico de la Cuaresma?",options: ["Verde", "Morado", "Rojo", "Blanco"],correct: 1,explanation: "El morado, símbolo de penitencia."},
+            {question: "¿Qué es la 'Levantá'?",options: ["El descanso", "El alzado del paso a pulso", "El golpe de martillo", "El rezo de la saeta"],correct: 1,explanation: "Acción de levantar el paso."},
+            {question: "¿Qué son los 'Varales'?",options: ["Las vigas de madera", "Las barras de metal que sostienen el palio", "Los cirios", "Los faroles"],correct: 1,explanation: "Barras metálicas que sostienen el palio."},
+            {question: "¿Qué hermandad sevillana es conocida por el 'Cristo de la Expiración' (El Cachorro)?",options: ["La Esperanza de Triana", "La O", "El Cachorro", "Los Gitanos"],correct: 2,explanation: "Hermandad de El Cachorro (Viernes Santo)."},
+            {question: "¿Qué es la 'Saeta'?",options: ["Un toque de campana", "Un canto flamenco, a capella", "Un rezo en latín", "Un toque de corneta"],correct: 1,explanation: "Canto religioso, a menudo improvisado."},
+            {question: "¿Qué representa el Domingo de Resurrección?",options: ["La Pasión de Cristo", "El Vía Crucis", "La Resurrección de Jesús", "La Última Cena"],correct: 2,explanation: "La victoria de Jesús sobre la muerte."}
+        ];
+		
+        /* ============================ LOGIN ============================ */
+        function loginAsGuest(){
+            currentUser={id:'guest',name:'Cofrade Invitado',email:'invitado@cofradia.com',coins:1000};
+            localStorage.setItem('cofradiaUser',JSON.stringify(currentUser));
+            showGame();
+        }
+
+        function showGame(){
+            document.getElementById('loginContainer').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            loadGameState();
+            updateUI();
+            startCoinGeneration();
+            renderCollection();
+        }
+
+        /* ============================ JUEGO PRINCIPAL / ESTADO ============================ */
+        function loadGameState(){
+            const s=localStorage.getItem('cofradiaGameState');
+            if(s) Object.assign(gameState,JSON.parse(s));
+        }
+
+        function saveGameState(){
+            localStorage.setItem('cofradiaGameState',JSON.stringify(gameState));
+        }
+
+        function updateUI(){
+            document.getElementById('coins').textContent=gameState.coins;
+            document.getElementById('characterCount').textContent=`${gameState.characters.length}/${CHARACTER_DATABASE.length}`;
+            const percent=((gameState.characters.length/CHARACTER_DATABASE.length)*100).toFixed(1);
+            document.getElementById('collectionPercent').textContent=`${percent}%`;
+            saveGameState();
+        }
+
+        function addCoins(amount){
+            gameState.coins+=amount;
+            updateUI();
+        }
+
+        function startCoinGeneration(){
+            // Genera 10 monedas cada minuto (6000ms)
+            setInterval(()=>{addCoins(10);showMessage('+10 Monedas por Oración Automática.','success');},60000);
+        }
+
+        /* ============================ INVOCACIÓN / GACHA ============================ */
+        function summon(count){
+            if(gameState.coins<count*100){
+                showMessage('No tienes suficientes monedas para invocar.','error');
+                return;
             }
-            
-            try {
-                const savedUser = localStorage.getItem('cofradiaUser');
-                if (savedUser) {
-                    currentUser = JSON.parse(savedUser);
-                    showUserInfo(currentUser);
+
+            addCoins(-count*100);
+            const results=[];
+
+            for(let i=0;i<count;i++){
+                let char;
+
+                // Si es un tiro x10 o x50, la última tirada tiene pity (garantizado raro o mejor)
+                if(i===count-1 && count>1 && gameState.pityCount>=9){
+                    // Pity para raro o mejor
+                    const rareOrBetter=CHARACTER_DATABASE.filter(c=>c.rarity!=='common');
+                    const totalRate=rareOrBetter.reduce((sum,c)=>sum+c.rate,0);
+                    let r=Math.random()*totalRate;
+                    let acc=0;
+                    for(const c of rareOrBetter){ // <-- **CÓDIGO CORREGIDO Y COMPLETADO**
+                        acc+=c.rate;
+                        if(r<acc){
+                            char=c;
+                            break;
+                        }
+                    }
+                    gameState.pityCount=0;
+                }else{
+                    // Tiro normal: Aplica probabilidades base
+                    let r=Math.random()*100;
+                    let acc=0;
+                    let chosenRarity;
+                    
+                    for(const rarity in PROBABILITIES){
+                        acc+=PROBABILITIES[rarity];
+                        if(r<=acc){
+                            chosenRarity=rarity;
+                            break;
+                        }
+                    }
+                    
+                    // Encuentra un personaje de esa rareza
+                    const candidates=CHARACTER_DATABASE.filter(c=>c.rarity===chosenRarity);
+                    char=candidates[Math.floor(Math.random()*candidates.length)];
+                    
+                    if(chosenRarity!=='common')gameState.pityCount=0;
+                    else gameState.pityCount++;
                 }
-            } catch (error) {
-                localStorage.removeItem('cofradiaUser');
-            }
-        });
-        
-        function loginWithGoogle() {
-            if (GOOGLE_CLIENT_ID === PLACEHOLDER_CLIENT_ID) {
-                alert('⚠️ Debes configurar tu Google Client ID primero en el código');
-                return;
-            }
-            
-            try {
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CLIENT_ID,
-                    callback: handleGoogleResponse,
-                    context: 'signin'
-                });
-                google.accounts.id.prompt();
-            } catch (error) {
-                alert('❌ Error al conectar con Google. Intenta recargar la página.');
-            }
-        }
-        
-        function handleGoogleResponse(response) {
-            if (!response?.credential) {
-                alert('❌ Error en la autenticación con Google');
-                return;
-            }
-            
-            try {
-                const payload = JSON.parse(atob(response.credential.split('.')[1]));
                 
-                currentUser = {
-                    id: payload.sub,
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    type: 'google',
-                    coins: 1500,
-                    hermandad: null,
-                    activities: []
-                };
-                
-                localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-                showUserInfo(currentUser);
-            } catch (error) {
-                alert('❌ Error al procesar datos de Google');
-            }
+                // Agregar el personaje a la colección
+                const existing=gameState.characters.find(c=>c.id===char.id);
+                if(existing) existing.count++;
+                else gameState.characters.push({...char, count:1});
+
+                results.push(char);
+            } // Fin del for(let i=0; i<count; i++)
+
+            showSummonResults(results);
+            updateUI();
+            renderCollection();
+        } // Fin de la función summon(count)
+
+        /* ============================ MODALES / UTILIDADES ============================ */
+        function showSummonResults(results){
+            const modal=createModal();
+            let html=`<h2>🎉 Resultados de Invocación</h2><p style="color:#d4af37;">${results.length} Hermanos invocados:</p><div class="collection-grid" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr));">`;
+            results.forEach(c=>{
+                let borderColor=c.rarity==='legendary'?'#FFD700':c.rarity==='epic'?'#9932CC':c.rarity==='rare'?'#4169E1':'#ccc';
+                html+=`<div class="collection-card" style="border-color:${borderColor};"><div class="icon">${c.icon}</div><div class="name" style="font-size:.9rem;">${c.name}</div><div class="rarity" style="color:${borderColor};font-size:.8rem;margin-top:.5rem;text-transform:capitalize;">${c.rarity}</div></div>`;
+            });
+            html+='</div><button onclick="this.closest(\'.modal-fixed\').remove()" class="game-btn" style="margin-top:1rem;">Cerrar</button>';
+            modal.querySelector('.modal-content').innerHTML=html;
+            document.body.appendChild(modal);
         }
-        
-        function loginAsGuest() {
-            currentUser = {
-                id: 'guest_' + Date.now(),
-                name: 'Cofrade Invitado',
-                email: 'invitado@cofradia.com',
-                picture: 'https://via.placeholder.com/150/6a0dad/FFFFFF?text=%F0%9F%91%A4',
-                type: 'guest',
-                coins: 1000,
-                hermandad: null,
-                activities: []
-            };
-            
-            localStorage.setItem('cofradiaUser', JSON.stringify(currentUser));
-            showUserInfo(currentUser);
+
+        /* ============================ UTILIDADES UI ============================ */
+        function toggleSoundcloudPlayer(){
+            document.getElementById('soundcloudPlayerContainer').classList.toggle('hidden-player');
+            const btn=document.getElementById('playerToggleButton');
+            btn.textContent=btn.textContent==='🎵'?'▶️':'🎵';
         }
-        
-        function showUserInfo(user) {
-            document.getElementById('userInfo').style.display = 'block';
-            document.getElementById('userAvatar').src = user.picture;
-            document.getElementById('userAvatar').alt = `Avatar de ${user.name}`;
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userEmail').textContent = user.email;
-            
-            const buttons = document.querySelectorAll('.google-btn, .guest-btn');
-            buttons.forEach(btn => {
-                btn.style.display = 'none';
-                btn.disabled = true;
+
+        function createModal(){
+            const m=document.createElement('div');
+            m.className='modal-fixed';
+            const c=document.createElement('div');
+            c.className='modal-content';
+            m.appendChild(c);
+            return m;
+        }
+
+        function showMessage(txt,type='success'){
+            const msg=document.createElement('div');
+            msg.className=`game-message ${type}`;
+            msg.textContent=txt;
+            document.body.appendChild(msg);
+            setTimeout(()=>msg.remove(),3000);
+        }
+
+        function switchTab(tab){
+            document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
+            document.getElementById(`${tab}-tab`).classList.add('active');
+            event.target.classList.add('active');
+            if(tab==='collection')renderCollection();
+        }
+
+        function renderCollection(){
+            const grid=document.getElementById('collectionGrid');
+            grid.innerHTML='';
+            // Filtrar y agrupar (simplificado, solo muestra los poseídos)
+            const ownedChars = CHARACTER_DATABASE.filter(c => gameState.characters.some(g => g.id === c.id)).map(c => {
+                const gameChar = gameState.characters.find(g => g.id === c.id);
+                return {...c, count: gameChar.count};
+            });
+            ownedChars.forEach(c=>{
+                let borderColor=c.rarity==='legendary'?'#FFD700':c.rarity==='epic'?'#9932CC':c.rarity==='rare'?'#4169E1':'#ccc';
+                const card=document.createElement('div');
+                card.className='collection-card owned';
+                card.style.borderColor=borderColor;
+                card.innerHTML=`
+                    <div class="icon">${c.icon}</div>
+                    <div class="name">${c.name}</div>
+                    <div class="count">${c.count}</div>
+                    <div class="rarity" style="color:${borderColor};font-size:.8rem;text-transform:capitalize;">${c.rarity}</div>
+                `;
+                grid.appendChild(card);
             });
         }
         
-        function continueToGame() {
-            if (!currentUser) {
-                alert('❌ No hay usuario autenticado');
-                return;
-            }
-            window.location.href = 'index.html';
+        function playMinigame(gameType) {
+            // Abre el minijuego en una nueva ventana/tab
+            window.open(`?game=${gameType}`, `_blank`, `width=800,height=800,resizable=yes,scrollbars=yes`);
         }
+
+        function shuffle(array) {
+    // Implementación del algoritmo Fisher-Yates (Knuth)
+    let currentIndex = array.length, randomIndex;
+
+    // Mientras queden elementos a barajar...
+    while (currentIndex !== 0) {
+
+        // Elige un elemento restante...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // E intercámbialo con el elemento actual.
+        [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
+        /* ============================ MEMORY GAME ============================ */
+        function initMemory() {
+            loadGameState();
+            const memoryIcons = shuffle([
+                '🙏', '👑', '✝️', '🕯️', '📿', '🥁', '🎺', '🎶'
+            ]).slice(0, 8);
+            const gridContent = shuffle([...memoryIcons, ...memoryIcons]);
+            
+            memoryGame = {
+                grid: gridContent,
+                flipped: [],
+                matched: Array(16).fill(false),
+                canFlip: true,
+                moves: 0,
+                icons: memoryIcons // Store icons for rendering
+            };
+            
+            const area = document.getElementById('gameArea');
+            area.innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">🧠 Encuentra las Parejas</h2>
+                    <p style="margin-bottom:1rem;">Movimientos: <span id="memory-moves">0</span></p>
+                    <div id="memoryGrid" class="memory-grid"></div>
+                    <button onclick="window.close()" class="game-btn" style="background:#dc3545;color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;font-family:'Cinzel',serif;margin-top:1rem;">🚪 Salir al Menú</button>
+                </div>
+            `;
+            renderMemory();
+        }
+
+        function renderMemory() {
+            const gridEl = document.getElementById('memoryGrid');
+            if (!gridEl) return;
+            gridEl.innerHTML = '';
+            
+            memoryGame.grid.forEach((icon, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.onclick = () => flipCard(index);
+                
+                if (memoryGame.flipped.includes(index) || memoryGame.matched[index]) {
+                    card.classList.add('flipped');
+                    // Usar SVG Data URI para incrustar el emoji, manteniendo el centrado
+                    card.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50%' y='50%' dominant-baseline='central' text-anchor='middle' font-size='80' fill='${memoryGame.matched[index] ? 'var(--dorado)' : '#fff'}'%3E${icon}%3C/text%3E%3C/svg%3E" alt="${icon}" style="display:block;">`;
+                } else {
+                    card.innerHTML = '⚜️';
+                }
+                
+                if (memoryGame.matched[index]) {
+                    card.classList.add('matched');
+                }
+                gridEl.appendChild(card);
+            });
+            document.getElementById('memory-moves').textContent = memoryGame.moves;
+        }
+
+        function flipCard(index) {
+            if (!memoryGame.canFlip || memoryGame.flipped.includes(index) || memoryGame.matched[index]) return;
+
+            memoryGame.flipped.push(index);
+            renderMemory();
+
+            if (memoryGame.flipped.length === 2) {
+                memoryGame.canFlip = false;
+                memoryGame.moves++;
+
+                const [index1, index2] = memoryGame.flipped;
+                const icon1 = memoryGame.grid[index1];
+                const icon2 = memoryGame.grid[index2];
+
+                if (icon1 === icon2) {
+                    // Match!
+                    memoryGame.matched[index1] = true;
+                    memoryGame.matched[index2] = true;
+                    memoryGame.flipped = [];
+                    memoryGame.canFlip = true;
+                    renderMemory();
+                } else {
+                    // No match, flip back
+                    setTimeout(() => {
+                        memoryGame.flipped = [];
+                        memoryGame.canFlip = true;
+                        renderMemory();
+                    }, 1000);
+                }
+            } else {
+                renderMemory();
+                if(memoryGame.flipped.length === 1) memoryGame.canFlip = true; // Permite un segundo flip
+            }
+
+            if (memoryGame.matched.every(m => m)) {
+                endMemoryGame();
+            }
+        }
+
+        function endMemoryGame() {
+            const maxMoves = 20;
+            let reward = 0;
+            if (memoryGame.moves <= maxMoves) {
+                reward = Math.max(0, 200 - (memoryGame.moves * 10)); // Max 200 coins
+            }
+            addCoins(reward);
+
+            document.getElementById('gameArea').innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">🎉 ¡Juego de Parejas Terminado!</h2>
+                    <div style="font-size:1.5rem;margin:1rem 0;color:#d4af37;">Movimientos: ${memoryGame.moves}</div>
+                    <div style="font-size:1.2rem;margin-bottom:2rem;color:#ccc;">Recompensa: ${reward} monedas</div>
+                    <button onclick="initMemory()" class="game-btn" style="margin-right:1rem;">Jugar de Nuevo</button>
+                    <button onclick="window.close()" class="game-btn">Volver al Juego</button>
+                </div>
+            `;
+        }
+
+        /* ============================ WORDSEARCH GAME ============================ */
+        class Wordsearch {
+            constructor(words, size) {
+                this.words = words.map(word => ({ word: word.toUpperCase(), found: false, positions: [] }));
+                this.size = size;
+                this.grid = Array.from({ length: size }, () => Array(size).fill(''));
+                this.isSelecting = false;
+                this.currentSelection = [];
+                this.foundWords = [];
+                this.placeWords();
+                this.fillEmptyCells();
+            }
+
+            placeWords() {
+                for (let i = 0; i < 100 && this.words.some(w => !w.positions.length); i++) {
+                    const wordObj = this.words.find(w => !w.positions.length);
+                    if (!wordObj) break;
+
+                    const word = wordObj.word;
+                    let placed = false;
+
+                    // Try to place the word
+                    for (let attempt = 0; attempt < 100; attempt++) {
+                        const r = Math.floor(Math.random() * this.size);
+                        const c = Math.floor(Math.random() * this.size);
+                        const directions = [
+                            { dr: 0, dc: 1 }, { dr: 0, dc: -1 }, // Horizontal
+                            { dr: 1, dc: 0 }, { dr: -1, dc: 0 }, // Vertical
+                            { dr: 1, dc: 1 }, { dr: 1, dc: -1 }, // Diagonal
+                            { dr: -1, dc: 1 }, { dr: -1, dc: -1 }
+                        ];
+                        const { dr, dc } = directions[Math.floor(Math.random() * directions.length)];
+
+                        if (this.canPlace(word, r, c, dr, dc)) {
+                            this.doPlace(word, r, c, dr, dc);
+                            wordObj.startR = r;
+                            wordObj.startC = c;
+                            wordObj.dr = dr;
+                            wordObj.dc = dc;
+                            placed = true;
+                            break;
+                        }
+                    }
+
+                    if (!placed) {
+                        // If a word can't be placed after 100 attempts, remove it from the list
+                        const index = this.words.findIndex(w => w === wordObj);
+                        this.words.splice(index, 1);
+                    }
+                }
+            }
+
+            canPlace(word, r, c, dr, dc) {
+                for (let i = 0; i < word.length; i++) {
+                    const curR = r + i * dr;
+                    const curC = c + i * dc;
+
+                    // Check boundaries
+                    if (curR < 0 || curR >= this.size || curC < 0 || curC >= this.size) return false;
+
+                    // Check conflict with existing letters
+                    if (this.grid[curR][curC] !== '' && this.grid[curR][curC] !== word[i]) return false;
+                }
+                return true;
+            }
+
+            doPlace(word, r, c, dr, dc) {
+                const positions = [];
+                for (let i = 0; i < word.length; i++) {
+                    const curR = r + i * dr;
+                    const curC = c + i * dc;
+                    this.grid[curR][curC] = word[i];
+                    positions.push({r: curR, c: curC});
+                }
+                const wordObj = this.words.find(w => w.word === word && !w.positions.length);
+                if (wordObj) wordObj.positions = positions;
+            }
+
+            fillEmptyCells() {
+                const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                for (let r = 0; r < this.size; r++) {
+                    for (let c = 0; c < this.size; c++) {
+                        if (this.grid[r][c] === '') {
+                            this.grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+                        }
+                    }
+                }
+            }
+
+            checkSelection() {
+                if (this.currentSelection.length < 2) return false;
+
+                const selectedWordArr = this.currentSelection.map(({r, c}) => this.grid[r][c]);
+                const forwardWord = selectedWordArr.join('');
+                const backwardWord = [...selectedWordArr].reverse().join('');
+
+                // Check against all non-found words
+                for (const wordObj of this.words) {
+                    if (wordObj.found) continue;
+
+                    if (wordObj.word === forwardWord || wordObj.word === backwardWord) {
+                        wordObj.found = true;
+                        
+                        // Determine the positions for the found word
+                        const positions = (wordObj.word === forwardWord) 
+                            ? this.currentSelection 
+                            : [...this.currentSelection].reverse();
+                        
+                        this.foundWords.push({
+                            word: wordObj.word,
+                            positions: positions
+                        });
+
+                        this.currentSelection = [];
+                        return true;
+                    }
+                }
+                
+                this.currentSelection = [];
+                return false;
+            }
+        }
+
+        function initWordsearch() {
+            loadGameState();
+            const wordList = shuffle([
+                'CAPIROTE', 'NAZARENO', 'CANDELARIA', 'PALIO', 'COSTALERO', 'TAMBOR', 'SAETA', 'PASO',
+                'CIRIO', 'MANTO', 'INCENSARIO', 'MARCHA'
+            ]).slice(0, 8); // Selecciona 8 palabras
+            
+            const gridSize = 12; 
+            wordSearchGame = new Wordsearch(wordList, gridSize);
+
+            const area = document.getElementById('gameArea');
+            area.innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">🔤 Sopa de Letras Cofrade</h2>
+                    <p style="margin-bottom:1rem;">Palabras Encontradas: <span id="found-count">0</span> / ${wordSearchGame.words.length}</p>
+                    <div id="wordsearchGrid" class="wordsearch-grid" style="grid-template-columns: repeat(${wordSearchGame.size}, 40px); margin: 0 auto;"></div>
+                    <div style="font-size:1.5rem;margin-top:1rem;font-weight:bold;">Selección: <span id="wordsearch-selected-word"></span></div>
+                    <div id="wordsearchList" class="wordsearch-list"></div>
+                    <button onclick="window.close()" class="game-btn" style="background:#dc3545;color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;font-family:'Cinzel',serif;margin-top:1rem;">🚪 Salir al Menú</button>
+                </div>
+            `;
+            renderWordsearchGrid();
+        }
+
+        function renderWordsearchGrid() {
+            const gridEl = document.getElementById('wordsearchGrid');
+            const wordsListEl = document.getElementById('wordsearchList');
+            if(!gridEl || !wordsListEl) return;
+            gridEl.innerHTML = '';
+            wordsListEl.innerHTML = '';
+
+            // Ajustar el tamaño de columna en tiempo de ejecución (importante para la optimización móvil)
+            const isMobile = window.matchMedia("(max-width: 600px)").matches;
+            const cellSize = isMobile ? '25px' : '40px';
+            gridEl.style.gridTemplateColumns = `repeat(${wordSearchGame.size}, ${cellSize})`;
+
+
+            // Render Grid
+            wordSearchGame.grid.forEach((row, r) => {
+                row.forEach((char, c) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'wordsearch-cell';
+                    cell.textContent = char;
+                    cell.dataset.r = r;
+                    cell.dataset.c = c;
+                    cell.onmousedown = (e) => startSelection(e, r, c);
+                    cell.onmouseover = (e) => extendSelection(e, r, c);
+                    cell.onmouseup = endSelection;
+                    gridEl.appendChild(cell);
+                });
+            });
+
+            // Apply current selection styles
+            wordSearchGame.currentSelection.forEach(({r, c}) => {
+                const cell = document.querySelector(`.wordsearch-cell[data-r="${r}"][data-c="${c}"]`);
+                if(cell) cell.classList.add('selected');
+            });
+
+            // Apply found styles
+            document.querySelectorAll('.wordsearch-cell').forEach(cell => {
+                const r = parseInt(cell.dataset.r);
+                const c = parseInt(cell.dataset.c);
+                const isFound = wordSearchGame.foundWords.some(word => word.positions.some(pos => pos.r === r && pos.c === c));
+                if (isFound) cell.classList.add('found');
+            });
+
+            // Render Words List
+            wordSearchGame.words.forEach(w => {
+                const item = document.createElement('div');
+                item.className = 'word-item';
+                item.textContent = w.word;
+                if (w.found) item.classList.add('found');
+                wordsListEl.appendChild(item);
+            });
+
+            document.getElementById('found-count').textContent = wordSearchGame.words.filter(w => w.found).length;
+        }
+
+        function getPositionsBetween(r1, c1, r2, c2) {
+            const positions = [];
+            const dr = Math.sign(r2 - r1);
+            const dc = Math.sign(c2 - c1);
+            let r = r1;
+            let c = c1;
+
+            if (dr === 0 && dc === 0) {
+                positions.push({r, c});
+                return positions;
+            }
+            
+            while (r !== r2 + dr || c !== c2 + dc) {
+                positions.push({r, c});
+                if (r === r2 && c === c2) break; // Final check
+                r += dr;
+                c += dc;
+            }
+            
+            return positions;
+        }
+
+        function isStraightLine(r1, c1, r2, c2) {
+            const dr = Math.abs(r2 - r1);
+            const dc = Math.abs(c2 - c1);
+            return (dr === 0 || dc === 0 || dr === dc);
+        }
+
+        function startSelection(e, r, c) {
+            if (e.button !== 0) return; // Only left click
+            e.preventDefault();
+            wordSearchGame.isSelecting = true;
+            wordSearchGame.currentSelection = [{r, c}];
+            document.getElementById('wordsearch-selected-word').textContent = wordSearchGame.grid[r][c];
+            renderWordsearchGrid();
+        }
+
+        function extendSelection(e, r, c) {
+            if (!wordSearchGame.isSelecting) return;
+
+            const start = wordSearchGame.currentSelection[0];
+            if (!isStraightLine(start.r, start.c, r, c)) return;
+
+            wordSearchGame.currentSelection = getPositionsBetween(start.r, start.c, r, c);
+            const word = wordSearchGame.currentSelection.map(pos => wordSearchGame.grid[pos.r][pos.c]).join('');
+            document.getElementById('wordsearch-selected-word').textContent = word;
+            renderWordsearchGrid();
+        }
+
+        function endSelection() {
+            if (!wordSearchGame.isSelecting) return;
+            wordSearchGame.isSelecting = false;
+            document.getElementById('wordsearch-selected-word').textContent = '';
+
+            const found = wordSearchGame.checkSelection();
+            if (found) {
+                showMessage('¡Palabra encontrada!','success');
+                renderWordsearchGrid();
+                if (wordSearchGame.words.every(w => w.found)) {
+                    endWordsearchGame();
+                }
+            } else {
+                renderWordsearchGrid();
+            }
+        }
+
+        function endWordsearchGame() {
+            const foundCount = wordSearchGame.words.length;
+            const reward = 10 * foundCount;
+            addCoins(reward);
+
+            document.getElementById('gameArea').innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">🎉 Sopa Resuelta</h2>
+                    <div style="font-size:1.5rem;margin:1rem 0;color:#d4af37;">Palabras encontradas: ${foundCount}</div>
+                    <div style="font-size:1.2rem;margin-bottom:2rem;color:#ccc;">Recompensa: ${reward} monedas</div>
+                    <button onclick="initWordsearch()" class="game-btn" style="margin-right:1rem;">Jugar de Nuevo</button>
+                    <button onclick="window.close()" class="game-btn">Volver al Juego</button>
+                </div>
+            `;
+        }
+
+        /* ============================ TRIVIA GAME ============================ */
+       function initTrivia(){
+    loadGameState();
+
+    // 1. Crear una copia de la base de datos de preguntas
+    const questionsToShuffle = [...TRIVIA_QUESTIONS];
+    
+    // 2. Aleatorizar esa copia.
+    // La función shuffle modifica la copia *in situ* y la devuelve.
+    const shuffledQuestions = shuffle(questionsToShuffle);
+
+    // 3. Seleccionar los primeros 10 elementos de la lista *ya* aleatorizada
+    triviaGame.questions = shuffledQuestions.slice(0, 10);
+    
+    triviaGame.currentQuestion=0;
+    triviaGame.score=0;
+    triviaGame.answered=false;
+    triviaGame.timerInterval=null;
+    showNextTriviaQuestion();
+}
+
+        let currentTimer = 20; // Inicializa el temporizador
+        function startTriviaTimer() {
+            currentTimer = 20;
+            const timerEl = document.getElementById('cirioTimer');
+            const baseEl = document.getElementById('cirioBase');
+            if (!baseEl) return;
+
+            baseEl.style.transition = 'none'; // Deshabilita la transición para restablecer la altura
+            baseEl.style.height = '100%'; 
+
+            // Re-habilita la transición y comienza el consumo después de un pequeño retraso
+            setTimeout(() => {
+                baseEl.style.transition = 'height 20s linear';
+                baseEl.style.height = '0%'; // Inicia el consumo
+            }, 50);
+
+            clearInterval(triviaGame.timerInterval);
+            triviaGame.timerInterval = setInterval(() => {
+                currentTimer--;
+                if(timerEl) timerEl.textContent = currentTimer;
+                if (currentTimer <= 0) {
+                    clearInterval(triviaGame.timerInterval);
+                    handleTriviaTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTriviaTimeout() {
+            if (triviaGame.answered) return;
+            triviaGame.answered = true;
+
+            const q = triviaGame.questions[triviaGame.currentQuestion];
+            const btns = document.querySelectorAll('.answer-btn');
+            const feedback = document.getElementById('trivia-feedback');
+
+            btns.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('correct');
+                } else {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            feedback.innerHTML = `<p style="color:#dc3545;font-weight:bold;">¡Tiempo agotado! La respuesta correcta era: ${q.options[q.correct]}.</p><p>${q.explanation}</p>`;
+            setTimeout(showNextTriviaQuestion, 4000);
+        }
+
+        function showNextTriviaQuestion() {
+            if (triviaGame.currentQuestion >= triviaGame.questions.length) {
+                return endTriviaGame();
+            }
+
+            const q = triviaGame.questions[triviaGame.currentQuestion];
+            triviaGame.answered = false;
+
+            const area = document.getElementById('gameArea');
+            area.innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">❓ Trivial Cofrade</h2>
+                    <p style="font-size:1.2rem; margin-bottom:1rem;">Pregunta ${triviaGame.currentQuestion + 1} de ${triviaGame.questions.length}</p>
+                    
+                    <div class="cirio-container">
+                        <div class="cirio-base" id="cirioBase"></div>
+                        <div class="cirio-wick"></div>
+                        <div class="cirio-flame"></div>
+                        <div class="timer-text" id="cirioTimer">${currentTimer}</div>
+                    </div>
+
+                    <h3 style="margin:1rem auto; max-width:600px;">${q.question}</h3>
+                    
+                    <div class="answer-buttons">
+                        ${q.options.map((option, i) => 
+                            `<button class="answer-btn" onclick="checkTriviaAnswer(${i})">${option}</button>`
+                        ).join('')}
+                    </div>
+                    
+                    <div id="trivia-feedback" style="margin-top:1.5rem; max-width:600px; margin-left:auto; margin-right:auto;"></div>
+                    <button onclick="window.close()" class="game-btn" style="background:#dc3545;color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;font-family:'Cinzel',serif;margin-top:1rem;">🚪 Salir al Menú</button>
+                </div>
+            `;
+            startTriviaTimer();
+        }
+
+        function checkTriviaAnswer(selectedIndex) {
+            if (triviaGame.answered) return;
+            clearInterval(triviaGame.timerInterval);
+            triviaGame.answered = true;
+
+            const q = triviaGame.questions[triviaGame.currentQuestion];
+            const feedback = document.getElementById('trivia-feedback');
+            const btns = document.querySelectorAll('.answer-btn');
+
+            btns.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('correct');
+                } else if (i === selectedIndex) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            if (selectedIndex === q.correct) {
+                triviaGame.score++;
+                feedback.innerHTML = `<p style="color:#00ff00;font-weight:bold;">✅ ¡Correcto!</p><p>${q.explanation}</p>`;
+            } else {
+                feedback.innerHTML = `<p style="color:#dc3545;font-weight:bold;">¡Incorrecto! La respuesta era: ${q.options[q.correct]}.</p><p>${q.explanation}</p>`;
+            }
+
+            triviaGame.currentQuestion++;
+            setTimeout(showNextTriviaQuestion, 4000);
+        }
+
+        function endTriviaGame() {
+            const maxScore = triviaGame.questions.length;
+            const finalReward = triviaGame.score * 20; // 20 monedas por respuesta correcta
+            addCoins(finalReward);
+
+            document.getElementById('gameArea').innerHTML = `
+                <div style="text-align:center;">
+                    <h2 style="color:#FFD700;">🎉 Trivial Terminado</h2>
+                    <div style="font-size:1.5rem;margin:1rem 0;color:#d4af37;">Puntuación Final: ${triviaGame.score} / ${maxScore}</div>
+                    <div style="font-size:1.2rem;margin-bottom:2rem;color:#ccc;">Recompensa Total: ${finalReward} monedas</div>
+                    <button onclick="initTrivia()" class="game-btn" style="margin-right:1rem;">Jugar de Nuevo</button>
+                    <button onclick="window.close()" class="game-btn">Volver al Juego</button>
+                </div>
+            `;
+        }
+
+        /* ============================ PAC-NAZARENO GAME ============================ */
+        const PN_SIZE = 21; // Grid 21x21
+        const PN_TILES = { empty: 0, wall: 1, coin: 2, cross: 3 };
+
+        let pnGameLoop;
+
+        function initPacNazareno() {
+            loadGameState();
+            clearInterval(pnGameLoop);
+            // 1. Inicializar el estado del juego
+            pacNazarenoGame = { 
+                grid: Array.from({ length: PN_SIZE }, () => Array(PN_SIZE).fill(PN_TILES.empty)),
+                player: { r: 1, c: 1 },
+                penitentes: [], 
+                score: 0, 
+                gameOver: false, 
+                isPowerful: false, 
+                powerTimer: null, 
+                level: 1, 
+                gameInterval: 250, 
+                coinsLeft: 0, 
+                reward: 50
+            };
+
+            pnGenerateMaze();
+            pnGenerateCoins(); 
+            pnSpawnPenitente(3);
+            
+            const area = document.getElementById('gameArea');
+            area.innerHTML = `
+                <div class="pacnazareno-container">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+                        <h3 style="margin:0;">PAC-NAZARENO - Nivel <span id="pn-level">${pacNazarenoGame.level}</span></h3>
+                        <button onclick="pnAbandonGame()" class="game-btn" style="background:#dc3545;color:#fff;border:none;padding:.5rem 1rem;border-radius:15px;font-family:'Cinzel',serif;">🚪 Abandonar Juego</button>
+                    </div>
+                    <div style="display:flex;justify-content:center;gap:1rem;margin-bottom:1rem;">
+                        <div class="stat-box" style="padding:.5rem 1rem;margin:0;border:2px solid var(--dorado);"><span style="font-size:1rem;color:#ccc;">Puntuación:</span> <span id="pn-score" style="font-size:1.5rem;">0</span></div>
+                        <div class="stat-box" style="padding:.5rem 1rem;margin:0;border:2px solid var(--dorado);"><span style="font-size:1rem;color:#ccc;">Cirios Restantes:</span> <span id="pn-total-coins">${pacNazarenoGame.coinsLeft}</span></div>
+                    </div>
+                    <div id="pacnazarenoGrid" class="pacnazareno-grid" style="grid-template-columns: repeat(${PN_SIZE}, 1fr);"></div>
+                    <div style="text-align:center;margin-top:1rem;">
+                        <p style="color:#ccc;font-size:.9rem;">Usa las flechas (← ↑ ↓ →) para mover al Nazareno 👸</p>
+                    </div>
+                </div>
+            `;
+            
+            // Listener para el movimiento
+            document.onkeydown = pnHandleKey;
+
+            // Iniciar bucle de juego
+            pnGameLoop = setInterval(pnMovePenitentes, pacNazarenoGame.gameInterval);
+
+            // Generar la primera cruz
+            setTimeout(pnGenerateCross, 5000); 
+
+            renderPacNazareno();
+        }
+
+        function pnHandleKey(e) {
+            if (pacNazarenoGame.gameOver) return;
+            let dir = null;
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                    dir = 'UP';
+                    break;
+                case 'ArrowDown':
+                case 's':
+                    dir = 'DOWN';
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                    dir = 'LEFT';
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                    dir = 'RIGHT';
+                    break;
+            }
+            if (dir) pnMovePlayer(dir);
+        }
+        
+        // Función para salir del juego en curso
+        function pnAbandonGame() {
+            if (pacNazarenoGame) {
+                pacNazarenoGame.gameOver = true;
+                clearInterval(pnGameLoop);
+                clearTimeout(pacNazarenoGame.powerTimer);
+            }
+            window.close();
+        }
+
+        function pnGenerateMaze() {
+            // Inicializa con bordes y luego genera un laberinto simple
+            for (let r = 0; r < PN_SIZE; r++) {
+                for (let c = 0; c < PN_SIZE; c++) {
+                    if (r === 0 || r === PN_SIZE - 1 || c === 0 || c === PN_SIZE - 1) {
+                        pacNazarenoGame.grid[r][c] = PN_TILES.wall;
+                    } else if (r % 2 === 0 && c % 2 === 0) {
+                        pacNazarenoGame.grid[r][c] = PN_TILES.wall;
+                    }
+                }
+            }
+            // Asegura que las esquinas de inicio/fin estén despejadas
+            pacNazarenoGame.grid[1][1] = PN_TILES.empty;
+            pacNazarenoGame.grid[1][2] = PN_TILES.empty;
+            pacNazarenoGame.grid[2][1] = PN_TILES.empty;
+        }
+
+        function pnGetEmptyPositions() {
+            const empty = [];
+            for (let r = 1; r < PN_SIZE - 1; r++) {
+                for (let c = 1; c < PN_SIZE - 1; c++) {
+                    if (pacNazarenoGame.grid[r][c] === PN_TILES.empty && 
+                        (r !== pacNazarenoGame.player.r || c !== pacNazarenoGame.player.c) && 
+                        !pacNazarenoGame.penitentes.some(p => p.r === r && p.c === c)) {
+                        empty.push({ r, c });
+                    }
+                }
+            }
+            return empty;
+        }
+
+        function pnGenerateCoins() {
+            const emptyPositions = pnGetEmptyPositions();
+            // Coloca un número fijo de cirios al inicio (4 por lado de la cuadrícula)
+            const coinsToPlace = Math.min(PN_SIZE * 4, emptyPositions.length); 
+            
+            for (let i = 0; i < coinsToPlace; i++) {
+                if (emptyPositions.length === 0) break;
+                // Colocación aleatoria
+                const index = Math.floor(Math.random() * emptyPositions.length);
+                const { r, c } = emptyPositions.splice(index, 1)[0]; 
+                pacNazarenoGame.grid[r][c] = PN_TILES.coin;
+                pacNazarenoGame.coinsLeft++; 
+            }
+            const totalCoinsEl = document.getElementById('pn-total-coins');
+            if (totalCoinsEl) totalCoinsEl.textContent = pacNazarenoGame.coinsLeft;
+        }
+
+        function pnGenerateCross() {
+            if (pacNazarenoGame.gameOver) return;
+            const emptyPositions = pnGetEmptyPositions();
+            if (emptyPositions.length > 0) {
+                const index = Math.floor(Math.random() * emptyPositions.length);
+                const { r, c } = emptyPositions[index];
+                pacNazarenoGame.grid[r][c] = PN_TILES.cross;
+                renderPacNazareno();
+            }
+
+            // Genera la próxima Cruz en un intervalo aleatorio (30 a 60 segundos)
+            setTimeout(pnGenerateCross, Math.random() * 30000 + 30000); 
+        }
+
+        function pnSpawnPenitente(count) {
+            const emptyPositions = pnGetEmptyPositions();
+            for (let i = 0; i < count; i++) {
+                if (emptyPositions.length === 0) break;
+                const index = Math.floor(Math.random() * emptyPositions.length);
+                const { r, c } = emptyPositions.splice(index, 1)[0];
+                pacNazarenoGame.penitentes.push({ r, c, scared: pacNazarenoGame.isPowerful });
+            }
+        }
+
+        function renderPacNazareno() {
+            const gridEl = document.getElementById('pacnazarenoGrid');
+            if (!gridEl) return;
+            gridEl.innerHTML = '';
+
+            for (let r = 0; r < PN_SIZE; r++) {
+                for (let c = 0; c < PN_SIZE; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'pacnazareno-cell';
+
+                    // 1. Jugador (Nazareno)
+                    if (r === pacNazarenoGame.player.r && c === pacNazarenoGame.player.c) {
+                        cell.classList.add('nazareno');
+                    } 
+                    // 2. Penitentes
+                    else if (pacNazarenoGame.penitentes.some(p => p.r === r && p.c === c)) {
+                        const penitente = pacNazarenoGame.penitentes.find(p => p.r === r && p.c === c);
+                        cell.classList.add('penitente');
+                        if (penitente.scared) {
+                            cell.classList.add('scared-penitente');
+                        }
+                    }
+                    // 3. Objetos del mapa
+                    else {
+                        const tile = pacNazarenoGame.grid[r][c];
+                        if (tile === PN_TILES.wall) cell.classList.add('wall');
+                        else if (tile === PN_TILES.coin) cell.classList.add('coin');
+                        else if (tile === PN_TILES.cross) cell.classList.add('cross');
+                        else cell.classList.add('empty');
+                    }
+
+                    gridEl.appendChild(cell);
+                }
+            }
+        }
+
+        function pnMovePlayer(dir) {
+            if (pacNazarenoGame.gameOver) return;
+
+            const { r, c } = pacNazarenoGame.player;
+            let newR = r;
+            let newC = c;
+
+            switch (dir) {
+                case 'UP': newR--; break;
+                case 'DOWN': newR++; break;
+                case 'LEFT': newC--; break;
+                case 'RIGHT': newC++; break;
+            }
+
+            // Comprobar si es un muro
+            if (pacNazarenoGame.grid[newR][newC] === PN_TILES.wall) return;
+
+            pacNazarenoGame.player.r = newR;
+            pacNazarenoGame.player.c = newC;
+
+            // Recoger cirio (C)
+            if (pacNazarenoGame.grid[newR][newC] === PN_TILES.coin) {
+                pacNazarenoGame.grid[newR][newC] = PN_TILES.empty;
+                pacNazarenoGame.score++;
+                pacNazarenoGame.coinsLeft--;
+                document.getElementById('pn-score').textContent = pacNazarenoGame.score;
+                document.getElementById('pn-total-coins').textContent = pacNazarenoGame.coinsLeft;
+                addCoins(20); // 20 monedas por cirio
+                showMessage('+20 Monedas (Cirio)', 'success');
+            }
+
+            // Recoger Cruz (Power-up)
+            if (pacNazarenoGame.grid[newR][newC] === PN_TILES.cross) {
+                pacNazarenoGame.grid[newR][newC] = PN_TILES.empty;
+                pnActivatePowerUp();
+                showMessage('¡✝️ Modo Azote Activado!', 'success');
+            }
+
+            pnCheckCollision();
+            renderPacNazareno();
+            pnCheckWinCondition();
+        }
+
+        function pnActivatePowerUp() {
+            // Aumenta la dificultad
+            pacNazarenoGame.level++;
+            document.getElementById('pn-level').textContent = pacNazarenoGame.level;
+
+            // Activa el modo Azote (isPowerful) y asusta a los penitentes
+            pacNazarenoGame.isPowerful = true;
+            pacNazarenoGame.penitentes.forEach(p => p.scared = true);
+            clearTimeout(pacNazarenoGame.powerTimer);
+
+            // El modo dura 8 segundos
+            pacNazarenoGame.powerTimer = setTimeout(() => {
+                pacNazarenoGame.isPowerful = false;
+                pacNazarenoGame.penitentes.forEach(p => p.scared = false);
+                renderPacNazareno();
+            }, 8000);
+        }
+
+        function pnMovePenitentes() {
+            if (pacNazarenoGame.gameOver) return;
+
+            // Dificultad basada en el nivel: probabilidad de elegir el movimiento 'inteligente'
+            let smartChance = 0;
+            if (pacNazarenoGame.level === 1) smartChance = 0.2; // 20% inteligente, 80% aleatorio
+            else if (pacNazarenoGame.level === 2) smartChance = 0.5; // 50% inteligente
+            else if (pacNazarenoGame.level >= 3) smartChance = 0.8; // 80% inteligente
+
+            const { r: pr, c: pc } = pacNazarenoGame.player;
+
+            pacNazarenoGame.penitentes.forEach(p => {
+                const { r: oldR, c: oldC } = p;
+                
+                const possibleMoves = [];
+                // N, S, E, O
+                const allDirections = [
+                    { r: oldR - 1, c: oldC }, { r: oldR + 1, c: oldC }, 
+                    { r: oldR, c: oldC - 1 }, { r: oldR, c: oldC + 1 }
+                ];
+                
+                // 1. Filtrar solo movimientos VÁLIDOS (no muros/bordes)
+                allDirections.forEach(move => {
+                    if (move.r > 0 && move.r < PN_SIZE - 1 && move.c > 0 && move.c < PN_SIZE - 1 &&
+                        pacNazarenoGame.grid[move.r][move.c] !== PN_TILES.wall) {
+                        
+                        // Distancia de Manhattan al jugador
+                        const distance = Math.abs(move.r - pr) + Math.abs(move.c - pc);
+                        possibleMoves.push({ r: move.r, c: move.c, distance: distance });
+                    }
+                });
+
+                if (possibleMoves.length === 0) return; // Penitente atrapado
+
+                let chosenMove;
+                const useSmartMove = Math.random() < smartChance;
+
+                if (useSmartMove) {
+                    // Mover de forma inteligente: buscar MIN distancia si NO está asustado, MAX distancia si SÍ lo está
+                    
+                    const comparator = p.scared 
+                        ? (a, b) => b.distance - a.distance // Mayor distancia (huye)
+                        : (a, b) => a.distance - b.distance; // Menor distancia (persigue)
+
+                    // Ordenar y tomar todos los movimientos con la distancia óptima
+                    possibleMoves.sort(comparator);
+                    const optimalDistance = possibleMoves[0].distance;
+                    const optimalMoves = possibleMoves.filter(m => m.distance === optimalDistance);
+                    
+                    // Si hay varios movimientos óptimos, elige uno al azar entre ellos
+                    chosenMove = optimalMoves[Math.floor(Math.random() * optimalMoves.length)];
+
+                } else {
+                    // Movimiento aleatorio
+                    chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                }
+                
+                p.r = chosenMove.r;
+                p.c = chosenMove.c;
+            });
+
+            pnCheckCollision();
+            renderPacNazareno();
+        }
+
+        function pnCheckCollision() {
+            if (pacNazarenoGame.gameOver) return;
+
+            // 1. Comprobar colisión Nazareno-Penitente
+            const { r: pr, c: pc } = pacNazarenoGame.player;
+
+            if (pacNazarenoGame.isPowerful) {
+                // Modo Azote (Come Penitente)
+                const eatenPenitentes = pacNazarenoGame.penitentes.filter(p => p.r === pr && p.c === pc && p.scared);
+                
+                eatenPenitentes.forEach(eatenP => {
+                    showMessage('¡Penitente Azotado! +50 Monedas.', 'success');
+                    addCoins(50);
+
+                    // 1. ELIMINAR al penitente de la lista (desaparición temporal)
+                    pacNazarenoGame.penitentes = pacNazarenoGame.penitentes.filter(p => p !== eatenP);
+                    renderPacNazareno(); // Actualiza el render para que desaparezca inmediatamente
+
+                    // 2. Hacer que reaparezca después de 7 segundos
+                    setTimeout(() => {
+                        if (!pacNazarenoGame.gameOver) {
+                            // Solo regeneramos uno si quedan menos de 3 penitentes
+                            if (pacNazarenoGame.penitentes.length < 3) {
+                                pnSpawnPenitente(1);
+                                // Asegura que reaparece asustado si el modo Azote sigue activo
+                                if (pacNazarenoGame.isPowerful) {
+                                    // El penitente recién creado está al final de la lista
+                                    pacNazarenoGame.penitentes[pacNazarenoGame.penitentes.length - 1].scared = true; 
+                                }
+                                renderPacNazareno();
+                            }
+                        }
+                    }, 7000); // Penitente eliminado temporalmente por 7 segundos.
+                });
+            } else {
+                // Modo Normal (Muere Nazareno)
+                const collidingPenitente = pacNazarenoGame.penitentes.find(p => p.r === pr && p.c === pc && !p.scared);
+                if (collidingPenitente) {
+                    pnGameOver(false);
+                }
+            }
+        }
+
+        function pnCheckWinCondition() {
+            if (pacNazarenoGame.coinsLeft === 0) {
+                pnGameOver(true);
+            }
+        }
+
+        function pnGameOver(win) {
+            if (pacNazarenoGame.gameOver) return;
+            pacNazarenoGame.gameOver = true;
+            clearInterval(pnGameLoop);
+            clearTimeout(pacNazarenoGame.powerTimer);
+            
+            // La recompensa base + 20 monedas por cada cirio recogido.
+            const finalReward = win ? pacNazarenoGame.reward + (pacNazarenoGame.score * 20) : pacNazarenoGame.score * 20;
+            if (finalReward > 0) addCoins(finalReward);
+
+            let winMessageHTML = '';
+            if (win) {
+                // Mensaje de victoria dorado y flasheante
+                winMessageHTML = '<h2 class="flashing-gold-text" style="margin: 1rem 0;">REQUIESCAT IN PACE.</h2>';
+            } else {
+                // Mensaje de derrota
+                winMessageHTML = '<h2 style="color:#FFD700;">¡Juego Terminado! 💀 SATANÁS TE HA TENTADO</h2>';
+            }
+
+            document.getElementById('gameArea').innerHTML = `
+                <div class="pacnazareno-container" style="text-align:center;">
+                    ${winMessageHTML}
+                    <div style="font-size:1.5rem;margin:1rem 0;color:#d4af37;">Cirios recogidos: ${pacNazarenoGame.score}</div>
+                    <div style="font-size:1.2rem;margin-bottom:2rem;color:#ccc;">Recompensa Total: ${finalReward} monedas</div>
+                    <button onclick="initPacNazareno()" class="game-btn" style="margin-right:1rem;">🔄 Jugar de Nuevo</button>
+                    <button onclick="window.close()" class="game-btn">🚪 Salir y Volver al Juego</button>
+                </div>
+            `;
+        }
+        
+        /* ============================ INICIALIZACIÓN ============================ */
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const params = new URLSearchParams(window.location.search);
+            const gameType = params.get('game');
+
+            if (gameType) {
+                // MODO MINIJUEGO: Carga solo el juego en el cuerpo de la ventana
+                document.body.innerHTML = '<div id="gameArea" style="padding:20px;"></div>'; // Limpia el body
+                document.body.style.minHeight = 'auto'; // Ajusta la altura para el pop-up
+
+                // El título de la ventana pop-up se actualiza para el usuario.
+                document.title = `Cofradía Digital - Minijuego: ${gameType.charAt(0).toUpperCase() + gameType.slice(1)}`;
+                
+                // Carga la base de datos de preguntas para el pop-up
+                loadGameState(); 
+
+                if (gameType === 'memory') initMemory();
+                else if (gameType === 'trivia') initTrivia();
+                else if (gameType === 'wordsearch') initWordsearch();
+                else if (gameType === 'pacnazareno') initPacNazareno(); // ¡NUEVO JUEGO INTEGRADO!
+            } else {
+                // MODO JUEGO PRINCIPAL
+                const u = localStorage.getItem('cofradiaUser');
+                if (u) {
+                    currentUser = JSON.parse(u);
+                    showGame();
+                } else {
+                    // Si no hay usuario, iniciamos como invitado
+                    loginAsGuest();
+                }
+            }
+        });
     </script>
 </body>
 </html>
